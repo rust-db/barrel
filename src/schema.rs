@@ -23,17 +23,39 @@ impl Schema {
     /// can be worked on.
     ///
     /// This function is lazy
-    pub fn create_table<F: 'static>(mut self, tn: &str, cb: F) -> Schema
+    pub fn create_table<F: 'static>(mut self, name: &str, cb: F) -> Schema
     where
         F: Fn(&mut Table),
     {
-        let t = Table { name: String::from(tn) };
+        let t = Table { name: String::from(name), items: Vec::new() };
         self.jobs.push((t, Box::new(cb)));
         return self;
     }
 
+    /// Executes all hooks and does magic
+    /// 
+    /// Needs to be mutable because it morphs the hooks
     pub fn exec(&mut self) -> String {
-        String::new()
+        let mut s = String::new();
+
+        for pair in &mut self.jobs {
+            let (mut table, hook) = (&mut pair.0, &pair.1);
+            let schema: &String = self.schema.as_ref().unwrap();
+            hook(&mut table);
+            let table_name: &String = &table.name;
+
+            s.push_str("create table ");
+            s.push_str(&format!("\"{}\".\"{}\"", schema, table_name));
+
+            s.push(' ');
+            s.push('(');
+            for cmd in &table.items {
+                s.push_str(cmd);
+            }
+            s.push(')');
+        }
+
+        return s;
     }
 
     /*****/

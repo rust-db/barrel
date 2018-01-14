@@ -7,16 +7,17 @@
 // }
 
 pub mod table;
+pub use table::*;
 use table::Table;
 
 pub mod schema;
+pub use schema::*;
 use schema::Schema;
-
 
 pub fn test() {
 
-    let s = Schema::name("public").create_table("users", |t| {
-
+    let mut s = Schema::name("public").create_table("users", |t: &mut Table| {
+        t.increments();
     });
 
     println!("{}", s.exec());
