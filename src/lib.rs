@@ -1,47 +1,27 @@
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//     fn it_works() {
-//         assert_eq!(2 + 2, 4);
-//     }
-// }
+//! Powerful schema builder API in Rust, using Diesel in the backend.
+//! 
+//! Barrel has two primary models, the schema and the table. A schema is built
+//! with a variety of hooks that can be executed on tables, using static callbacks.
+//! 
+//! ```
+//! let mut s = Schema::name("public").create_table("users", |t| {
+//!     t.increments();
+//! });
+//! ```
+//! 
+//! The above code, for example, will create a new table in the "public" schema, called "users"
+//! and then execute the table hook on it when invoking `schema.exec()`. The hook creates an
+//! auto-incrementing primary intex. By default the name "id" is assumed.
+//! 
+//! Barrel is designed to give you ease of use as well as power over how you write your 
+//! migrations and SQL schemas. See the `examples` folder for more details 🌈
 
-pub mod table;
+mod table;
 pub use table::*;
-use table::Table;
 
-pub mod schema;
+mod schema;
 pub use schema::*;
-use schema::Schema;
 
-pub fn test() {
-
-    let mut s = Schema::name("public").create_table("users", |t: &mut Table| {
-        t.increments();
-    });
-
-    println!("{}", s.exec());
-}
-
-
-//
-// – with
-// – withSchema
-// – createTable
-// – createTableIfNotExists
-// – renameTable
-// – dropTable
-// – hasColumn
-// – hasTable
-// – dropTableIfExists
-// – table
-// – raw
-//
-//
-//
-//
-//
-//
 // – dropColumn
 // – dropColumns
 // – renameColumn
