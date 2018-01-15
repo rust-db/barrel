@@ -8,6 +8,7 @@ pub struct Table {
 
 
 impl Table {
+    
     pub fn increments(&mut self) {
 
     }

@@ -32,7 +32,7 @@ impl Schema {
         return self;
     }
 
-    pub fn exec(&mut self) -> String {
+    pub fn exec(&self) -> String {
         String::new()
     }
 

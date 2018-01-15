@@ -15,9 +15,11 @@ use schema::Schema;
 
 pub fn test() {
 
-    let s = Schema::name("public").create_table("users", |t| {
-
+    let s = Schema::name("public").create_table("users", |t: &mut Table| {
+        t.increments();
     });
+
+    // create table "public"."users" ("id" serial primary key)
 
     println!("{}", s.exec());
 }
