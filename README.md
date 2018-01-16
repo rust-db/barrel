@@ -1,6 +1,6 @@
 # barrel
 
-[![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)  [![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master)ß
+[![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)  [![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master)
 
 A schema building API, using Diesel as a backend and integrated query builder. Write SQL schema migrations in Rust!
 
