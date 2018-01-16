@@ -21,19 +21,85 @@ impl Schema {
     ///
     /// The callback is provided with a mutable table that fields
     /// can be worked on.
-    ///
-    /// This function is lazy
-    pub fn create_table<F: 'static>(mut self, tn: &str, cb: F) -> Schema
+    pub fn create_table<F: 'static>(mut self, name: &str, cb: F) -> Schema
     where
         F: Fn(&mut Table),
     {
-        let t = Table { name: String::from(tn) };
+        let t = Table {
+            name: String::from(name),
+            items: Vec::new(),
+        };
         self.jobs.push((t, Box::new(cb)));
         return self;
     }
 
-    pub fn exec(&self) -> String {
-        String::new()
+    /// Only create a new table if one with the same name doesn't exist
+    ///
+    /// Provide a callback to manipulate the table. The callback
+    /// is lazy and will only be invoked when calling [[exec]]
+    pub fn create_table_if_not_exists<F: 'static>(mut self, name: &str, cb: F) -> Schema
+    where
+        F: Fn(&mut Table),
+    {
+        return self;
+    }
+
+    /// Rename a table into another
+    pub fn rename_table(mut self, old_name: &str, new_name: &str) -> Schema {
+        return self;
+    }
+
+    /// Drop a table
+    pub fn drop_table(mut self, name: &str) -> Schema {
+        return self;
+    }
+
+    /// Only drop a table if it exists
+    pub fn drop_table_if_exists(mut self, name: &str) -> Schema {
+        return self;
+    }
+
+    /// use this function to manupulate a table
+    pub fn table<F: 'static>(mut self, name: &str, cb: F) -> Schema
+    where
+        F: Fn(&mut Table),
+    {
+        return self;
+    }
+
+    /// Provide raw SQL that will be executed
+    ///
+    /// **Experimental** and **Undocumented**
+    ///
+    /// So please be careful
+    pub fn raw<F: 'static>(mut self, sql: &str) -> Schema {
+        return self;
+    }
+
+    /// Executes all hooks and does magic
+    ///
+    /// Needs to be mutable because it morphs the hooks
+    pub fn exec(&mut self) -> String {
+        let mut s = String::new();
+
+        for pair in &mut self.jobs {
+            let (mut table, hook) = (&mut pair.0, &pair.1);
+            let schema: &String = self.schema.as_ref().unwrap();
+            hook(&mut table);
+            let table_name: &String = &table.name;
+
+            s.push_str("create table ");
+            s.push_str(&format!("\"{}\".\"{}\"", schema, table_name));
+
+            s.push(' ');
+            s.push('(');
+            for cmd in &table.items {
+                s.push_str(cmd);
+            }
+            s.push(')');
+        }
+
+        return s;
     }
 
     /*****/
