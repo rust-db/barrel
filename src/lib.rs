@@ -22,19 +22,6 @@ pub use table::Table;
 pub mod schema;
 pub use schema::Schema;
 
-
-pub fn test() {
-
-    let mut s = Schema::name("public").create_table("users", |t: &mut Table| {
-        t.increments();
-    });
-
-    // create table "public"."users" ("id" serial primary key)
-
-    println!("{}", s.exec());
-}
-
-
 //
 // – with
 // – withSchema

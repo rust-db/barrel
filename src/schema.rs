@@ -9,12 +9,19 @@ pub struct Schema {
 }
 
 impl Schema {
+
+    /// Create a new schema 
     pub fn new() -> Schema {
-        return Schema::make(None);
+        return Schema {
+            schema: None,
+            jobs: Vec::new(),
+        };
     }
 
-    pub fn name(s: &str) -> Schema {
-        return Schema::make(Some(s));
+    /// Specify a schema for a SQL command
+    pub fn with_schema(mut self, s: &str) -> Schema {
+        self.schema = Some(s.to_owned());
+        return self;
     }
 
     /// Add a table to the schema with a callback
@@ -41,21 +48,25 @@ impl Schema {
     where
         F: Fn(&mut Table),
     {
+        // create table if not exists
         return self;
     }
 
     /// Rename a table into another
     pub fn rename_table(mut self, old_name: &str, new_name: &str) -> Schema {
+        // alter table "users" rename to "old_users"
         return self;
     }
 
     /// Drop a table
     pub fn drop_table(mut self, name: &str) -> Schema {
+        // drop table "users"
         return self;
     }
 
     /// Only drop a table if it exists
     pub fn drop_table_if_exists(mut self, name: &str) -> Schema {
+        // drop table if exists "users"
         return self;
     }
 
@@ -64,6 +75,8 @@ impl Schema {
     where
         F: Fn(&mut Table),
     {
+        // alter table "users" add column "first_name" varchar(255), add column "last_name" varchar(255);
+        // alter table "users" drop column "name"
         return self;
     }
 
@@ -102,18 +115,6 @@ impl Schema {
         return s;
     }
 
-    /*****/
-
-    /// A utility function that creates an actual schema handler
-    fn make(s: Option<&str>) -> Schema {
-        return Schema {
-            schema: match s {
-                Some(s) => Some(String::from(s)),
-                _ => None,
-            },
-            jobs: Vec::new(),
-        };
-    }
 }
 
 /*
