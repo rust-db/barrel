@@ -4,7 +4,8 @@
 //! with a variety of hooks that can be executed on tables, using static callbacks.
 //! 
 //! ```
-//! let mut s = Schema::name("public").create_table("users", |t| {
+//! use barrel::{Schema, Table};
+//! let s = Schema::new().with_schema("public").create_table("users", |t: &mut Table| {
 //!     t.increments();
 //! });
 //! ```

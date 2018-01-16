@@ -8,10 +8,4 @@ fn main() {
     });
 
     println!("{}", s.exec());
-
-    // Schema::create_table("users", |t| {
-
-    // });
-
-    // Schema::with_schema("public").create_table
 }
