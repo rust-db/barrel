@@ -3,11 +3,9 @@ dist: trusty
 language: rust
 services: docker
 sudo: required
-language: rust
 cache: cargo
 rust:
   - stable
-  # - beta  # Removing the beta channel for a while. Will change this soon-ish? (maybe (maybe not))
   - nightly
 
 # This is required for coveralls
@@ -36,7 +34,7 @@ script:
   - cargo build --verbose --all
   - cargo test --verbose --all
   - cargo bench --all
-  - cargo doc
+  # - cargo doc
 
 # Upload the whole mess
 after_success:
