@@ -23,6 +23,8 @@ pub use table::Table;
 pub mod schema;
 pub use schema::Schema;
 
+mod test;
+
 //
 // – with
 // – withSchema
