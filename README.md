@@ -1,4 +1,4 @@
-# barrel
+![Barrel Logo](assets/logo_wide.svg)
 
 [![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)  [![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master)
 
