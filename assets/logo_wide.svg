@@ -74,10 +74,66 @@
              sodipodi:role="line">SQL</tspan></text>
       </g>
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4763-4">
+      <g
+         id="g4779-2"
+         transform="translate(2.6458333,3.96875)"
+         mask="none">
+        <ellipse
+           ry="6.1955671"
+           rx="27.509039"
+           cy="176.06053"
+           cx="85.518867"
+           id="ellipse4765-0"
+           style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.75040787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+        <path
+           sodipodi:nodetypes="cccc"
+           inkscape:connector-curvature="0"
+           id="path4767-1"
+           d="m 58.019348,176.19089 v -75.89224 h 54.995532 v 75.89224"
+           style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.75147182;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+        <ellipse
+           ry="5.2910466"
+           rx="27.497147"
+           cy="100.0744"
+           cx="85.51712"
+           id="ellipse4769-3"
+           style="fill:#782222;fill-opacity:1;stroke:#000000;stroke-width:0.75123954;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+        <rect
+           transform="rotate(-45)"
+           y="146.80885"
+           x="-52.047043"
+           height="27.78125"
+           width="27.78125"
+           id="rect4771-0"
+           style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+        <rect
+           transform="rotate(-45)"
+           y="147.71407"
+           x="-51.15958"
+           height="25.988586"
+           width="25.988586"
+           id="rect4773-0"
+           style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.23386806;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:1.40320836, 1.40320836;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+        <text
+           id="text4777-4"
+           y="143.72093"
+           x="75.637283"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:Quicksand;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';stroke-width:0.26458332"
+             y="143.72093"
+             x="75.637283"
+             id="tspan4775-8"
+             sodipodi:role="line">SQL</tspan></text>
+      </g>
+    </clipPath>
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
-       id="filter5784"
+       id="filter5784-2"
        x="-0.20820232"
        width="1.4164046"
        y="-0.19094391"
@@ -85,7 +141,7 @@
       <feGaussianBlur
          inkscape:collect="always"
          stdDeviation="8.5253472"
-         id="feGaussianBlur5786" />
+         id="feGaussianBlur5786-2" />
     </filter>
   </defs>
   <sodipodi:namedview
@@ -95,9 +151,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="391.63957"
-     inkscape:cy="246.4178"
+     inkscape:zoom="1.979899"
+     inkscape:cx="130.45568"
+     inkscape:cy="79.670361"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -118,7 +174,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -127,78 +183,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-237.00001)">
-    <g
-       style="display:inline"
-       id="g6827"
-       transform="matrix(1.446492,0,0,1.446492,-29.076946,61.750804)">
-      <g
-         id="g4752"
-         transform="matrix(0.39893755,0,0,0.3784796,0.27277553,91.102032)"
-         mask="none"
-         style="display:inline;stroke:#000000;stroke-opacity:1">
-        <ellipse
-           ry="6.1955671"
-           rx="27.509039"
-           cy="176.06053"
-           cx="85.518867"
-           id="ellipse4738"
-           style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <path
-           sodipodi:nodetypes="cccc"
-           inkscape:connector-curvature="0"
-           id="path4740"
-           d="m 58.019348,176.19089 v -75.89224 h 54.995532 v 75.89224"
-           style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <ellipse
-           ry="5.2910466"
-           rx="27.497147"
-           cy="100.00758"
-           cx="85.51712"
-           id="ellipse4742"
-           style="fill:#782222;fill-opacity:1;stroke:#000000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
-        <rect
-           transform="rotate(-45)"
-           y="146.80885"
-           x="-52.047043"
-           height="27.78125"
-           width="27.78125"
-           id="rect4744"
-           style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
-        <rect
-           transform="rotate(-45)"
-           y="147.71407"
-           x="-51.15958"
-           height="25.988586"
-           width="25.988586"
-           id="rect4746"
-           style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:4.5, 4.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
-        <text
-           id="text4750"
-           y="143.72093"
-           x="75.637283"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:Quicksand;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.26458332;stroke-opacity:1"
-           xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';stroke:#000000;stroke-width:0.26458332;stroke-opacity:1"
-             y="143.72093"
-             x="75.637283"
-             id="tspan4748"
-             sodipodi:role="line">SQL</tspan></text>
-        <ellipse
-           ry="3.9562366"
-           rx="24.607597"
-           cy="99.936882"
-           cx="85.45031"
-           id="ellipse4742-0"
-           style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.75, 1.5;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
-      </g>
-      <path
-         transform="matrix(0.39893755,0,0,0.3784796,-0.78274616,89.599941)"
-         clip-path="url(#clipPath4763)"
-         inkscape:connector-curvature="0"
-         id="path4599"
-         d="m 57.268126,100.53016 66.083924,91.39246 29.7283,-9.9462 -3.78704,-78.44363 -39.38527,-18.766421 -55.101492,2.25197 z"
-         style="display:inline;opacity:0.672;fill:#000000;fill-opacity:0.34418604;stroke:none;stroke-width:0.26390883px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter5784)" />
-    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -210,5 +194,90 @@
          x="43.602528"
          y="277.09091"
          style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:22.57777786px;font-family:Raleway;-inkscape-font-specification:'Raleway Light';stroke-width:0.26458332">Barrel</tspan></text>
+    <g
+       style="display:inline"
+       id="g8231"
+       transform="matrix(1.2139741,0,0,1.2139741,-30.851304,86.225563)">
+      <ellipse
+         ry="2.3448958"
+         rx="10.974388"
+         cy="163.84706"
+         cx="44.026127"
+         id="ellipse4738-02"
+         style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.48571745;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4740-4"
+         d="m 33.055535,163.89639 v -28.72366 h 21.939783 v 28.72366"
+         style="fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.48571745;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+      <ellipse
+         ry="2.0025532"
+         rx="10.969645"
+         cy="135.06256"
+         cx="44.025429"
+         id="ellipse4742-5"
+         style="fill:#782222;fill-opacity:1;stroke:#000000;stroke-width:0.48571745;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke" />
+      <ellipse
+         ry="1.4973549"
+         rx="9.8168945"
+         cy="135.03581"
+         cx="43.998775"
+         id="ellipse4742-0-8"
+         style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.29143047;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0.29143047, 0.58286094;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
+      <path
+         style="display:inline;fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.48525873;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         d="m 54.984284,156.24769 c -8e-6,1.2953 -4.903168,2.34535 -10.951518,2.34535 -6.048352,0 -10.951513,-1.05005 -10.95152,-2.34535"
+         id="ellipse4738-0"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="csc" />
+      <path
+         style="display:inline;fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.48571745;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         d="m 54.982418,142.64669 c -8e-6,1.29505 -4.913406,2.3449 -10.974388,2.3449 -6.060983,0 -10.974381,-1.04985 -10.974388,-2.3449"
+         id="ellipse4738-0-7"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="csc" />
+      <path
+         style="display:inline;fill:#ca4343;fill-opacity:1;stroke:#000000;stroke-width:0.48571745;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         d="m 54.988021,149.86893 c -8e-6,1.29505 -4.913406,2.34489 -10.974387,2.34489 -6.060983,0 -10.974382,-1.04984 -10.974389,-2.34489"
+         id="ellipse4738-0-7-5"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="csc" />
+      <rect
+         transform="matrix(0.72546335,-0.68826079,0.72546335,0.68826079,0,0)"
+         y="134.53664"
+         x="-84.029701"
+         height="10.802548"
+         width="10.802548"
+         id="rect4744-4"
+         style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.29163235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+      <rect
+         transform="matrix(0.72546335,-0.68826079,0.72546335,0.68826079,0,0)"
+         y="134.88863"
+         x="-83.684616"
+         height="10.105484"
+         width="10.105484"
+         id="rect4746-0"
+         style="fill:#eaeaea;fill-opacity:1;stroke:#000000;stroke-width:0.29163235;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:16.79999924;stroke-dasharray:1.74979414, 1.74979414;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal" />
+      <text
+         transform="scale(1.0266708,0.97402203)"
+         id="text4750-8"
+         y="155.65067"
+         x="39.04269"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.11240768px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:Quicksand;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.10281019;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';stroke:#000000;stroke-width:0.10281019;stroke-opacity:1"
+           y="155.65067"
+           x="39.04269"
+           id="tspan4748-4"
+           sodipodi:role="line">SQL</tspan></text>
+      <path
+         style="display:inline;opacity:0.98400005;fill:#000000;fill-opacity:0.34418604;stroke:none;stroke-width:0.26390883px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter5784-2)"
+         d="m 57.268126,100.53016 66.083924,91.39246 29.7283,-9.9462 -3.78704,-78.44363 -39.38527,-18.766421 -55.101492,2.25197 z"
+         id="path4599-2"
+         inkscape:connector-curvature="0"
+         clip-path="url(#clipPath4763-4)"
+         transform="matrix(0.39893755,0,0,0.3784796,8.8539162,95.709646)" />
+    </g>
   </g>
 </svg>
