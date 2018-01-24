@@ -7,23 +7,29 @@
 
 /// A module which generates SQL syntax focused around generating 
 /// basic SQL database statements
-pub trait DatabaseGenerator<T> {
+pub trait DatabaseGenerator {
 
-    fn create_table(name: &str) -> TableGenerated<T>;
+    /// Create a new table with a name
+    fn create_table(name: &str) -> String;
 
-    fn create_table_if_not_exists(name: &str) -> TableGenerated<T>;
+    /// Create a new table with a name, only if it doesn't exist
+    fn create_table_if_not_exists(name: &str) -> String;
 
-    fn drop_table(name: &str) -> TableGenerated<T>;
+    /// Drop a table with a name 
+    fn drop_table(name: &str) -> String;
 
-    fn drop_table_if_not_exists(name: &str) -> TableGenerated<T>;
+    /// Drop a table with a name, only if it exists
+    fn drop_table_if_exists(name: &str) -> String;
 
-    fn rename_table(old: &str, new: &str) -> TableGenerated<T>;
+    /// Rename a table from <old> to <new>
+    fn rename_table(old: &str, new: &str) -> String;
 
-    fn raw_table(name: &str) -> TableGenerated<T>;
+    /// Modify a table in some other way
+    fn modify_table(name: &str) -> String;
 }
 
 /// A partially generated snippet of a table manipulation
-struct TableGenerated<T> {
+pub struct TableGenerated<T> {
     name: String,
     value: T
 }
@@ -31,10 +37,10 @@ struct TableGenerated<T> {
 
 /// A module which generates SQL syntax foused around generating
 /// table manipulation statements
-trait TableGenerator {
+pub trait TableGenerator {
     
     /// Add an auto incrementing primary key
-    fn increments();
+    fn increments<T>() -> TableGenerated<T>;
 
     
 

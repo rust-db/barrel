@@ -24,7 +24,7 @@ pub mod schema;
 pub use schema::Schema;
 
 pub mod traits;
-pub mod implementations;
+pub mod backends;
 
 mod test;
 
