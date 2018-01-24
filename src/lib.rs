@@ -23,6 +23,9 @@ pub use table::Table;
 pub mod schema;
 pub use schema::Schema;
 
+pub mod traits;
+pub mod implementations;
+
 mod test;
 
 //

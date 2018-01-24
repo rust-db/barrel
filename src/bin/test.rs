@@ -7,5 +7,5 @@ fn main() {
         t.increments();
     });
 
-    println!("{}", s.exec());
+    // println!("{}", s.exec());
 }
