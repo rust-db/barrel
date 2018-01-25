@@ -41,7 +41,46 @@ impl DatabaseGenerator for PGSQL {
 }
 
 
-// impl TableGenerator for PGSQL {
+impl TableGenerator for PGSQL {
+
+    /// Drop an existing column from the table
+    fn drop_column(&mut self, name: &str) -> String {
+        return format!("drop column \"{}\"", name);
+    }
+
+    /// Rename an existing column
+    fn rename_column(&mut self, old: &str, new: &str) -> String {
+        return format!("rename column \"{}\" to \"{}\"", old, new);
+    }
+
+    /// Add an auto-incrementing primary key
+    fn increments(&mut self) -> String {
+        return format!("\"id\" serial primary key");
+    }
+    
+    /// Add an integer column
+    fn integer(&mut self, name: &str) -> String {
+        return format!("\"{}\" int", name);
+    }
+    
+    /// Add a text column
+    fn text(&mut self, name: &str) -> String {
+        return format!("\"{}\" text", name);
+    }
+    
+    /// Add a string column
+    fn string(&mut self, name: &str) -> String {
+        let limit = 255; // FIXME: make this easily configurable
+        return format!("\"{}\" varchar({})", name, limit);
+    }
+    
+    /// Add a timestamp column
+    fn timestamp(&mut self, name: &str) -> String {
+        return format!("\"{}\" timestamptz", name);
+    }
+
+
+}
 
 //     fn dropColumn<T>(&mut self, name: &str) -> TableGenerated<T> {
 //         unimplemented!();

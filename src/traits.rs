@@ -48,16 +48,16 @@ pub trait TableGenerator {
     fn increments(&mut self) -> String;
     
     /// Add an integer column
-    fn integer(&mut self) -> String;
+    fn integer(&mut self, name: &str) -> String;
     
     /// Add a text column
-    fn text(&mut self) -> String;
+    fn text(&mut self, name: &str) -> String;
     
     /// Add a string column
-    fn string(&mut self) -> String;
+    fn string(&mut self, name: &str) -> String;
     
     /// Add a timestamp column
-    fn timestamp(&mut self) -> String;
+    fn timestamp(&mut self, name: &str) -> String;
 
     // fn big_integer(&mut self) -> String;
     // fn float(&mut self) -> String;
