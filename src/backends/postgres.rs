@@ -38,146 +38,151 @@ impl DatabaseGenerator for PGSQL {
     fn modify_table(name: &str) -> String {
         return format!("alter table {}", name);
     }
-
 }
 
-impl TableGenerator for PGSQL {
 
-    fn dropColumn(&mut self, name: &str) -> TableGenerated {
-        unimplemented!();
-    }
+// impl TableGenerator for PGSQL {
 
-    fn renameColumn(&mut self, old: &str, new: &str) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn dropColumn<T>(&mut self, name: &str) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn increments(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn renameColumn<T>(&mut self, old: &str, new: &str) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn integer(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn increments<T>(&mut self) -> TableGenerated<T> {
 
-    fn bigInteger(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//         let tg: TableGenerated<String> = TableGenerated {
+//             raw: "$name serial primary key".to_owned(),
+//             name: "id".to_owned(),
+//             val: "".to_owned(),
+//         };
 
-    fn text(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//         unimplemented!();
+//     }
 
-    fn string(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn integer<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn float(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn bigInteger<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn decimal(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn text<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn boolean(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn string<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn date(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn float<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dateTime(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn decimal<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn time(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn boolean<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn timestamp(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn date<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn timestamps(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn dateTime<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dropTimestamps(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn time<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn binary(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn timestamp<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn enumerable(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn timestamps<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn json(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn dropTimestamps<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn jsonb(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn binary<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn uuid(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn enumerable<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn comment(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn json<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn engine(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn jsonb<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn charset(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn uuid<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn collate(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn comment<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn inherits(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn engine<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn specificType(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn charset<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn index(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn collate<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dropIndex(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn inherits<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn unique(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn specificType<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn foreign(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn index<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dropForeign(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn dropIndex<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dropUnique(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn unique<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-    fn dropPrimary(&mut self) -> TableGenerated {
-        unimplemented!();
-    }
+//     fn foreign<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
+//     fn dropForeign<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
 
-}
+//     fn dropUnique<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
+
+//     fn dropPrimary<T>(&mut self) -> TableGenerated<T> {
+//         unimplemented!();
+//     }
+// }

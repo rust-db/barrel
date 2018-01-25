@@ -28,10 +28,9 @@ pub trait DatabaseGenerator {
     fn modify_table(name: &str) -> String;
 }
 
-/// A partially generated snippet of a table manipulation
-pub struct TableGenerated {
-    pub name: String,
-    // value: T
+pub enum DefValue {
+    Integer(i32),
+    Text(String),
 }
 
 
@@ -39,41 +38,53 @@ pub struct TableGenerated {
 /// table manipulation statements
 pub trait TableGenerator {
 
-    fn dropColumn(&mut self, name: &str) -> TableGenerated;
-    fn renameColumn(&mut self, old: &str, new: &str) -> TableGenerated;
-    fn increments(&mut self) -> TableGenerated;
-    fn integer(&mut self) -> TableGenerated;
-    fn bigInteger(&mut self) -> TableGenerated;
-    fn text(&mut self) -> TableGenerated;
-    fn string(&mut self) -> TableGenerated;
-    fn float(&mut self) -> TableGenerated;
-    fn decimal(&mut self) -> TableGenerated;
-    fn boolean(&mut self) -> TableGenerated;
-    fn date(&mut self) -> TableGenerated;
-    fn dateTime(&mut self) -> TableGenerated;
-    fn time(&mut self) -> TableGenerated;
-    fn timestamp(&mut self) -> TableGenerated;
-    fn timestamps(&mut self) -> TableGenerated;
-    fn dropTimestamps(&mut self) -> TableGenerated;
-    fn binary(&mut self) -> TableGenerated;
-    fn enumerable(&mut self) -> TableGenerated;
-    fn json(&mut self) -> TableGenerated;
-    fn jsonb(&mut self) -> TableGenerated;
-    fn uuid(&mut self) -> TableGenerated;
-    fn comment(&mut self) -> TableGenerated;
-    fn engine(&mut self) -> TableGenerated;
-    fn charset(&mut self) -> TableGenerated;
-    fn collate(&mut self) -> TableGenerated;
-    fn inherits(&mut self) -> TableGenerated;
-    fn specificType(&mut self) -> TableGenerated;
-    fn index(&mut self) -> TableGenerated;
-    fn dropIndex(&mut self) -> TableGenerated;
-    fn unique(&mut self) -> TableGenerated;
-    fn foreign(&mut self) -> TableGenerated;
-    fn dropForeign(&mut self) -> TableGenerated;
-    fn dropUnique(&mut self) -> TableGenerated;
-    fn dropPrimary(&mut self) -> TableGenerated;
+    /// Drop an existing column from the table
+    fn drop_column(&mut self, name: &str) -> String;
 
+    /// Rename an existing column
+    fn rename_column(&mut self, old: &str, new: &str) -> String;
+
+    /// Add an auto-incrementing primary key
+    fn increments(&mut self) -> String;
     
+    /// Add an integer column
+    fn integer(&mut self) -> String;
+    
+    /// Add a text column
+    fn text(&mut self) -> String;
+    
+    /// Add a string column
+    fn string(&mut self) -> String;
+    
+    /// Add a timestamp column
+    fn timestamp(&mut self) -> String;
+
+    // fn big_integer(&mut self) -> String;
+    // fn float(&mut self) -> String;
+    // fn decimal(&mut self) -> String;
+    // fn boolean(&mut self) -> String;
+    // fn date(&mut self) -> String;
+    // fn date_time(&mut self) -> String;
+    // fn time(&mut self) -> String;
+    // fn timestamps(&mut self) -> String;
+    // fn drop_timestamps(&mut self) -> String;
+    // fn binary(&mut self) -> String;
+    // fn enumerable(&mut self) -> String;
+    // fn json(&mut self) -> String;
+    // fn jsonb(&mut self) -> String;
+    // fn uuid(&mut self) -> String;
+    // fn comment(&mut self) -> String;
+    // fn engine(&mut self) -> String;
+    // fn charset(&mut self) -> String;
+    // fn collate(&mut self) -> String;
+    // fn inherits(&mut self) -> String;
+    // fn specific_type(&mut self) -> String;
+    // fn index(&mut self) -> String;
+    // fn drop_index(&mut self) -> String;
+    // fn unique(&mut self) -> String;
+    // fn foreign(&mut self) -> String;
+    // fn drop_foreign(&mut self) -> String;
+    // fn drop_unique(&mut self) -> String;
+    // fn drop_primary(&mut self) -> String;
 
 }
