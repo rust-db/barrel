@@ -30,7 +30,7 @@ pub trait DatabaseGenerator {
     fn rename_table(old: &str, new: &str) -> String;
 
     /// Modify a table in some other way
-    fn modify_table(name: &str) -> String;
+    fn alter_table(name: &str) -> String;
 }
 
 

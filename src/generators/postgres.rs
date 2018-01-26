@@ -37,7 +37,7 @@ impl DatabaseGenerator for PGSQL {
         return format!("alter table \"{}\" rename to \"{}\"", old, new);
     }
     
-    fn modify_table(name: &str) -> String {
+    fn alter_table(name: &str) -> String {
         return format!("alter table \"{}\"", name);
     }
 }

@@ -46,13 +46,6 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     {
         let t = Table::new(name);
         self.1.push((CreateTable, t, Box::new(cb)));
-
-
-        // let t = Table {
-        //     name: String::from(name),
-        //     items: Vec::new(),
-        // };
-        // self.1.push((CreateTable, t, Box::new(cb)));
     }
 
     /// Only create a new table if one with the same name doesn't exist
@@ -63,12 +56,13 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     where
         F: Fn(&mut Table<T>),
     {
-        // create table if not exists
+        let t = Table::new(name);
+        self.1.push((CreateTableIfNotExists, t, Box::new(cb)));
     }
 
     /// Rename a table into another
     pub fn rename_table(&mut self, old_name: &str, new_name: &str) {
-        // alter table "users" rename to "old_users"
+
     }
 
     /// Drop a table
@@ -86,8 +80,8 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     where
         F: Fn(&mut Table<T>),
     {
-        // alter table "users" add column "first_name" varchar(255), add column "last_name" varchar(255);
-        // alter table "users" drop column "name"
+        let t = Table::new(name);
+        self.1.push((AlterTable, t, Box::new(cb)));
     }
 
 
@@ -105,6 +99,7 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
 
             let cmd: String = match _type {
                 CreateTable => T::create_table(table_name),
+                AlterTable => T::alter_table(table_name),
                 _ => String::from("COMMAND NOT SUPPORTED 😭"),
             };
 
