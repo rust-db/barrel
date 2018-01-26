@@ -1,10 +1,8 @@
 //! Schema builder API
 //!
 
-use table::Table;
-
 use generators::{DatabaseGenerator, TableGenerator};
-use generators::postgres::PGSQL;
+use table::Table;
 
 /// Represents an action done on a schema
 #[derive(Clone)]
@@ -19,9 +17,9 @@ enum ChangeType {
 }
 use self::ChangeType::*;
 
-// 
-
 /// A schema migration generator
+/// 
+/// Takes a generic argument that then is used to select the database backend.
 pub struct Schema<T: DatabaseGenerator + TableGenerator + Default>(T, Vec<(ChangeType, Table<T>, Box<Fn(&mut Table<T>)>)>);
 impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
 

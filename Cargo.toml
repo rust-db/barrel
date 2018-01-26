@@ -1,10 +1,10 @@
 [package]
 name = "barrel"
-version = "0.0.1"
+version = "0.1.0-alpha.0"
 
-description = "A powerful schema builder API for Diesel ORM"
+description = "A powerful schema migration building API for Rust"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
-license = "MIT/X11"
+license = "MIT/X11 OR Apache-2.0"
 
 readme = "README.md"
 repository = "https://github.com/spacekookie/barrel"
@@ -13,4 +13,9 @@ documentation = "https://docs.rs/barrel"
 categories = [ "database", "web-programming", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
 
+[features]
+default = ["diesel","dotenv"]
+
 [dependencies]
+diesel = { version = "1.0.0", features = ["postgres"], optional = true }
+dotenv = { version = "^0.10", optional = true }

@@ -26,6 +26,9 @@
 //! 
 //! Pull-Requests with more/ better documentation welcome 💚
 
+#[cfg(feature = "default")]
+extern crate diesel;
+pub mod connectors;
 
 pub mod table;
 pub mod schema;

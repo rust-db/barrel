@@ -16,18 +16,17 @@ pub struct Table<T: DatabaseGenerator + TableGenerator + Default>(T, String, Vec
 
 impl<T: DatabaseGenerator + TableGenerator + Default> Table<T> {
     
+    /// Create a new table with a name and a generic backend
     pub fn new(name: &str) -> Self {
         return Table(Default::default(), String::from(name), Vec::new());
     }
 
+    /// Helper function which gets the table name
     pub fn get_name(&self) -> &String {
         return &self.1;
     }
 
-    pub fn get_items(&self) -> &Vec<String> {
-        return &self.2;
-    }
-
+    /// Concatinate the table contents
     pub fn exec(&self) -> String {
         let l = self.2.len();
         if l == 1 {
