@@ -52,37 +52,37 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Table<T> {
 
     /// Drop an existing column from the table
     pub fn drop_column(&mut self, name: &str) {
-
+        unimplemented!();
     }
 
     /// Rename an existing column
     pub fn rename_column(&mut self, old: &str, new: &str) {
-
+        unimplemented!();
     }
 
     /// Adds a primary key called id, that auto increments
     pub fn increments(&mut self) {
-        self.2.push("\"id\" serial primary key".to_owned());
+        self.2.push(T::increments());
     }
 
     /// Add an integer column
     pub fn integer(&mut self, name: &str) {
-
+        self.2.push(T::integer(name));
     }
     
     /// Add a text column
     pub fn text(&mut self, name: &str) {
-
+        self.2.push(T::text(name));
     }
     
     /// Add a string column
     pub fn string(&mut self, name: &str) {
-
+        self.2.push(T::string(name));
     }
     
     /// Add a timestamp column
     pub fn timestamp(&mut self, name: &str) {
-
+        self.2.push(T::timestamp(name));
     }
 
 }

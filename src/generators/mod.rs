@@ -39,25 +39,25 @@ pub trait DatabaseGenerator {
 pub trait TableGenerator {
 
     /// Drop an existing column from the table
-    fn drop_column(&mut self, name: &str) -> String;
+    fn drop_column(name: &str) -> String;
 
     /// Rename an existing column
-    fn rename_column(&mut self, old: &str, new: &str) -> String;
+    fn rename_column(old: &str, new: &str) -> String;
 
     /// Add an auto-incrementing primary key
-    fn increments(&mut self) -> String;
+    fn increments() -> String;
     
     /// Add an integer column
-    fn integer(&mut self, name: &str) -> String;
+    fn integer(name: &str) -> String;
     
     /// Add a text column
-    fn text(&mut self, name: &str) -> String;
+    fn text(name: &str) -> String;
     
     /// Add a string column
-    fn string(&mut self, name: &str) -> String;
+    fn string(name: &str) -> String;
     
     /// Add a timestamp column
-    fn timestamp(&mut self, name: &str) -> String;
+    fn timestamp(name: &str) -> String;
 }
 
 
@@ -68,7 +68,7 @@ pub trait TableGenerator {
 
 
 
-// fn big_integer(&mut self) -> String;
+// fn big_integer(-> String;
 // fn float(&mut self) -> String;
 // fn decimal(&mut self) -> String;
 // fn boolean(&mut self) -> String;

@@ -5,8 +5,6 @@ use barrel::generators::postgres::*;
 
 fn main() {
 
-    println!("Test!");
-
     let mut sql = Schema::<PGSQL>::new();
     sql.create_table("users", |t: &mut Table<PGSQL>| {
         t.increments();

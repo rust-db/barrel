@@ -7,6 +7,7 @@ use generators::{DatabaseGenerator, TableGenerator};
 use generators::postgres::PGSQL;
 
 /// Represents an action done on a schema
+#[derive(Clone)]
 enum ChangeType {
     CreateTable,
     CreateTableIfNotExists,
@@ -43,6 +44,10 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     where
         F: Fn(&mut Table<T>),
     {
+        let t = Table::new(name);
+        self.1.push((CreateTable, t, Box::new(cb)));
+
+
         // let t = Table {
         //     name: String::from(name),
         //     items: Vec::new(),
@@ -96,15 +101,17 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
             let (mut table, hook) = (&mut pair.1, &pair.2);
             hook(&mut table);
             let table_name: &String = table.get_name();
+            let _type = pair.0.clone();
 
-            s.push_str(&format!("create table {}", table_name));
+            let cmd: String = match _type {
+                CreateTable => T::create_table(table_name),
+                _ => String::from("COMMAND NOT SUPPORTED 😭"),
+            };
 
+            /* Add the command, some space, then the table contents */
+            s.push_str(&cmd);
             s.push(' ');
-            s.push('(');
-            for cmd in table.get_items() {
-                s.push_str(cmd);
-            }
-            s.push(')');
+            s.push_str(&table.exec());
         }
 
         return s;
