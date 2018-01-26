@@ -14,7 +14,6 @@
 //!     t.integer("plushy_sharks_owned");
 //! });
 //! println!("{}", sql.exec());
-//! // create table "users" ("id" serial primary key, "username" varchar(255), "plushy_sharks_owned" int)
 //! ```
 //! 
 //! The above code, for example, will create a new table in the "public" schema, called "users"
@@ -23,6 +22,16 @@
 //! 
 //! Barrel is designed to give you ease of use as well as power over how you write your 
 //! migrations and SQL schemas.
+//! 
+//! ## Connect to Database
+//! 
+//! Barrel uses the Diesel connections and currently only supports postgresql databases. To
+//! create a connection, use the `Connector` module
+//! 
+//! ```notest
+//! let mut connection = Connector::<DieselPGSQL>::new("postgres://<username>:<password>@<server>/<database>");
+//! connection.batch_exec(&migration);
+//! ```
 //! 
 //! Pull-Requests with more/ better documentation welcome 💚
 
