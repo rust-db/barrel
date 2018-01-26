@@ -4,7 +4,7 @@ version = "0.0.1"
 
 description = "A powerful schema builder API for Diesel ORM"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
-license = "MIT/X11 OR Apache2"
+license = "MIT/X11"
 
 readme = "README.md"
 repository = "https://github.com/spacekookie/barrel"
