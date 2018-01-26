@@ -18,14 +18,27 @@ fn main() {
     let mut sql = Schema::<PGSQL>::new();
     sql.create_table("users", |t: &mut Table<PGSQL>| {
         t.increments();
-        t.string("username");
+        t.string("name");
         t.integer("plushy_sharks_owned");
     });
 
     println!("{}", sql.exec());
-    // create table "users" ("id" serial primary key, "username" varchar(255), "plushy_sharks_owned" int)
+    // create table "users" ("id" serial primary key, "name" varchar(255), "plushy_sharks_owned" int)
 }
 
+```
+
+### Connecting with a Database
+
+Right now only Diesel (as a backend) and PGSQL (as a database) are supported. But generally, this is what it would look like to use barrel to talk directly to a database.
+
+```rust
+
+    // ...
+    let migration = sql.exec();
+
+    let mut connection = Connector::<DieselPGSQL>::new("postgres://<username>:<password>@<server>/<database>");
+    connection.batch_exec(&migration);
 ```
 
 If you have feedback regarding the API or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚

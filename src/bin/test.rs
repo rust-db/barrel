@@ -7,8 +7,6 @@ use barrel::connectors::diesel::*;
 
 fn main() {
 
-    /* ************************************************************************************ */
-
     let mut sql = Schema::<PGSQL>::new();
     sql.create_table("other_users", |t: &mut Table<PGSQL>| {
         t.increments();
