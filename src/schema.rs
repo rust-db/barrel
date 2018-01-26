@@ -29,7 +29,7 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     /// 
     /// Example
     /// 
-    /// ```
+    /// ```notest
     /// Schema::<PGSQL>::new();
     /// ```
     pub fn new() -> Self {

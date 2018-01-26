@@ -1,10 +1,16 @@
 [package]
 name = "barrel"
+version = "0.0.1"
+
 description = "A powerful schema builder API for Diesel ORM"
-version = "0.1.0"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
 license = "MIT/X11 OR Apache2"
 
+readme = "README.md"
+repository = "https://github.com/spacekookie/barrel"
+documentation = "https://docs.rs/barrel"
+
+categories = [ "database", "web-programming", "development-tools"]
+keywords = ["sql", "database", "schema", "migration"]
+
 [dependencies]
-diesel = "1.0.0"
-dotenv = "0.9.0"

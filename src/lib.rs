@@ -5,9 +5,16 @@
 //! 
 //! ```
 //! use barrel::{Schema, Table};
-//! let s = Schema::new().create_table("users", |t: &mut Table| {
+//! use barrel::generators::postgres::*; // Pick the backend of your choice here
+//!
+//! let mut sql = Schema::<PGSQL>::new();
+//! sql.create_table("users", |t: &mut Table<PGSQL>| {
 //!     t.increments();
+//!     t.string("username");
+//!     t.integer("plushy_sharks_owned");
 //! });
+//! println!("{}", sql.exec());
+//! // create table "users" ("id" serial primary key, "username" varchar(255), "plushy_sharks_owned" int)
 //! ```
 //! 
 //! The above code, for example, will create a new table in the "public" schema, called "users"
