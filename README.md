@@ -6,7 +6,7 @@ A schema building API, using Diesel as a backend and integrated query builder. W
 
 ## Example
 
-The API was recently completely changed to potentially easily allow different database backends to be used. The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, most of the functions haven't been properly hooked up yet 😅
+The API was recently completely changed to potentially easily allow different database backends to be used. The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, a lot of the functions haven't been properly hooked up yet 😅
 
 ```rust
 extern crate barrel;
@@ -23,6 +23,7 @@ fn main() {
     });
 
     println!("{}", sql.exec());
+    // create table "users" ("id" serial primary key, "username" varchar(255), "plushy_sharks_owned" int)
 }
 
 ```
