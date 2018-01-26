@@ -12,12 +12,10 @@ fn main() {
         t.increments();
         t.string("username");
         t.integer("plushy_sharks_owned");
-    });
-
 
         t.timestamp("joined");
         t.timestamp("birthday");
+    });
 
     println!("{}", sql.exec());
-
 }

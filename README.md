@@ -6,18 +6,25 @@ A schema building API, using Diesel as a backend and integrated query builder. W
 
 ## Example
 
+The API was recently completely changed to potentially easily allow different database backends to be used. The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, most of the functions haven't been properly hooked up yet 😅
+
 ```rust
 extern crate barrel;
-use barrel::*;
+
+use barrel::{Schema, Table};
+use barrel::generators::postgres::*;
 
 fn main() {
-    let mut s = Schema::new().with_schema("public").create_table("users", |t: &mut Table| {
+    let mut sql = Schema::<PGSQL>::new();
+    sql.create_table("users", |t: &mut Table<PGSQL>| {
         t.increments();
+        t.string("username");
+        t.integer("plushy_sharks_owned");
     });
 
-    println!("{}", s.exec());
-    // Outputs: create table "public"."users" ("id" serial primary key)
+    println!("{}", sql.exec());
 }
+
 ```
 
-The API is very early in development and most things that need to work, don't yet 😝. 
+If you have feedback regarding the API or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
