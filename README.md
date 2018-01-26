@@ -1,9 +1,6 @@
 ![Barrel Logo](assets/logo_wide.svg)
 
-[![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)  
-[![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master)
-[![Crates.io badge](https://img.shields.io/crates/v/barrel.svg)]((https://crates.io/crates/barrel)
-[![Rust docs](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
+[![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)   [![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master) [![Crates.io badge](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel) [![Rust docs](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 
 A schema migration building API, using Diesel as a backend and integrated query builder. Write complicated SQL schema migrations in Rust!
 
