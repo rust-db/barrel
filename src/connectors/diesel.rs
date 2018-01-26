@@ -21,6 +21,6 @@ impl DbConnection for DieselPGSQL {
     }
 
     fn batch_exec(&mut self, sql: &str) {
-        self.conn.batch_execute(sql);
+        self.conn.batch_execute(sql).unwrap();
     }
 }

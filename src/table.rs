@@ -50,12 +50,12 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Table<T> {
     }
 
     /// Drop an existing column from the table
-    pub fn drop_column(&mut self, name: &str) {
+    pub fn drop_column(&mut self, _: &str) {
         unimplemented!();
     }
 
     /// Rename an existing column
-    pub fn rename_column(&mut self, old: &str, new: &str) {
+    pub fn rename_column(&mut self, _: &str, _: &str) {
         unimplemented!();
     }
 

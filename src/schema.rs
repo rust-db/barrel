@@ -6,6 +6,7 @@ use table::Table;
 
 /// Represents an action done on a schema
 #[derive(Clone)]
+#[allow(unused)]
 enum ChangeType {
     CreateTable,
     CreateTableIfNotExists,
@@ -58,19 +59,16 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
         self.1.push((CreateTableIfNotExists, t, Box::new(cb)));
     }
 
-    /// Rename a table into another
-    pub fn rename_table(&mut self, old_name: &str, new_name: &str) {
-
+    pub fn rename_table(&mut self, _: &str, _: &str) {
+        unimplemented!();
     }
 
-    /// Drop a table
-    pub fn drop_table(&mut self, name: &str) {
-        // drop table "users"
+    pub fn drop_table(&mut self, _: &str) {
+        unimplemented!();
     }
 
-    /// Only drop a table if it exists
-    pub fn drop_table_if_exists(&mut self, name: &str) {
-        // drop table if exists "users"
+    pub fn drop_table_if_exists(&mut self, _: &str) {
+        unimplemented!();
     }
 
     /// use this function to manupulate a table

@@ -1,16 +1,22 @@
 //!
 
-use schema::Schema;
+#[test]
+fn create_table_pgsql() {
 
-// fn test_stuff() {
+    use schema::Schema;
+    use table::Table;
+    use generators::postgres::*;
 
-//     let mut schema = Schema::new();
-//     schema.create_table("users", |_| {});
-//     schema.create_table_if_not_exists("users", |_| {});
-//     schema.rename_table("users", "zombies");
-//     schema.drop_table("users");
-//     schema.drop_table_if_exists("users");
-//     schema.table("users", |_| {});
+    let mut sql = Schema::<PGSQL>::new();
+    sql.create_table("users", |t: &mut Table<PGSQL>| {
+        t.increments();
+        t.string("username");
+        t.integer("plushy_sharks_owned");
 
-//     println!("{}", schema.exec());
-// }
+        t.timestamp("joined");
+        t.timestamp("birthday");
+    });
+
+    let migration = sql.exec();
+    assert_eq!("create table \"users\" (\"id\" serial primary key, \"username\" varchar(255), \"plushy_sharks_owned\" int, \"joined\" timestamptz, \"birthday\" timestamptz)", migration);
+}
