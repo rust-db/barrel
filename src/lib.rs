@@ -5,7 +5,7 @@
 //! 
 //! ```
 //! use barrel::{Schema, Table};
-//! let s = Schema::new().with_schema("public").create_table("users", |t: &mut Table| {
+//! let s = Schema::new().create_table("users", |t: &mut Table| {
 //!     t.increments();
 //! });
 //! ```
@@ -15,69 +15,18 @@
 //! auto-incrementing primary intex. By default the name "id" is assumed.
 //! 
 //! Barrel is designed to give you ease of use as well as power over how you write your 
-//! migrations and SQL schemas. See the `examples` folder for more details 🌈
+//! migrations and SQL schemas.
+//! 
+//! Pull-Requests with more/ better documentation welcome 💚
+
 
 pub mod table;
-pub use table::Table;
-
 pub mod schema;
+pub mod generators;
+
+/* Conveniently expose core structures */
+pub use table::Table;
 pub use schema::Schema;
 
-pub mod traits;
-pub mod backends;
-
+/* Test module */
 mod test;
-
-//
-// – with
-// – withSchema
-// – createTable
-// – createTableIfNotExists
-// – renameTable
-// – dropTable
-// – hasColumn
-// – hasTable
-// – dropTableIfExists
-// – table
-// – raw
-//
-//
-//
-//
-//
-//
-// – dropColumn
-// – dropColumns
-// – renameColumn
-// – increments
-// – integer
-// – bigInteger
-// – text
-// – string
-// – float
-// – decimal
-// – boolean
-// – date
-// – dateTime
-// – time
-// – timestamp
-// – timestamps
-// – dropTimestamps
-// – binary
-// – enum / enu
-// – json
-// – jsonb
-// – uuid
-// – comment
-// – engine
-// – charset
-// – collate
-// – inherits
-// – specificType
-// – index
-// – dropIndex
-// – unique
-// – foreign
-// – dropForeign
-// – dropUnique
-// – dropPrimary
