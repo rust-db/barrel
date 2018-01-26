@@ -1,7 +1,7 @@
 //! Database connection backends
 
 #[cfg(feature = "default")]
-mod diesel;
+pub mod diesel;
 
 /// An error type that describes what went wrong when connection to a database
 /// 

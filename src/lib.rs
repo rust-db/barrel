@@ -37,6 +37,7 @@ pub mod generators;
 /* Conveniently expose core structures */
 pub use table::Table;
 pub use schema::Schema;
+pub use connectors::Connector;
 
 /* Test module */
 mod test;
