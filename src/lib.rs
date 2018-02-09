@@ -5,9 +5,15 @@
 //! 
 //! ```
 //! use barrel::{Schema, Table};
-//! let s = Schema::new().create_table("users", |t: &mut Table| {
+//! use barrel::generators::postgres::*; // Pick the backend of your choice here
+//!
+//! let mut sql = Schema::<PGSQL>::new();
+//! sql.create_table("users", |t: &mut Table<PGSQL>| {
 //!     t.increments();
+//!     t.string("username");
+//!     t.integer("plushy_sharks_owned");
 //! });
+//! println!("{}", sql.exec());
 //! ```
 //! 
 //! The above code, for example, will create a new table in the "public" schema, called "users"
@@ -17,8 +23,21 @@
 //! Barrel is designed to give you ease of use as well as power over how you write your 
 //! migrations and SQL schemas.
 //! 
+//! ## Connect to Database
+//! 
+//! Barrel uses the Diesel connections and currently only supports postgresql databases. To
+//! create a connection, use the `Connector` module
+//! 
+//! ```notest
+//! let mut connection = Connector::<DieselPGSQL>::new("postgres://<username>:<password>@<server>/<database>");
+//! connection.batch_exec(&migration);
+//! ```
+//! 
 //! Pull-Requests with more/ better documentation welcome 💚
 
+#[cfg(feature = "default")]
+extern crate diesel;
+pub mod connectors;
 
 pub mod table;
 pub mod schema;
@@ -27,6 +46,7 @@ pub mod generators;
 /* Conveniently expose core structures */
 pub use table::Table;
 pub use schema::Schema;
+pub use connectors::Connector;
 
 /* Test module */
 mod test;

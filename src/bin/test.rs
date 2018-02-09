@@ -1,7 +1,9 @@
 extern crate barrel;
+extern crate diesel;
 
-use barrel::{Schema, Table};
+use barrel::{Schema, Table, Connector};
 use barrel::generators::postgres::*;
+use barrel::connectors::diesel::*;
 
 fn main() {
 
@@ -15,5 +17,9 @@ fn main() {
         t.timestamp("birthday");
     });
 
-    println!("{}", sql.exec());
+    let migration = sql.exec();
+    println!("{}", migration);
+
+    let mut connection = Connector::<DieselPGSQL>::new("postgres://rust:1234@localhost/barrel");
+    connection.batch_exec(&migration);
 }

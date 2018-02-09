@@ -1,13 +1,12 @@
 //! Schema builder API
 //!
 
-use table::Table;
-
 use generators::{DatabaseGenerator, TableGenerator};
 use generators::postgres::Pg;
 
 /// Represents an action done on a schema
 #[derive(Clone)]
+#[allow(unused)]
 enum ChangeType {
     CreateTable,
     CreateTableIfNotExists,
@@ -19,9 +18,9 @@ enum ChangeType {
 }
 use self::ChangeType::*;
 
-// 
-
 /// A schema migration generator
+/// 
+/// Takes a generic argument that then is used to select the database backend.
 pub struct Schema<T: DatabaseGenerator + TableGenerator + Default>(T, Vec<(ChangeType, Table<T>, Box<Fn(&mut Table<T>)>)>);
 impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
 
@@ -29,7 +28,7 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
     /// 
     /// Example
     /// 
-    /// ```
+    /// ```notest
     /// Schema::<PGSQL>::new();
     /// ```
     pub fn new() -> Self {
@@ -60,19 +59,22 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
         self.1.push((CreateTableIfNotExists, t, Box::new(cb)));
     }
 
+<<<<<<< HEAD
     /// Rename a table into another
     pub fn rename_table(&mut self, old_name: &str, new_name: &str) {
         
+=======
+    pub fn rename_table(&mut self, _: &str, _: &str) {
+        unimplemented!();
+>>>>>>> f02a7d2a20676701964627f749412665dfbaa780
     }
 
-    /// Drop a table
-    pub fn drop_table(&mut self, name: &str) {
-        // drop table "users"
+    pub fn drop_table(&mut self, _: &str) {
+        unimplemented!();
     }
 
-    /// Only drop a table if it exists
-    pub fn drop_table_if_exists(&mut self, name: &str) {
-        // drop table if exists "users"
+    pub fn drop_table_if_exists(&mut self, _: &str) {
+        unimplemented!();
     }
 
     /// use this function to manupulate a table
