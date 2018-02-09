@@ -3,19 +3,19 @@
 
 use generators::{DatabaseGenerator, TableGenerator};
 
-/// An SQL generator for PGSQL flavoured SQL
+/// An SQL generator for Pg flavoured SQL
 #[derive(Default)]
-pub struct PGSQL {}
+pub struct Pg {}
 
-impl PGSQL {
+impl Pg {
     pub fn new() -> Self {
-        return PGSQL {};
+        return Pg {};
     }
 }
 
 
 /// This block implements 
-impl DatabaseGenerator for PGSQL {
+impl DatabaseGenerator for Pg {
     
     fn create_table(name: &str) -> String {
         return format!("create table \"{}\"", name);
@@ -43,7 +43,7 @@ impl DatabaseGenerator for PGSQL {
 }
 
 
-impl TableGenerator for PGSQL {
+impl TableGenerator for Pg {
 
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String {

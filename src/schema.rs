@@ -4,7 +4,7 @@
 use table::Table;
 
 use generators::{DatabaseGenerator, TableGenerator};
-use generators::postgres::PGSQL;
+use generators::postgres::Pg;
 
 /// Represents an action done on a schema
 #[derive(Clone)]
@@ -62,7 +62,7 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
 
     /// Rename a table into another
     pub fn rename_table(&mut self, old_name: &str, new_name: &str) {
-
+        
     }
 
     /// Drop a table
