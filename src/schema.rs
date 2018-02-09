@@ -4,6 +4,12 @@
 use generators::{DatabaseGenerator, TableGenerator};
 use generators::postgres::Pg;
 
+
+enum TableChange {
+    
+}
+
+
 /// Represents an action done on a schema
 #[derive(Clone)]
 #[allow(unused)]
@@ -59,14 +65,8 @@ impl<T: DatabaseGenerator + TableGenerator + Default> Schema<T> {
         self.1.push((CreateTableIfNotExists, t, Box::new(cb)));
     }
 
-<<<<<<< HEAD
-    /// Rename a table into another
-    pub fn rename_table(&mut self, old_name: &str, new_name: &str) {
-        
-=======
     pub fn rename_table(&mut self, _: &str, _: &str) {
         unimplemented!();
->>>>>>> f02a7d2a20676701964627f749412665dfbaa780
     }
 
     pub fn drop_table(&mut self, _: &str) {
