@@ -1,56 +1,6 @@
 //! Database agnostic schema builder module
 //! 
-//! 
 
-/// An enum set 
-pub enum Change {
-    
-    /// Add a column of a name and type
-    AddColumn(String, ColumnType),
-
-    /// Change an existing column
-    ChangeColumn(String, ColumnType, Fn(&mut Column)),
-
-    /// Simply rename a column
-    RenameColumn(String, String),
-
-    /// Remove a column
-    RemoveColumn(String),
-
-
-    /// Create a new table
-    CreateTable(String, Table, Fn(&mut Table)),
-
-    /// Change fields on an existing table
-    ChangeTable(String, Table, Fn(&mut Table))
-    
-    /// Rename a table
-    RenameTable(String, String),
-
-    /// Drop an existing table
-    DropTable(String),
-}
-
-
-/// Represents a schema migration on a database
-struct Schema {
-    changes: Vec<Change>
-}
-
-struct Table {
-
-}
-
-struct Column {
-
-}
-
-enum ColumnType {
-    Text,
-    Integer,
-    Float,
-    Boolean
-}
 
 
 // /// An SQL type for a column
