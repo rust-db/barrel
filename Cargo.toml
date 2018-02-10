@@ -1,6 +1,6 @@
 [package]
 name = "barrel"
-version = "0.1.0"
+version = "0.2.0-alpha0"
 
 description = "A powerful schema migration building API for Rust"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
@@ -13,8 +13,10 @@ documentation = "https://docs.rs/barrel"
 categories = [ "database", "web-programming", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
 
-[features]
-default = ["diesel"]
+# [features]
+# default = ["diesel"]
 
 [dependencies]
-diesel = { version = "1.0.0", features = ["postgres"], optional = true }
+barrel-derive = { path = "barrel-derive" }
+
+# diesel = { version = "1.0.0", features = ["postgres"], optional = true }
