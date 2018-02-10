@@ -69,12 +69,55 @@ enum DefType {
 //     }
 // }
 
+#[derive(Debug, PartialEq)]
+enum Meh {
+    Text(Option<String>),
+    Number(Option<i64>),
+}
+
+struct Container {
+    t: Option<Meh>,
+    name: String,
+}
+
+impl From<&'static str> for Meh {
+    fn from(data: &'static str) -> Self {
+        return Meh::Text(Some(data.into()));
+    }
+}
+
+impl From<i64> for Meh {
+    fn from(data: i64) -> Self {
+        return Meh::Number(Some(data));
+    }
+}
+
+
+impl Container {
+    fn new<T>(name: &str, t: &Fn(Option<T>) -> Meh) -> Container {
+        return Container {
+            t: Some(t(None)),
+            name: String::from(name),
+        };
+    }
+
+    pub fn default<T: Into<Meh>>(&mut self, data: T) {
+        self.t = Some(data.into());
+    }
+
+}
+
 
 // use barrel::schema::Type;
 fn main() {
+    use Meh::*;
 
-    let mut meh = Meh::new();
-    meh.set("Some data");
+    // Should not compile
+    let _meow = Container::new("some_name", &Text).default(66);
+    println!("{:?}", _meow);
+
+    // let mut meh = Meh::new();
+    // meh.set("Some data");
 
     // let meh = make_meh("default");
 /*

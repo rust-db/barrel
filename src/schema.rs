@@ -32,6 +32,8 @@ fn test() {
 
 }
 
+
+
 struct Placeholder;
 
 struct Metadata<T> {
@@ -44,6 +46,107 @@ struct Metadata<T> {
     // encoding: Maybe
 }
 
+struct Column<T> {
+    name: String,
+    nullable: bool,
+    default: Option<T>,
+}
+
+impl<T> Column<T> {
+    pub fn new(name: &str) -> Column<T> {
+        return Column {
+            name: String::from(name),
+            nullable: false,
+            default: None,
+        };
+    }
+
+    pub fn default(&mut self, data: T) {
+        self.default = Some(data);
+    }
+}
+
+#[derive(PartialEq)]
+enum ColType {
+    Text, Number
+}
+
+#[derive(PartialEq)]
+enum ColDefault {
+    Text(String), Number(i64)
+}
+
+struct Col {
+    name: String,
+    nullable: bool,
+    t: ColType,
+    default: Option<ColDefault>
+}
+
+
+impl From<&'static str> for ColDefault {
+    fn from(error: &'static str) -> Self {
+        return ColDefault::Text(error.into());
+    }
+}
+
+impl From<i64> for ColDefault {
+    fn from(error: i64) -> Self {
+        return ColDefault::Number(error);
+    }
+}
+
+
+impl Col {
+
+    pub fn new<S: Into<String>>(name: S, t: ColType) -> Col {
+        return Col {
+            name: name.into(),
+            nullable: false,
+            t:t ,
+            default: None,
+        };
+    }
+
+    pub fn can_be_null(&mut self) {
+        self.nullable = true;
+    }
+
+    pub fn default<T: Into<ColDefault>>(&mut self, data: T) {
+        let def: ColDefault = data.into();
+        self.default = Some(def);
+    }
+}
+
+struct Tab {
+    name: String,
+    cols: Vec<Col>
+}
+
+impl Tab {
+    pub fn new<S: Into<String>>(name: S) -> Tab {
+        return Tab { name: name.into(), cols: Vec::new() };
+    }
+
+    pub fn add_column(&mut self, name: &str, t: ColType) -> &mut Col {
+        self.cols.push(Col::new(name, t));
+        let len = self.cols.len();
+        return &mut self.cols[len - 1];
+    }
+}
+
+
+#[allow(unused)]
+fn testt() {
+    use self::ColType::*;
+
+    let mut t = Tab::new("users");
+    t.add_column("name", Text);
+    t.add_column("gender", Text).default("octopus");
+    t.add_column("age", Number).default(666);
+    t.add_column("plushy_sharks_owned", Number).can_be_null();
+
+}
 
 
 enum Change {
