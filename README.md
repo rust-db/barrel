@@ -1,6 +1,6 @@
 ![](assets/logo_wide.svg)
 
-[![Build Status](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)   [![Coverage Status](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master) [![Crates.io badge](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel) [![Rust docs](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
+[![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel) [![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master) [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel) [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 
 A schema migration building API, using Diesel as a backend and integrated query builder. Write complicated SQL schema migrations in Rust!
 
@@ -15,6 +15,8 @@ use barrel::{Schema, Table};
 use barrel::generators::postgres::*;
 
 fn main() {
+    // Don't expect the API to still look like this on v0.2.0 :)
+
     let mut sql = Schema::<PGSQL>::new();
     sql.create_table("users", |t: &mut Table<PGSQL>| {
         t.increments();

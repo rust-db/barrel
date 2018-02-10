@@ -35,9 +35,7 @@
 //! 
 //! Pull-Requests with more/ better documentation welcome 💚
 
-#[macro_use]
-extern crate barrel_derive;
-pub use barrel_derive::*;
+#[macro_use] extern crate barrel_derive;
 
 // #[cfg(feature = "default")]
 // extern crate diesel;
@@ -55,43 +53,21 @@ pub use barrel_derive::*;
 // /* Test module */
 // mod test;
 
+pub enum MagicType {
 
-pub trait HelloWorld {
-    fn hello_world();
+    #[derive(TextType)]
+    Text,
+
 }
-
-#[derive(HelloWorld)]
-pub struct FrenchToast;
-
-#[derive(HelloWorld)]
-pub struct Waffles;
-
 
 pub fn test() {
-    FrenchToast::hello_world();
-    Waffles::hello_world();
+
+    let magic = MagicType::Text;
+
+    // let foo = FuckThis::generate(Type::Text, String::from("foobar"));
+
 }
 
-
-/// Represents the type of a column in SQL
-pub enum Type {
-    Text,
-    Integer,
-
-    // Float,
-    // Boolean,
-    // Date,
-    // Time,
-    // Timestamp,
-}
-
-
-// #[derive(Typed)]
-pub enum TypeDefault {
-    Text(Type, String),
-    Integer(Type, i64),
-    Float(Type, f64),
-}
 
 // // impl From<(Type, String)> for TypeDefault {
 //     fn from(data: (Type, String)) -> Self {
