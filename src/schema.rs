@@ -42,8 +42,9 @@ struct Metadata<T> {
     not_null: bool,
     default: Option<T>,
     // encoding: Maybe
-
 }
+
+
 
 enum Change {
     
