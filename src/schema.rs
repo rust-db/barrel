@@ -3,12 +3,89 @@
 
 use generators::{DatabaseGenerator, TableGenerator};
 use generators::postgres::Pg;
+use Table;
 
 
-enum TableChange {
-    
+/// An SQL type for a column
+pub enum Type {
+    Text,
+    Integer,
+    Float,
+    Boolean,
+    Date,
+    Time,
+    Timestamp,
 }
 
+/*
+Foreign Key (Customer_SID) REFERENCES CUSTOMER(SID));
+*/
+
+pub fn add_column(name: &str, t: Type) {
+
+}
+
+fn test() {
+
+    add_column("name", Type::Text);
+    // add_column("posts", Type::Foreign).references("blub");
+
+}
+
+struct Placeholder;
+
+struct Metadata<T> {
+    name: String,
+    unique: bool,
+    references: (String, Vec<String>),
+    primary_key: bool,
+    not_null: bool,
+    default: Option<T>,
+    // encoding: Maybe
+
+}
+
+enum Change {
+    
+    /* Table changes */
+    AddColumn(String, Type),
+    ChangeColumn(String, Type, ()),
+    RenameColumn(String, String),
+    RemoveColumn(String),
+
+    /* Database changes */
+    CreateTable(String, Placeholder),
+    RenameTable(String, String),
+    DropTable(String),
+}
+
+/*
+
+add_column
+add_foreign_key
+add_index
+add_reference
+add_timestamps
+change_column
+change_column_default (must supply a :from and :to option)
+change_column_null
+create_join_table
+create_table
+disable_extension
+drop_join_table
+drop_table (must supply a block)
+enable_extension
+remove_column (must supply a type)
+remove_columns (must specify at least one column name or more)
+remove_foreign_key (must supply a second table)
+remove_index
+remove_reference
+remove_timestamps
+rename_column
+rename_index
+rename_table
+
+*/
 
 /// Represents an action done on a schema
 #[derive(Clone)]
