@@ -57,9 +57,7 @@ further defined and clarified by project maintainers.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported by contacting a project maintainer at:
 
-* Sean Griffin <sean@seantheprogrammer.com>
-* Pascal Hertleif <killercup@gmail.com>
-* Bastien Orivel <Eijebong@bananium.fr>
+* Katharina Fey <kookie@spacekookie.de>
 
 All complaints will be reviewed and investigated and will result in a response
 that is deemed necessary and appropriate to the circumstances. The project team
