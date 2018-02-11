@@ -6,7 +6,7 @@
 //! ```
 //! extern crate barrel;
 //! use barrel::*;
-//! 
+//!
 //! fn main() {
 //!     let mut m = Migration::new();
 //!     m.create_table("users", |t| {
@@ -14,20 +14,19 @@
 //!         t.add_column("age", Type::Integer);
 //!         t.add_column("owns_plushy_sharks", Type::Boolean);
 //!     });
-//! 
+//!
 //!     // I like plushy sharks
 //!     m.rename_table("sharks", "plushies");
 //! }
-//! 
+//!
 //! ```
 //!
 //! The above code, for example, will create a new table called "users". All tables implicitly
 //! add an auto incrementing primary key called "id". This behaviour can't currently be turned
 //! off. The callback is executed when calling `Migration::exec()`
-//! 
+//!
 //! Barrel is designed to give you ease of use as well as power over how you write your
 //! migrations and SQL schemas.
-
 
 /// An enum set that represents a single change on a table
 pub enum TableChange {
@@ -138,11 +137,20 @@ impl Table {
         };
     }
 
-    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) {
-        self.changes.push(TableChange::AddColumn(name.into(), Column {
-            nullable: false,
-            _type: _type
-        }));
+    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Column {
+        self.changes.push(TableChange::AddColumn(
+            name.into(),
+            Column {
+                nullable: false,
+                _type: _type,
+                def: None,
+            },
+        ));
+
+        return match self.changes.last_mut().unwrap() {
+            &mut TableChange::AddColumn(_, ref mut c) => c,
+            _ => unreachable!(),
+        };
     }
 
     pub fn remove_column<S: Into<String>>(&mut self, name: S) {
@@ -150,14 +158,19 @@ impl Table {
     }
 
     pub fn rename_column<S: Into<String>>(&mut self, old: S, new: S) {
-        self.changes.push(TableChange::RenameColumn(old.into(), new.into()));
+        self.changes
+            .push(TableChange::RenameColumn(old.into(), new.into()));
     }
 }
-
 
 pub struct Column {
     nullable: bool,
     _type: Type,
+    def: Option<ColumnDefault>,
+}
+
+impl Column {
+    pub fn default<S: Into<String>>(&mut self, data: S) {}
 }
 
 pub enum Type {
@@ -165,4 +178,12 @@ pub enum Type {
     Integer,
     Float,
     Boolean,
+}
+
+enum ColumnDefault {
+    Text(String),
+    Integer(i64),
+    Float(f64), // Or just use 32-bit floats?
+    Boolean(bool),
+    // TODO: Figure out storage for other data types
 }
