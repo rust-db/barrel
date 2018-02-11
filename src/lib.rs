@@ -1,39 +1,33 @@
 //! Powerful schema builder API in Rust, using Diesel in the backend.
 //!
-//! Barrel has two primary models, the schema and the table. A schema is built
-//! with a variety of hooks that can be executed on tables, using static callbacks.
+//! Barrel has two primary models, the `Migration` and the `Table`. A schema migration
+//! is built with a variety of hooks that can be executed on tables, using static callbacks.
 //!
 //! ```
-//! use barrel::{Schema, Table};
-//! use barrel::generators::postgres::*; // Pick the backend of your choice here
-//!
-//! let mut sql = Schema::<PGSQL>::new();
-//! sql.create_table("users", |t: &mut Table<PGSQL>| {
-//!     t.increments();
-//!     t.string("username");
-//!     t.integer("plushy_sharks_owned");
-//! });
-//! println!("{}", sql.exec());
+//! extern crate barrel;
+//! use barrel::*;
+//! 
+//! fn main() {
+//!     let mut m = Migration::new();
+//!     m.create_table("users", |t| {
+//!         t.add_column("name", Type::Text);
+//!         t.add_column("age", Type::Integer);
+//!         t.add_column("owns_plushy_sharks", Type::Boolean);
+//!     });
+//! 
+//!     // I like plushy sharks
+//!     m.rename_table("sharks", "plushies");
+//! }
+//! 
 //! ```
 //!
-//! The above code, for example, will create a new table in the "public" schema, called "users"
-//! and then execute the table hook on it when invoking `schema.exec()`. The hook creates an
-//! auto-incrementing primary intex. By default the name "id" is assumed.
-//!
+//! The above code, for example, will create a new table called "users". All tables implicitly
+//! add an auto incrementing primary key called "id". This behaviour can't currently be turned
+//! off. The callback is executed when calling `Migration::exec()`
+//! 
 //! Barrel is designed to give you ease of use as well as power over how you write your
 //! migrations and SQL schemas.
-//!
-//! ## Connect to Database
-//!
-//! Barrel uses the Diesel connections and currently only supports postgresql databases. To
-//! create a connection, use the `Connector` module
-//!
-//! ```notest
-//! let mut connection = Connector::<DieselPGSQL>::new("postgres://<username>:<password>@<server>/<database>");
-//! connection.batch_exec(&migration);
-//! ```
-//!
-//! Pull-Requests with more/ better documentation welcome 💚
+
 
 /// An enum set that represents a single change on a table
 pub enum TableChange {
@@ -144,7 +138,7 @@ impl Table {
         };
     }
 
-    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: ColumnType) {
+    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) {
         self.changes.push(TableChange::AddColumn(name.into(), Column {
             nullable: false,
             _type: _type
@@ -163,10 +157,10 @@ impl Table {
 
 pub struct Column {
     nullable: bool,
-    _type: ColumnType,
+    _type: Type,
 }
 
-pub enum ColumnType {
+pub enum Type {
     Text,
     Integer,
     Float,
