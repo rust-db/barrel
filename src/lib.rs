@@ -170,9 +170,41 @@ pub struct Column {
 }
 
 impl Column {
-    pub fn default<S: Into<String>>(&mut self, data: S) {}
+    pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) {
+        let def = data.into();
+        self.compare_types(&def);
+        self.def = Some(def);
+    }
+
+    /// Check (at runtime) that the provided data matches the column type
+    /// 
+    /// This is not ideal. Not only is the code not very nice but it means that
+    /// you can compile your migration tool without knowing if the migration will
+    /// *actually* go through.
+    /// 
+    /// What would be much better is if the compiler could (somehow) check at
+    /// compile-time if the data provided matches whatever the column type is.
+    /// But I don't know how 😅
+    fn compare_types(&self, def: &ColumnDefault) {
+        match def {
+            &ColumnDefault::Text(_) => if &self._type != &Type::Text {
+                return;
+            },
+            &ColumnDefault::Integer(_) => if &self._type != &Type::Integer {
+                return;
+            },
+            &ColumnDefault::Float(_) => if &self._type != &Type::Float {
+                return;
+            },
+            &ColumnDefault::Boolean(_) => if &self._type != &Type::Boolean {
+                return;
+            },
+        }
+        panic!("Mismatched data type for default value!");
+    }
 }
 
+#[derive(PartialEq, Debug)]
 pub enum Type {
     Text,
     Integer,
@@ -180,10 +212,34 @@ pub enum Type {
     Boolean,
 }
 
-enum ColumnDefault {
+pub enum ColumnDefault {
     Text(String),
     Integer(i64),
     Float(f64), // Or just use 32-bit floats?
     Boolean(bool),
     // TODO: Figure out storage for other data types
+}
+
+impl From<&'static str> for ColumnDefault {
+    fn from(data: &'static str) -> Self {
+        return ColumnDefault::Text(data.into());
+    }
+}
+
+impl From<i64> for ColumnDefault {
+    fn from(data: i64) -> Self {
+        return ColumnDefault::Integer(data);
+    }
+}
+
+impl From<f64> for ColumnDefault {
+    fn from(data: f64) -> Self {
+        return ColumnDefault::Float(data);
+    }
+}
+
+impl From<bool> for ColumnDefault {
+    fn from(data: bool) -> Self {
+        return ColumnDefault::Boolean(data);
+    }
 }
