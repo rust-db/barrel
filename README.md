@@ -2,45 +2,41 @@
 
 [![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel) [![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master) [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel) [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 
-A schema migration building API, using Diesel as a backend and integrated query builder. Write complicated SQL schema migrations in Rust!
+A schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
 
 ## Example
 
-The API was recently completely changed to potentially easily allow different database backends to be used. The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, a lot of the functions haven't been properly hooked up yet 😅
+The API was recently completely changed (**again**). The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, a lot of the functions haven't been properly hooked up yet 😅
 
 ```rust
 extern crate barrel;
 
-use barrel::{Schema, Table};
-use barrel::generators::postgres::*;
+use barrel::*;
 
 fn main() {
-    // Don't expect the API to still look like this on v0.2.0 :)
-
-    let mut sql = Schema::<PGSQL>::new();
-    sql.create_table("users", |t: &mut Table<PGSQL>| {
-        t.increments();
-        t.string("name");
-        t.integer("plushy_sharks_owned");
+    let mut m = Migration::new();
+    m.create_table("users", |t| {
+        t.add_column("name", Type::Text);
+        t.add_column("age", Type::Integer);
+        t.add_column("owns_plushy_sharks", Type::Boolean);
     });
 
-    println!("{}", sql.exec());
-    // create table "users" ("id" serial primary key, "name" varchar(255), "plushy_sharks_owned" int)
+    // I like plushy sharks
+    m.rename_table("sharks", "plushies");
 }
 
 ```
 
-### Connecting with a Database
-
-Right now only Diesel (as a backend) and PGSQL (as a database) are supported. But generally, this is what it would look like to use barrel to talk directly to a database.
-
-```rust
-
-    // ...
-    let migration = sql.exec();
-
-    let mut connection = Connector::<DieselPGSQL>::new("postgres://<username>:<password>@<server>/<database>");
-    connection.batch_exec(&migration);
-```
-
 If you have feedback regarding the API or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
+
+
+## License
+
+`barrel` is free software: you can redistribute it and/or modify it under the terms of the MIT Public License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the MIT Public License for more details.
+
+
+## Conduct
+
+In the interest of fostering an open and welcoming environment, the `barrel` project pledges to making participation a harassment-free experience for everyone. See [Code of Conduct](code_of_conduct.md) for details. In case of violations, e-mail [kookie@spacekookie.de](mailto:kookie@spacekookie.de).
