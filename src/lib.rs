@@ -35,28 +35,31 @@
 //!
 //! Pull-Requests with more/ better documentation welcome 💚
 
-/// An enum set that represents a single change on a database or table
-pub enum Change {
+/// An enum set that represents a single change on a table
+pub enum TableChange {
     /// Add a column of a name and type
-    AddColumn(String, ColumnType),
+    AddColumn(String, Column),
 
     /// Change an existing column
-    ChangeColumn(String, ColumnType, Box<Fn(&mut Column)>),
+    ChangeColumn(String, Column, Box<Fn(&mut Column)>),
 
     /// Simply rename a column
     RenameColumn(String, String),
 
     /// Remove a column
     RemoveColumn(String),
+}
 
+/// An enum set that represents a single change on a database
+pub enum DatabaseChange {
     /// Create a new table
-    CreateTable(String, Table, Box<Fn(&mut Table)>),
+    CreateTable(Table, Box<Fn(&mut Table)>),
 
     /// Create a new table *only* if it doesn't exist yet
-    CreateTableIfNotExists(String, Table, Box<Fn(&mut Table)>),
+    CreateTableIfNotExists(Table, Box<Fn(&mut Table)>),
 
     /// Change fields on an existing table
-    ChangeTable(String, Table, Box<Fn(&mut Table)>),
+    ChangeTable(Table, Box<Fn(&mut Table)>),
 
     /// Rename a table
     RenameTable(String, String),
@@ -70,7 +73,7 @@ pub enum Change {
 
 /// Represents a schema migration on a database
 pub struct Migration {
-    changes: Vec<Change>,
+    changes: Vec<DatabaseChange>,
 }
 
 impl Migration {
@@ -85,7 +88,9 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-
+        let t = Table::new(name);
+        let c = DatabaseChange::CreateTable(t, Box::new(cb));
+        self.changes.push(c);
     }
 
     /// Create a new table *only* if it doesn't exist yet
@@ -93,7 +98,9 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-
+        let t = Table::new(name);
+        let c = DatabaseChange::CreateTableIfNotExists(t, Box::new(cb));
+        self.changes.push(c);
     }
 
     /// Change fields on an existing table
@@ -101,22 +108,63 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-
+        let t = Table::new(name);
+        let c = DatabaseChange::ChangeTable(t, Box::new(cb));
+        self.changes.push(c);
     }
 
     /// Rename a table
-    pub fn rename_table<S: Into<String>>(&mut self, old: S, new: S) {}
+    pub fn rename_table<S: Into<String>>(&mut self, old: S, new: S) {
+        self.changes
+            .push(DatabaseChange::RenameTable(old.into(), new.into()));
+    }
 
     /// Drop an existing table
-    pub fn drop_table<S: Into<String>>(&mut self, name: S) {}
+    pub fn drop_table<S: Into<String>>(&mut self, name: S) {
+        self.changes.push(DatabaseChange::DropTable(name.into()));
+    }
 
     /// Only drop a table if it exists
-    pub fn drop_table_if_exists<S: Into<String>>(&mut self, name: S) {}
+    pub fn drop_table_if_exists<S: Into<String>>(&mut self, name: S) {
+        self.changes
+            .push(DatabaseChange::DropTableIfExists(name.into()));
+    }
 }
 
-pub struct Table {}
+pub struct Table {
+    name: String,
+    changes: Vec<TableChange>,
+}
 
-pub struct Column {}
+impl Table {
+    pub fn new<S: Into<String>>(name: S) -> Table {
+        return Table {
+            name: name.into(),
+            changes: Vec::new(),
+        };
+    }
+
+    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: ColumnType) {
+        self.changes.push(TableChange::AddColumn(name.into(), Column {
+            nullable: false,
+            _type: _type
+        }));
+    }
+
+    pub fn remove_column<S: Into<String>>(&mut self, name: S) {
+        self.changes.push(TableChange::RemoveColumn(name.into()));
+    }
+
+    pub fn rename_column<S: Into<String>>(&mut self, old: S, new: S) {
+        self.changes.push(TableChange::RenameColumn(old.into(), new.into()));
+    }
+}
+
+
+pub struct Column {
+    nullable: bool,
+    _type: ColumnType,
+}
 
 pub enum ColumnType {
     Text,
