@@ -55,9 +55,7 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting a project maintainer at:
-
-* Katharina Fey <kookie@spacekookie.de>
+reported by contacting a project maintainer at kookie@spacekookie.de
 
 All complaints will be reviewed and investigated and will result in a response
 that is deemed necessary and appropriate to the circumstances. The project team

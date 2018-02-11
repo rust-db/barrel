@@ -153,7 +153,7 @@ impl Table {
         };
     }
 
-    pub fn remove_column<S: Into<String>>(&mut self, name: S) {
+    pub fn drop_column<S: Into<String>>(&mut self, name: S) {
         self.changes.push(TableChange::RemoveColumn(name.into()));
     }
 
@@ -170,10 +170,19 @@ pub struct Column {
 }
 
 impl Column {
-    pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) {
+
+    /// Set a default value for this column
+    pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
         let def = data.into();
         self.compare_types(&def);
         self.def = Some(def);
+        return self;
+    }
+
+    /// Set a column to allow being null 
+    pub fn nullable(&mut self) -> &mut Column {
+        self.nullable = true;
+        return self;
     }
 
     /// Check (at runtime) that the provided data matches the column type
