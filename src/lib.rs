@@ -28,6 +28,22 @@
 //! Barrel is designed to give you ease of use as well as power over how you write your
 //! migrations and SQL schemas.
 
+/// A generic trait that frameworks using barrel can implement
+/// 
+/// An object of this trait can be given to a `Migration` object to
+/// automatically generate and run the given SQL string for a
+/// database connection which is wrapped by it
+pub trait DatabaseExecutor {
+
+    /// Execute the migration on a backend
+    fn execute<S: Into<String>>(&mut self, sql: S);
+}
+
+pub trait DatabaseBackend {
+    
+}
+
+
 /// An enum set that represents a single change on a table
 pub enum TableChange {
     /// Add a column of a name and type
@@ -66,14 +82,22 @@ pub enum DatabaseChange {
 
 /// Represents a schema migration on a database
 pub struct Migration {
+    schema: String,
     changes: Vec<DatabaseChange>,
 }
 
 impl Migration {
     pub fn new() -> Migration {
         return Migration {
+            schema: String::new(),
             changes: Vec::new(),
         };
+    }
+
+    /// Specify a database schema name for this migration
+    pub fn schema<S: Into<String>>(mut self, schema: S) -> Migration {
+        self.schema = schema.into();
+        return self;
     }
 
     /// Create a new table with a specific name
@@ -161,6 +185,35 @@ impl Table {
         self.changes
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
+
+    /// Creates the SQL for this migration for a specific backend
+    /// 
+    /// This function copies state and does not touch the original
+    /// migration layout. This allows you to call `revert` later on
+    /// in the process to auto-infer the down-behaviour
+    pub fn make<T: DatabaseBackend>(&self) -> String {
+        let s = String::new();
+        return s;
+    }
+
+    /// Automatically infer the `down` step of this migration
+    /// 
+    /// Will thrown an error if behaviour is ambigous or not
+    /// possible to infer (e.g. revert a `drop_table`)
+    pub fn revert<T: DatabaseBackend>(&self) -> String {
+        let s = String::new();
+        return s;
+    }
+
+    pub fn execute<T: DatabaseExecutor>(&self, runner: &mut T) {
+        // runner.execute(self.make())
+    }
+}
+
+/// 
+pub struct TableMeta {
+    has_id: bool,
+    encoding: String,
 }
 
 pub struct Column {
