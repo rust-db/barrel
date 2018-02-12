@@ -18,7 +18,6 @@
 //!     // I like plushy sharks
 //!     m.rename_table("sharks", "plushies");
 //! }
-//!
 //! ```
 //!
 //! The above code, for example, will create a new table called "users". All tables implicitly
@@ -39,9 +38,8 @@ pub trait DatabaseExecutor {
     fn execute<S: Into<String>>(&mut self, sql: S);
 }
 
-pub trait DatabaseBackend {
-    
-}
+pub mod backend;
+use backend::SqlGenerator;
 
 
 /// An enum set that represents a single change on a table
@@ -98,6 +96,31 @@ impl Migration {
     pub fn schema<S: Into<String>>(mut self, schema: S) -> Migration {
         self.schema = schema.into();
         return self;
+    }
+
+    /// Creates the SQL for this migration for a specific backend
+    /// 
+    /// This function copies state and does not touch the original
+    /// migration layout. This allows you to call `revert` later on
+    /// in the process to auto-infer the down-behaviour
+    pub fn make<T: SqlGenerator>(&self) -> String {
+        let s = String::new();
+        return s;
+    }
+
+    /// Automatically infer the `down` step of this migration
+    /// 
+    /// Will thrown an error if behaviour is ambigous or not
+    /// possible to infer (e.g. revert a `drop_table`)
+    pub fn revert<T: SqlGenerator>(&self) -> String {
+        let s = String::new();
+        return s;
+    }
+
+    /// Pass a reference to a migration toolkit runner which will
+    /// automatically generate and execute 
+    pub fn execute<T: DatabaseExecutor, S: SqlGenerator>(&self, runner: &mut T) {
+        runner.execute(self.make::<S>());
     }
 
     /// Create a new table with a specific name
@@ -185,29 +208,6 @@ impl Table {
         self.changes
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
-
-    /// Creates the SQL for this migration for a specific backend
-    /// 
-    /// This function copies state and does not touch the original
-    /// migration layout. This allows you to call `revert` later on
-    /// in the process to auto-infer the down-behaviour
-    pub fn make<T: DatabaseBackend>(&self) -> String {
-        let s = String::new();
-        return s;
-    }
-
-    /// Automatically infer the `down` step of this migration
-    /// 
-    /// Will thrown an error if behaviour is ambigous or not
-    /// possible to infer (e.g. revert a `drop_table`)
-    pub fn revert<T: DatabaseBackend>(&self) -> String {
-        let s = String::new();
-        return s;
-    }
-
-    pub fn execute<T: DatabaseExecutor>(&self, runner: &mut T) {
-        // runner.execute(self.make())
-    }
 }
 
 /// 
@@ -262,7 +262,7 @@ impl Column {
                 return;
             },
         }
-        panic!("Mismatched data type for default value!");
+        panic!("Mismatched data type for `default` value!");
     }
 }
 
