@@ -1,6 +1,11 @@
 ![](assets/logo_wide.svg)
 
-[![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel) [![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master) [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel) [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
+[![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)
+[![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master)](https://coveralls.io/github/spacekookie/barrel?branch=master)
+[![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
+[![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
+[![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
+
 
 A schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
 
@@ -15,16 +20,15 @@ use barrel::*;
 
 fn main() {
     let mut m = Migration::new();
-    m.create_table("users", |t| {
-        t.add_column("name", Type::Text);
+
+    m.create_table("users", |t: &mut Table| {
+        t.add_column("name", Type::Text).default("Anonymous");
         t.add_column("age", Type::Integer);
         t.add_column("owns_plushy_sharks", Type::Boolean);
     });
 
-    // I like plushy sharks
-    m.rename_table("sharks", "plushies");
+    println!("{}", m.make::<Pg>());
 }
-
 ```
 
 If you have feedback regarding the API or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
