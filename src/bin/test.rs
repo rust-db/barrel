@@ -1,4 +1,5 @@
 extern crate barrel;
+
 use barrel::*;
 use barrel::backend::Pg;
 

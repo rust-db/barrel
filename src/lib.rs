@@ -5,7 +5,9 @@
 //!
 //! ```
 //! extern crate barrel;
+//! 
 //! use barrel::*;
+//! use barrel::backend::Pg;
 //!
 //! fn main() {
 //!     let mut m = Migration::new();
@@ -15,8 +17,7 @@
 //!         t.add_column("owns_plushy_sharks", Type::Boolean);
 //!     });
 //!
-//!     // I like plushy sharks
-//!     m.rename_table("sharks", "plushies");
+//!     println!("{}", m.make::<Pg>());
 //! }
 //! ```
 //!
@@ -27,20 +28,12 @@
 //! Barrel is designed to give you ease of use as well as power over how you write your
 //! migrations and SQL schemas.
 
-/// A generic trait that frameworks using barrel can implement
-/// 
-/// An object of this trait can be given to a `Migration` object to
-/// automatically generate and run the given SQL string for a
-/// database connection which is wrapped by it
-pub trait DatabaseExecutor {
-
-    /// Execute the migration on a backend
-    fn execute<S: Into<String>>(&mut self, sql: S);
-}
 
 pub mod backend;
 use backend::SqlGenerator;
 
+pub mod connectors;
+use connectors::DatabaseExecutor;
 
 /// An enum set that represents a single change on a table
 pub enum TableChange {
@@ -99,7 +92,7 @@ impl Migration {
     }
 
     /// Creates the SQL for this migration for a specific backend
-    /// 
+    ///
     /// This function copies state and does not touch the original
     /// migration layout. This allows you to call `revert` later on
     /// in the process to auto-infer the down-behaviour
@@ -109,7 +102,7 @@ impl Migration {
     }
 
     /// Automatically infer the `down` step of this migration
-    /// 
+    ///
     /// Will thrown an error if behaviour is ambigous or not
     /// possible to infer (e.g. revert a `drop_table`)
     pub fn revert<T: SqlGenerator>(&self) -> String {
@@ -118,7 +111,7 @@ impl Migration {
     }
 
     /// Pass a reference to a migration toolkit runner which will
-    /// automatically generate and execute 
+    /// automatically generate and execute
     pub fn execute<T: DatabaseExecutor, S: SqlGenerator>(&self, runner: &mut T) {
         runner.execute(self.make::<S>());
     }
@@ -210,7 +203,7 @@ impl Table {
     }
 }
 
-/// 
+///
 pub struct TableMeta {
     has_id: bool,
     encoding: String,
@@ -223,7 +216,6 @@ pub struct Column {
 }
 
 impl Column {
-
     /// Set a default value for this column
     pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
         let def = data.into();
@@ -232,18 +224,18 @@ impl Column {
         return self;
     }
 
-    /// Set a column to allow being null 
+    /// Set a column to allow being null
     pub fn nullable(&mut self) -> &mut Column {
         self.nullable = true;
         return self;
     }
 
     /// Check (at runtime) that the provided data matches the column type
-    /// 
+    ///
     /// This is not ideal. Not only is the code not very nice but it means that
     /// you can compile your migration tool without knowing if the migration will
     /// *actually* go through.
-    /// 
+    ///
     /// What would be much better is if the compiler could (somehow) check at
     /// compile-time if the data provided matches whatever the column type is.
     /// But I don't know how 😅
