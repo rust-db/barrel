@@ -33,11 +33,10 @@ pub mod backend;
 pub mod connectors;
 
 pub mod table;
-pub use table::{Table, TableMeta, Column, Type};
+pub use table::{Table, TableMeta, Column};
 
 pub mod migration;
 pub use migration::Migration;
-
 
 /// An enum set that represents a single change on a table
 pub enum TableChange {
@@ -75,4 +74,45 @@ pub enum DatabaseChange {
 
     /// Only drop a table if it exists
     DropTableIfExists(String),
+}
+
+
+/// Type enum to specificy the `type` of an SQL column. NOTE: Not all types are
+/// supported by all database backends!
+/// 
+/// When creating a column users need to specify the type and potential
+/// metadata this type requires to the `add_column` function.
+/// 
+/// ```
+/// t.add_column("posts", Type::Array(box Type::Foreign("posts")));
+/// ```
+#[derive(PartialEq, Debug)]
+pub enum Type {
+    
+    /// Create a simple "text" field
+    Text,
+
+    /// Create a simple "binary" field
+    Binary,
+
+    /// Provide a size limit for this field 
+    Varchar(usize),
+
+    /// Creates a 64-bit integer
+    Integer,
+
+    /// Creates a 32-bit float
+    Float,
+
+    /// Creates a 64-bit float
+    Double,
+
+    /// Boring ol' boolean
+    Boolean,
+
+    /// Provide the name of a table to point to
+    Foreign(&'static str),
+
+    /// Any type can also exist as an array type
+    Array(Box<Type>),
 }

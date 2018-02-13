@@ -2,7 +2,7 @@
 //! 
 //! 
 
-use super::TableChange;
+use super::{TableChange, Type};
 
 pub struct Table {
     name: String,
@@ -94,24 +94,24 @@ impl Column {
             &ColumnDefault::Boolean(_) => if &self._type != &Type::Boolean {
                 return;
             },
+
+            // FIXME: This comparison is now broken
+            _ => {}
         }
         panic!("Mismatched data type for `default` value!");
     }
 }
 
-#[derive(PartialEq, Debug)]
-pub enum Type {
-    Text,
-    Integer,
-    Float,
-    Boolean,
-}
-
 pub enum ColumnDefault {
     Text(String),
+    Varchar(usize),
     Integer(i64),
-    Float(f64), // Or just use 32-bit floats?
+    Float(f64), // FIXME: Or just use 32-bit floats?
     Boolean(bool),
+
+    /// A foreign key has a table and id it points to
+    Foreign(String, u64),
+
     // TODO: Figure out storage for other data types
 }
 
