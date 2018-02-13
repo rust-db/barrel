@@ -6,7 +6,7 @@
 
 mod pg;
 pub use self::pg::Pg;
-
+use Type;
 
 /// A generic SQL generator trait
 pub trait SqlGenerator {
@@ -30,24 +30,12 @@ pub trait SqlGenerator {
     fn alter_table(name: &str) -> String;
 
 
+    /// Create a new column with a type
+    fn add_column(name: &str, _type: Type) -> String;
+
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String;
 
     /// Rename an existing column
     fn rename_column(old: &str, new: &str) -> String;
-
-    /// Add an auto-incrementing primary key
-    fn increments() -> String;
-    
-    /// Add an integer column
-    fn integer(name: &str) -> String;
-    
-    /// Add a text column
-    fn text(name: &str) -> String;
-    
-    /// Add a string column
-    fn string(name: &str) -> String;
-    
-    /// Add a timestamp column
-    fn timestamp(name: &str) -> String;
 }
