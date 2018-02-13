@@ -1,18 +1,18 @@
 //! A module that handles migration state for Tables and Columns
-//! 
-//! 
+//!
+//!
 
 use super::{TableChange, Type};
 
 pub struct Table {
-    name: String,
+    pub meta: TableMeta,
     changes: Vec<TableChange>,
 }
 
 impl Table {
     pub fn new<S: Into<String>>(name: S) -> Table {
         return Table {
-            name: name.into(),
+            meta: TableMeta::new(name.into()),
             changes: Vec::new(),
         };
     }
@@ -22,6 +22,7 @@ impl Table {
             name.into(),
             Column {
                 nullable: false,
+                increments: false;
                 _type: _type,
                 def: None,
             },
@@ -45,12 +46,44 @@ impl Table {
 
 ///
 pub struct TableMeta {
+    name: String,
     has_id: bool,
     encoding: String,
 }
 
+impl TableMeta {
+
+    /// Create a new tablemeta with default values
+    pub fn new(name: String) -> TableMeta {
+        return TableMeta {
+            name: name,
+            has_id: true,
+            encoding: "utf-8".to_owned(),
+        };
+    }
+
+    /// Disable the auto-key feature
+    ///
+    /// A table is by default created with an auto-incrementing primary
+    /// key called "id". You can disable this feature here. If you do and still
+    /// want a priamry key, you will have to specify it yourself in the table
+    /// init closure
+    pub fn without_id(&mut self) -> &mut TableMeta {
+        self.has_id = false;
+        return self;
+    }
+
+    /// Specify an encoding for this table which might vary from the main encoding
+    /// of your database
+    pub fn encoding<S: Into<String>>(&mut self, enc: S) -> &mut TableMeta {
+        self.encoding = enc.into();
+        return self;
+    }
+}
+
 pub struct Column {
     nullable: bool,
+    increments: bool,
     _type: Type,
     def: Option<ColumnDefault>,
 }
@@ -68,6 +101,14 @@ impl Column {
     /// Set a column to allow being null
     pub fn nullable(&mut self) -> &mut Column {
         self.nullable = true;
+        return self;
+    }
+
+    /// Setup this column to automatically increment (such as integers)
+    /// 
+    /// Throws an error if the column type *can't* increment (like booleans)
+    pub fn increments(&mut self) -> &mut Column {
+        self.increments = true;
         return self;
     }
 
@@ -111,7 +152,6 @@ pub enum ColumnDefault {
 
     /// A foreign key has a table and id it points to
     Foreign(String, u64),
-
     // TODO: Figure out storage for other data types
 }
 
