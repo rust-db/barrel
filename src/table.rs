@@ -22,7 +22,7 @@ impl Table {
             name.into(),
             Column {
                 nullable: false,
-                increments: false;
+                increments: false,
                 _type: _type,
                 def: None,
             },

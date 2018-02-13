@@ -59,7 +59,7 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-        let t = Table::new(name);
+        let mut t = Table::new(name);
         t.add_column("id", Type::Integer).increments();
         let c = DatabaseChange::CreateTable(t, Box::new(cb));
         self.changes.push(c);
@@ -75,7 +75,7 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-        let t = Table::new(name);
+        let mut t = Table::new(name);
         t.add_column("id", Type::Integer).increments();
         let c = DatabaseChange::CreateTableIfNotExists(t, Box::new(cb));
         self.changes.push(c);
