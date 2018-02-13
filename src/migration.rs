@@ -2,10 +2,11 @@
 //! 
 //! 
 
-use super::table::Table;
-use super::DatabaseChange;
-use super::backend::SqlGenerator;
+use super::table::{Table, TableMeta};
+use super::{DatabaseChange, Type};
+
 use super::connectors::DatabaseExecutor;
+use super::backend::SqlGenerator;
 
 
 /// Represents a schema migration on a database
@@ -54,23 +55,35 @@ impl Migration {
     }
 
     /// Create a new table with a specific name
-    pub fn create_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F)
+    pub fn create_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
         let t = Table::new(name);
+        t.add_column("id", Type::Integer).increments();
         let c = DatabaseChange::CreateTable(t, Box::new(cb));
         self.changes.push(c);
+
+        return match self.changes.last_mut().unwrap() {
+            &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
+            _ => unreachable!(),
+        };
     }
 
     /// Create a new table *only* if it doesn't exist yet
-    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(&mut self, name: S, cb: F)
+    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
         let t = Table::new(name);
+        t.add_column("id", Type::Integer).increments();
         let c = DatabaseChange::CreateTableIfNotExists(t, Box::new(cb));
         self.changes.push(c);
+
+        return match self.changes.last_mut().unwrap() {
+            &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
+            _ => unreachable!(),
+        };
     }
 
     /// Change fields on an existing table
