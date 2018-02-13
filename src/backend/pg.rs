@@ -39,7 +39,16 @@ impl SqlGenerator for Pg {
             Boolean => format!("\"{}\" {}", name, Pg::print_type(_type)),
             Binary => format!("\"{}\" {}", name, Pg::print_type(_type)),
             Foreign(_) => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Array(_) => format!("\"{}\" {}", name, Pg::print_type(_type)),
+            Array(t) => { // FIXME: Doesn't support Array(Array(Foreign))
+                return format!(
+                    "\"{}\" {}",
+                    name,
+                    match *t {
+                        Foreign(table) => format!("INTEGER[] REFERENCES {}", table),
+                        _ => Pg::print_type(Array(Box::new(*t))),
+                    }
+                );
+            }
         };
     }
 
@@ -66,6 +75,6 @@ impl Pg {
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
             _ => unreachable!(),
-        }
+        };
     }
 }

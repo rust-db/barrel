@@ -7,7 +7,7 @@ use barrel::backend::{SqlGenerator, Pg};
 
 fn main() {
     use Type::*;
-    // let mut m = Migration::new();
+    let mut m = Migration::new();
 
     let mut a;
     a = Pg::add_column("Text", Text);
@@ -62,16 +62,18 @@ fn main() {
     println!("\"Array of Integer\" ==> {}", a);
 
 
-    // // A new table is automatically created with an "id" primary key
-    // // To disable that call `without_id` on the return of `create_table`
-    // m.create_table("users", |t: &mut Table| {
-        
-    //     t.add_column("name", Varchar(255)).default("Anonymous"); // Default name is "Anonymous"
-    //     t.add_column("description", Text).nullable(); // Can be null
-    //     t.add_column("age", Integer);
-    //     t.add_column("posts", Array(box Foreign("posts"))); // A one-to-many relationship
-    //     t.add_column("owns_plushy_sharks", Boolean);
-    // });
 
-    // println!!("{}", m.make::<Pg>());
+
+    // A new table is automatically created with an "id" primary key
+    // To disable that call `without_id` on the return of `create_table`
+    m.create_table("users", |t: &mut Table| {
+        
+        t.add_column("name", Varchar(255)).default("Anonymous"); // Default name is "Anonymous"
+        t.add_column("description", Text).nullable(); // Can be null
+        t.add_column("age", Integer);
+        t.add_column("posts", Array(box Foreign("posts"))); // A one-to-many relationship
+        t.add_column("owns_plushy_sharks", Boolean);
+    });
+
+    println!("{}", m.make::<Pg>());
 }
