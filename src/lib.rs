@@ -92,9 +92,6 @@ pub enum Type {
     /// Create a simple "text" field
     Text,
 
-    /// Create a simple "binary" field
-    Binary,
-
     /// Provide a size limit for this field 
     Varchar(usize),
 
@@ -110,8 +107,14 @@ pub enum Type {
     /// Boring ol' boolean
     Boolean,
 
+    /// Create a simple "binary" field
+    Binary,
+
     /// Provide the name of a table to point to
     Foreign(&'static str),
+
+    // FIXME: Figure out a way to do this nicely
+    // Foreign(&'static str, &'static str),
 
     /// Any type can also exist as an array type
     Array(Box<Type>),
