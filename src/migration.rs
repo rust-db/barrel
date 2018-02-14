@@ -55,7 +55,7 @@ impl Migration {
     }
 
     /// Create a new table with a specific name
-    pub fn create_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
+    pub fn create_table<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
@@ -71,7 +71,7 @@ impl Migration {
     }
 
     /// Create a new table *only* if it doesn't exist yet
-    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
+    pub fn create_table_if_not_exists<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
@@ -87,7 +87,7 @@ impl Migration {
     }
 
     /// Change fields on an existing table
-    pub fn change_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F)
+    pub fn change_table<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F)
     where
         F: Fn(&mut Table),
     {

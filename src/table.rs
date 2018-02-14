@@ -4,6 +4,7 @@
 
 use super::{TableChange, Type};
 
+#[derive(Clone)]
 pub struct Table {
     pub meta: TableMeta,
     changes: Vec<TableChange>,
@@ -45,6 +46,7 @@ impl Table {
 }
 
 ///
+#[derive(Clone)]
 pub struct TableMeta {
     name: String,
     has_id: bool,
@@ -81,6 +83,7 @@ impl TableMeta {
     }
 }
 
+#[derive(Clone)]
 pub struct Column {
     nullable: bool,
     increments: bool,
@@ -143,6 +146,7 @@ impl Column {
     }
 }
 
+#[derive(Clone)]
 pub enum ColumnDefault {
     Text(String),
     Varchar(usize),

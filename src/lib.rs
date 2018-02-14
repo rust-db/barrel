@@ -66,6 +66,7 @@
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
 #![feature(box_syntax)]
+#![feature(clone_closures)]
 
 pub mod backend;
 pub mod connectors;
@@ -80,6 +81,7 @@ pub use migration::Migration;
 mod tests;
 
 /// An enum set that represents a single change on a table
+#[derive(Clone)]
 pub enum TableChange {
     /// Add a column of a name and type
     AddColumn(String, Column),
@@ -95,7 +97,9 @@ pub enum TableChange {
 }
 
 /// An enum set that represents a single change on a database
+#[derive(Clone)]
 pub enum DatabaseChange {
+    
     /// Create a new table
     CreateTable(Table, Box<Fn(&mut Table)>),
 
@@ -124,7 +128,7 @@ pub enum DatabaseChange {
 /// ```norun
 /// t.add_column("posts", Type::Array(box Type::Foreign("posts")));
 /// ```
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Type {
     /// Create a simple "text" field
     Text,
