@@ -1,8 +1,22 @@
-//! Powerful schema builder API in Rust, using Diesel in the backend.
-//!
-//! Barrel has two primary models, the `Migration` and the `Table`. A schema migration
-//! is built with a variety of hooks that can be executed on tables, using static callbacks.
-//!
+//! Powerful schema migration builder API in Rust.
+//! 
+//! Barrel is meant to make writing migrations for different databases as easy
+//! as possible. It has three primary models: the [Migration]() which represents
+//! all changes and changes made on a database level, the [Table]() and the 
+//! [Column]().
+//! 
+//! When creating or altering tables a lambda which exposes `&mut Table` is
+//! provided for initialisation. Adding columns is then as easy as calling
+//! `add_column(...)` on the table.
+//! 
+//! Each column is statically typed and some types require some metadata in order
+//! to compile the migration (for example `Varchar(255)`). You can also provide
+//! default types and override encodings, nullability or uniqueness of columns.
+//! Some checks are performed at compile-time however most things (including)
+//! correct default values) are only checked at runtime.
+//! 
+//! The following code is a simple example of how to get going with `barrel`
+//! 
 //! ```
 //! extern crate barrel;
 //! 
@@ -16,17 +30,41 @@
 //!         t.add_column("age", Type::Integer);
 //!         t.add_column("owns_plushy_sharks", Type::Boolean);
 //!     });
-//!
-//!     println!("{}", m.make::<Pg>());
 //! }
 //! ```
-//!
-//! The above code, for example, will create a new table called "users". All tables implicitly
-//! add an auto incrementing primary key called "id". This behaviour can't currently be turned
-//! off. The callback is executed when calling `Migration::exec()`
-//!
-//! Barrel is designed to give you ease of use as well as power over how you write your
-//! migrations and SQL schemas.
+//! `barrel` also supports more advanced types, such as `Foreign(...)` 
+//! and `Array(...)` however currently doesn't support nested Array types on
+//! foreign keys (such as `Array(Array(Foreign(...)))`). Each column addition
+//! returns a Column object which can then be used to provide further
+//! configuration.
+//! 
+//! To generate SQL strings you have two options. If you just want to run the 
+//! migration yourself simply run `Migration::exec()` where you provide a
+//! generic `SqlGenerator` type according to your database backend
+//! 
+//! ```
+//! // Example for pgsql
+//! m.make::<Pg>();
+//! ```
+//! 
+//! Alternatively, if you're a library developer and you want to more easily
+//! embed `barrel` into your library you can simply implement the 
+//! `DatabaseExecutor` trait for a type of yours that knows how to execute SQL.
+//! Running a migration with `barrel` is then super easy.
+//! 
+//! ```
+//! m.execute(executor);
+//! ```
+//! 
+//! In this case `executor` is your provided type which implements the required
+//! trait. You can read more about this in the `connectors` module docs.
+//! 
+//! **Important**: This crate is still early in development and the API might
+//! change rapidely between pre-release versions. I will try as best I can to
+//! include changes in the `CHANGELOG` but can not guarantee perfect coverage.
+//! 
+//! Also, if there is missing or invalid documentation for this crate, PR's are
+//! always welcome 💚
 
 
 pub mod backend;

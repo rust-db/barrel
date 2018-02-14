@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="20cm"
-   height="6cm"
-   viewBox="0 0 200 59.999997"
+   width="8cm"
+   height="3cm"
+   viewBox="0 0 80 29.999998"
    version="1.1"
    id="svg7510"
    inkscape:version="0.92.2 5c3e80d, 2017-08-06"
@@ -151,9 +151,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="130.45568"
-     inkscape:cy="79.670361"
+     inkscape:zoom="4"
+     inkscape:cx="145.11984"
+     inkscape:cy="30.344439"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -174,7 +174,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -182,22 +182,22 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-237.00001)">
+     transform="translate(0,-267.00001)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="43.602528"
-       y="277.09091"
+       style="font-style:normal;font-weight:normal;font-size:4.74849796px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.11871245"
+       x="20.381063"
+       y="285.46606"
        id="text8105"><tspan
          sodipodi:role="line"
          id="tspan8103"
-         x="43.602528"
-         y="277.09091"
-         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:22.57777786px;font-family:Raleway;-inkscape-font-specification:'Raleway Light';stroke-width:0.26458332">Barrel</tspan></text>
+         x="20.381063"
+         y="285.46606"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.13012981px;font-family:Raleway;-inkscape-font-specification:Raleway;stroke-width:0.11871245">Barrel</tspan></text>
     <g
        style="display:inline"
        id="g8231"
-       transform="matrix(1.2139741,0,0,1.2139741,-30.851304,86.225563)">
+       transform="matrix(0.54468225,0,0,0.54468225,-13.024657,199.76305)">
       <ellipse
          ry="2.3448958"
          rx="10.974388"

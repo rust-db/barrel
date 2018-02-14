@@ -7,22 +7,25 @@
 [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 
 
-A schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
+A powerful schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
+
+`barrel` is meant to make writing migrations for different databases as easy as possible. It creates a simple to use API over SQL which allows you to focus on managing your database, not fighting with SQL.
+
 
 ## Example
 
-The API was recently completely changed (**again**). The current iteration of the API can be seen below. Some of the functions might not fully work yet or need tweaking. In fact, a lot of the functions haven't been properly hooked up yet 😅
+The following code is a simple example of how to get going with `barrel`
 
 ```rust
 extern crate barrel;
 
 use barrel::*;
+use barrel::backend::Pg;
 
 fn main() {
     let mut m = Migration::new();
-
-    m.create_table("users", |t: &mut Table| {
-        t.add_column("name", Type::Text).default("Anonymous");
+    m.create_table("users", |t| {
+        t.add_column("name", Type::Text);
         t.add_column("age", Type::Integer);
         t.add_column("owns_plushy_sharks", Type::Boolean);
     });
