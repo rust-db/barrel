@@ -1,4 +1,5 @@
 //! Test pgsql generation
 
-mod add_column;
 mod simple;
+mod add_column;
+mod create_table;

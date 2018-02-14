@@ -56,12 +56,12 @@ impl Migration {
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
                     s.push_str(&T::create_table(&t.meta.name()));
-                    s.push_str("(");
+                    s.push_str(" (");
                     let l = vec.len();
                     for (i, slice) in vec.iter().enumerate() {
                         s.push_str(slice);
 
-                        if i < l {
+                        if i < l - 1 {
                             s.push_str(", ");
                         }
                     }
@@ -94,7 +94,7 @@ impl Migration {
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
-        t.add_column("id", Type::Integer).increments();
+        t.add_column("id", Type::Primary).increments();
         let c = DatabaseChange::CreateTable(t, Rc::new(cb));
         self.changes.push(c);
 
@@ -114,7 +114,7 @@ impl Migration {
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
-        t.add_column("id", Type::Integer).increments();
+        t.add_column("id", Type::Primary).increments();
         let c = DatabaseChange::CreateTableIfNotExists(t, Rc::new(cb));
         self.changes.push(c);
 
