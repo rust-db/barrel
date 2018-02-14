@@ -8,6 +8,7 @@ use super::{DatabaseChange, Type};
 use super::connectors::DatabaseExecutor;
 use super::backend::SqlGenerator;
 
+use std::rc::Rc;
 
 /// Represents a schema migration on a database
 pub struct Migration {
@@ -36,6 +37,15 @@ impl Migration {
     /// in the process to auto-infer the down-behaviour
     pub fn make<T: SqlGenerator>(&self) -> String {
         let s = String::new();
+
+        /* What happens in make, stays in make (sort of) */
+        let changes = self.changes.clone();
+        for change in &changes {
+            match change {
+                _ => {}
+            }
+        }
+
         return s;
     }
 
@@ -55,13 +65,13 @@ impl Migration {
     }
 
     /// Create a new table with a specific name
-    pub fn create_table<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F) -> &mut TableMeta
+    pub fn create_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
         t.add_column("id", Type::Integer).increments();
-        let c = DatabaseChange::CreateTable(t, Box::new(cb));
+        let c = DatabaseChange::CreateTable(t, Rc::new(cb));
         self.changes.push(c);
 
         return match self.changes.last_mut().unwrap() {
@@ -71,13 +81,13 @@ impl Migration {
     }
 
     /// Create a new table *only* if it doesn't exist yet
-    pub fn create_table_if_not_exists<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F) -> &mut TableMeta
+    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
         t.add_column("id", Type::Integer).increments();
-        let c = DatabaseChange::CreateTableIfNotExists(t, Box::new(cb));
+        let c = DatabaseChange::CreateTableIfNotExists(t, Rc::new(cb));
         self.changes.push(c);
 
         return match self.changes.last_mut().unwrap() {
@@ -87,12 +97,12 @@ impl Migration {
     }
 
     /// Change fields on an existing table
-    pub fn change_table<S: Into<String>, F: 'static + Clone>(&mut self, name: S, cb: F)
+    pub fn change_table<S: Into<String>, F: 'static>(&mut self, name: S, cb: F)
     where
         F: Fn(&mut Table),
     {
         let t = Table::new(name);
-        let c = DatabaseChange::ChangeTable(t, Box::new(cb));
+        let c = DatabaseChange::ChangeTable(t, Rc::new(cb));
         self.changes.push(c);
     }
 

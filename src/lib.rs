@@ -80,6 +80,8 @@ pub use migration::Migration;
 #[cfg(test)]
 mod tests;
 
+use std::rc::Rc;
+
 /// An enum set that represents a single change on a table
 #[derive(Clone)]
 pub enum TableChange {
@@ -87,7 +89,7 @@ pub enum TableChange {
     AddColumn(String, Column),
 
     /// Change an existing column
-    ChangeColumn(String, Column, Box<Fn(&mut Column)>),
+    ChangeColumn(String, Column, Rc<Fn(&mut Column)>),
 
     /// Simply rename a column
     RenameColumn(String, String),
@@ -101,13 +103,13 @@ pub enum TableChange {
 pub enum DatabaseChange {
     
     /// Create a new table
-    CreateTable(Table, Box<Fn(&mut Table)>),
+    CreateTable(Table, Rc<Fn(&mut Table)>),
 
     /// Create a new table *only* if it doesn't exist yet
-    CreateTableIfNotExists(Table, Box<Fn(&mut Table)>),
+    CreateTableIfNotExists(Table, Rc<Fn(&mut Table)>),
 
     /// Change fields on an existing table
-    ChangeTable(Table, Box<Fn(&mut Table)>),
+    ChangeTable(Table, Rc<Fn(&mut Table)>),
 
     /// Rename a table
     RenameTable(String, String),
