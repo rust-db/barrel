@@ -1,8 +1,14 @@
-//! A module that handles migration state for Tables and Columns
+//! A module that represents tables and columns
 //!
+//! A table is a collection of columns and some metadata. Creating
+//! a table gives you access to the metadata fields that can only
+//! be set when creating the table.
 //!
+//! You can also change existing tables with a closure that can
+//! then access individual columns in that table.
 
 use super::{TableChange, Type};
+use super::backend::SqlGenerator;
 
 #[derive(Clone)]
 pub struct Table {
@@ -18,10 +24,31 @@ impl Table {
         };
     }
 
+    pub fn add_primary<S: Into<String>>(&mut self, name: S) -> &mut Column {
+        self.changes.push(TableChange::AddColumn(
+            name.into(),
+            Column {
+                indexed: true,
+                unique: true,
+                nullable: false,
+                increments: true,
+                _type: Type::Integer,
+                def: None,
+            },
+        ));
+
+        return match self.changes.last_mut().unwrap() {
+            &mut TableChange::AddColumn(_, ref mut c) => c,
+            _ => unreachable!(),
+        };
+    }
+
     pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Column {
         self.changes.push(TableChange::AddColumn(
             name.into(),
             Column {
+                indexed: false,
+                unique: false,
                 nullable: false,
                 increments: false,
                 _type: _type,
@@ -36,16 +63,32 @@ impl Table {
     }
 
     pub fn drop_column<S: Into<String>>(&mut self, name: S) {
-        self.changes.push(TableChange::RemoveColumn(name.into()));
+        self.changes.push(TableChange::DropColumn(name.into()));
     }
 
     pub fn rename_column<S: Into<String>>(&mut self, old: S, new: S) {
         self.changes
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
+
+    pub fn make<T: SqlGenerator>(&mut self, ex: bool) -> Vec<String> {
+        use TableChange::*;
+        let mut s = Vec::new();
+
+        for change in &mut self.changes {
+            s.push(match change {
+                &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col._type),
+                &mut DropColumn(ref name) => T::drop_column(name),
+                &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
+                &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name),
+            });
+        }
+
+        return s;
+    }
 }
 
-///
+/// Some metadata about a table that was just created
 #[derive(Clone)]
 pub struct TableMeta {
     name: String,
@@ -54,7 +97,6 @@ pub struct TableMeta {
 }
 
 impl TableMeta {
-
     /// Create a new tablemeta with default values
     pub fn new(name: String) -> TableMeta {
         return TableMeta {
@@ -62,6 +104,11 @@ impl TableMeta {
             has_id: true,
             encoding: "utf-8".to_owned(),
         };
+    }
+
+    /// Return a clone of the table name
+    pub fn name(&self) -> String {
+        return self.name.clone();
     }
 
     /// Disable the auto-key feature
@@ -85,14 +132,26 @@ impl TableMeta {
 
 #[derive(Clone)]
 pub struct Column {
+    /// Is this a unique key
+    unique: bool,
+
+    /// Should the database create an index
+    indexed: bool,
+
+    /// Can this column be NULL
     nullable: bool,
+
+    /// Does it auto-increment
     increments: bool,
+
+    /// What's the column type
     _type: Type,
+
+    /// What's default value records in this column
     def: Option<ColumnDefault>,
 }
 
 impl Column {
-
     /// Set a default value for this column
     pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
         let def = data.into();
@@ -108,7 +167,7 @@ impl Column {
     }
 
     /// Setup this column to automatically increment (such as integers)
-    /// 
+    ///
     /// Throws an error if the column type *can't* increment (like booleans)
     pub fn increments(&mut self) -> &mut Column {
         self.increments = true;

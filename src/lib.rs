@@ -95,7 +95,7 @@ pub enum TableChange {
     RenameColumn(String, String),
 
     /// Remove a column
-    RemoveColumn(String),
+    DropColumn(String),
 }
 
 /// An enum set that represents a single change on a database
@@ -137,6 +137,15 @@ pub enum Type {
 
     /// Provide a size limit for this field
     Varchar(usize),
+
+    /// Create a primary key regardless of database
+    /// 
+    /// This type is more of a convenience wrapper around other
+    /// (64-bit) integer types. It might be changed at some point
+    /// or just removed.
+    /// 
+    /// **Be careful when using this type!**
+    Primary,
 
     /// Creates a 64-bit integer
     Integer,

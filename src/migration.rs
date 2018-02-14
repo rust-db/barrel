@@ -1,6 +1,15 @@
-//! A module which handles a migration state
-//! 
-//! 
+//! Core migration creation handler
+//!
+//! A migration can be done for a specific schema which contains
+//! multiple additions or removables from a database or table.
+//!
+//! At the end of crafting a migration you can use `Migration::exec` to
+//! get the raw SQL string for a database backend or `Migration::revert`
+//! to try to auto-infer the migration rollback. In cases where that
+//! can't be done the `Result<String, RevertError>` will not unwrap.
+//!
+//! You can also use `Migration::exec` with your SQL connection for convenience
+//! if you're a library developer.
 
 use super::table::{Table, TableMeta};
 use super::{DatabaseChange, Type};
@@ -36,12 +45,28 @@ impl Migration {
     /// migration layout. This allows you to call `revert` later on
     /// in the process to auto-infer the down-behaviour
     pub fn make<T: SqlGenerator>(&self) -> String {
-        let s = String::new();
+        use DatabaseChange::*;
+        let mut s = String::new();
 
         /* What happens in make, stays in make (sort of) */
-        let changes = self.changes.clone();
-        for change in &changes {
+        let mut changes = self.changes.clone();
+        for change in &mut changes {
             match change {
+                &mut CreateTable(ref mut t, ref mut cb) => {
+                    cb(t); // Run the user code
+                    let vec = t.make::<T>(false);
+                    s.push_str(&T::create_table(&t.meta.name()));
+                    s.push_str("(");
+                    let l = vec.len();
+                    for (i, slice) in vec.iter().enumerate() {
+                        s.push_str(slice);
+
+                        if i < l {
+                            s.push_str(", ");
+                        }
+                    }
+                    s.push_str(")");
+                }
                 _ => {}
             }
         }
@@ -80,7 +105,11 @@ impl Migration {
     }
 
     /// Create a new table *only* if it doesn't exist yet
-    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(&mut self, name: S, cb: F) -> &mut TableMeta
+    pub fn create_table_if_not_exists<S: Into<String>, F: 'static>(
+        &mut self,
+        name: S,
+        cb: F,
+    ) -> &mut TableMeta
     where
         F: Fn(&mut Table),
     {
@@ -122,4 +151,3 @@ impl Migration {
             .push(DatabaseChange::DropTableIfExists(name.into()));
     }
 }
-
