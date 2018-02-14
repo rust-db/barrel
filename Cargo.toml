@@ -12,11 +12,3 @@ documentation = "https://docs.rs/barrel"
 
 categories = [ "database", "web-programming", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
-
-# [features]
-# default = ["diesel"]
-
-[dependencies]
-barrel-derive = { path = "barrel-derive" }
-
-# diesel = { version = "1.0.0", features = ["postgres"], optional = true }
