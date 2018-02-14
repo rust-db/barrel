@@ -54,8 +54,7 @@ impl Migration {
     /// Will thrown an error if behaviour is ambigous or not
     /// possible to infer (e.g. revert a `drop_table`)
     pub fn revert<T: SqlGenerator>(&self) -> String {
-        let s = String::new();
-        return s;
+        unimplemented!()
     }
 
     /// Pass a reference to a migration toolkit runner which will

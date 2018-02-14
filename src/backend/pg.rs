@@ -74,7 +74,6 @@ impl Pg {
             Binary => format!("BINARY"),
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
-            _ => unreachable!(),
         };
     }
 }
