@@ -34,7 +34,7 @@ script:
   - cargo build --verbose --all
   - cargo test --verbose --all
   - cargo bench --all
-  # - cargo doc
+  - cargo doc
 
 # Upload the whole mess
 after_success:
