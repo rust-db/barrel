@@ -36,16 +36,16 @@ impl SqlGenerator for Pg {
         let t: Type = _type.clone();
         /* This shouldn't be formatted. It's too long */
         return match t {
-            Primary => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Text => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Varchar(_) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Integer => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Float => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Double => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Boolean => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Binary => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Foreign(_) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Array(it) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
+            Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
         };
     }
 
