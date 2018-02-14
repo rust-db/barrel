@@ -34,7 +34,7 @@ fn main() {
 }
 ```
 
-If you have feedback regarding the API or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
+If you have feedback [regarding the API](https://github.com/spacekookie/barrel/issues/1) or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
 
 
 ## License
