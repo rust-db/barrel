@@ -1,4 +1,7 @@
 //! Postgres implementation of a generator
+//!
+//! This module generates strings that are specific to Postgres
+//! databases. They should be thoroughly tested via unit testing
 
 use super::{SqlGenerator, Type};
 
@@ -28,27 +31,21 @@ impl SqlGenerator for Pg {
         return format!("ALTER TABLE \"{}\"", name);
     }
 
-    fn add_column(name: &str, _type: Type) -> String {
+    fn add_column(ex: bool, name: &str, _type: &Type) -> String {
         use Type::*;
-        return match _type {
-            Text => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Varchar(_) => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Integer => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Float => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Double => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Boolean => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Binary => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Foreign(_) => format!("\"{}\" {}", name, Pg::print_type(_type)),
-            Array(t) => { // FIXME: Doesn't support Array(Array(Foreign))
-                return format!(
-                    "\"{}\" {}",
-                    name,
-                    match *t {
-                        Foreign(table) => format!("INTEGER[] REFERENCES {}", table),
-                        _ => Pg::print_type(Array(Box::new(*t))),
-                    }
-                );
-            }
+        let t: Type = _type.clone();
+        /* This shouldn't be formatted. It's too long */
+        return match t {
+            Primary => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Text => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Varchar(_) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Integer => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Float => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Double => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Boolean => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Binary => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Foreign(_) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            Array(it) => format!("{} \"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
         };
     }
 
@@ -62,11 +59,22 @@ impl SqlGenerator for Pg {
 }
 
 impl Pg {
+    fn prefix(ex: bool) -> String {
+        return match ex {
+            true => format!("ADD COLUMN "),
+            false => format!(""),
+        };
+    }
+
     fn print_type(t: Type) -> String {
         use Type::*;
         return match t {
+            Primary => format!("SERIAL PRIMARY KEY"),
             Text => format!("TEXT"),
-            Varchar(l) => format!("VARCHAR({})", l),
+            Varchar(l) => match l {
+                0 => format!("VARCHAR"), // For "0" remove the limit
+                _ => format!("VARCHAR({})", l),
+            },
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),

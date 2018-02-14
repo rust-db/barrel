@@ -31,7 +31,7 @@ pub trait SqlGenerator {
 
 
     /// Create a new column with a type
-    fn add_column(name: &str, _type: Type) -> String;
+    fn add_column(ex: bool, name: &str, _type: &Type) -> String;
 
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String;

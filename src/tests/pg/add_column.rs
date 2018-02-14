@@ -95,12 +95,6 @@ fn array_binary() {
 }
 
 #[test]
-fn array_foreign() {
-    let sql = Pg::add_column("Array of Foreign", Array(box Foreign("posts")));
-    assert_eq!(String::from("\"Array of Foreign\" INTEGER[] REFERENCES posts"), sql);
-}
-
-#[test]
 fn array_array_integer() {
     let sql = Pg::add_column("Array of Array of Integer", Array(box Array(box Integer)));
     assert_eq!(String::from("\"Array of Array of Integer\" INTEGER[][]"), sql);
