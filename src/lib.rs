@@ -1,9 +1,9 @@
 //! Powerful schema migration builder API in Rust.
 //!
 //! Barrel is meant to make writing migrations for different databases as easy
-//! as possible. It has three primary models: the [Migration]() which represents
-//! all changes and changes made on a database level, the [Table]() and the
-//! [Column]().
+//! as possible. It has three primary models: the [Migration](migration/struct.Migration.html) which represents
+//! all changes and changes made on a database level, the [Table](table/struct.Table.html) and the
+//! [Column](column/struct.Column.html).
 //!
 //! When creating or altering tables a lambda which exposes `&mut Table` is
 //! provided for initialisation. Adding columns is then as easy as calling
@@ -18,7 +18,6 @@
 //! The following code is a simple example of how to get going with `barrel`
 //!
 //! ```
-//! #![feature(box_syntax)]
 //! extern crate barrel;
 //!
 //! use barrel::*;
