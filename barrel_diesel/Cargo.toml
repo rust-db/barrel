@@ -7,3 +7,4 @@ authors = ["Katharina Fey <kookie@spacekookie.de>"]
 
 [dependencies]
 diesel = { version = "1.1.0", default-features = false }
+barrel = { path = "../barrel/" }

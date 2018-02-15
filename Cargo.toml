@@ -1,21 +1,5 @@
-[package]
-name = "barrel"
-version = "0.2.0-alpha0"
-
-description = "A powerful schema migration building API for Rust"
-authors = ["Katharina Fey <kookie@spacekookie.de>"]
-license = "MIT/X11 OR Apache-2.0"
-
-readme = "README.md"
-repository = "https://github.com/spacekookie/barrel"
-documentation = "https://docs.rs/barrel"
-
-categories = [ "database", "web-programming", "development-tools"]
-keywords = ["sql", "database", "schema", "migration"]
-
-[features]
-default = []
-diesel = ["barrel_diesel"]
-
-[dependencies]
-barrel_diesel = { path = "barrel_diesel", optional = true }
+[workspace]
+members = [
+    "barrel",
+    "barrel_diesel"
+]
