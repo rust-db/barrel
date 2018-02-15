@@ -3,7 +3,7 @@
 //! This module generates strings that are specific to Postgres
 //! databases. They should be thoroughly tested via unit testing
 
-use super::{SqlGenerator, Type};
+use super::{Column, SqlGenerator, Type};
 
 pub struct Pg;
 impl SqlGenerator for Pg {
@@ -31,11 +31,12 @@ impl SqlGenerator for Pg {
         return format!("ALTER TABLE \"{}\"", name);
     }
 
-    fn add_column(ex: bool, name: &str, _type: &Type) -> String {
+    fn add_column(ex: bool, name: &str, column: &Column) -> String {
         use Type::*;
-        let t: Type = _type.clone();
+        let t: Type = column._type.clone();
+
         /* This shouldn't be formatted. It's too long */
-        return match t {
+        let mut s = match t {
             Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
             Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
             Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
@@ -45,8 +46,25 @@ impl SqlGenerator for Pg {
             Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
             Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
             Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
+            Array(it) => format!(
+                "{}\"{}\" {}",
+                Pg::prefix(ex),
+                name,
+                Pg::print_type(Array(box *it))
+            ),
         };
+
+        s.push_str(&match (&column.def).as_ref() {
+            Some(ref m) => format!(" DEFAULT '{}'", m),
+            _ => format!(""),
+        });
+
+        // match column.def.as_ref() {
+        //     Some(ref val) => s.push_str(&format!(" DEFAULT '{}'", val)),
+        //     _ => &format!(""),
+        // }
+
+        return s;
     }
 
     fn drop_column(name: &str) -> String {

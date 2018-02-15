@@ -77,7 +77,10 @@ impl Table {
 
         for change in &mut self.changes {
             s.push(match change {
-                &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col._type),
+                &mut AddColumn(ref name, ref col) => {
+                    let mut s = T::add_column(ex, name, &col);
+                    s
+                }
                 &mut DropColumn(ref name) => T::drop_column(name),
                 &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
                 &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name),
@@ -133,25 +136,37 @@ impl TableMeta {
 #[derive(Clone)]
 pub struct Column {
     /// Is this a unique key
-    unique: bool,
+    pub unique: bool,
 
     /// Should the database create an index
-    indexed: bool,
+    pub indexed: bool,
 
     /// Can this column be NULL
-    nullable: bool,
+    pub nullable: bool,
 
     /// Does it auto-increment
-    increments: bool,
+    pub increments: bool,
 
     /// What's the column type
-    _type: Type,
+    pub _type: Type,
 
     /// What's default value records in this column
-    def: Option<ColumnDefault>,
+    pub def: Option<ColumnDefault>,
 }
 
 impl Column {
+    /// Lazy constructor mostly used in unit tests
+    pub fn new(t: Type) -> Column {
+        return Column {
+            indexed: false,
+            unique: false,
+            nullable: false,
+            increments: false,
+            _type: t,
+            def: None,
+        };
+    }
+
     /// Set a default value for this column
     pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
         let def = data.into();
@@ -185,23 +200,28 @@ impl Column {
     /// But I don't know how 😅
     fn compare_types(&self, def: &ColumnDefault) {
         match def {
-            &ColumnDefault::Text(_) => if &self._type != &Type::Text {
+            &ColumnDefault::Text(_) => {
+                // FIXME: This is broken by design...
+                if &self._type == &Type::Text || &self._type == &Type::Varchar(255) {
+                    println!("Handling a TEXT type");
+                    return;
+                }
+            }
+            &ColumnDefault::Integer(_) => if &self._type == &Type::Integer {
+                println!("Handling a NUMBER type");
                 return;
             },
-            &ColumnDefault::Integer(_) => if &self._type != &Type::Integer {
+            &ColumnDefault::Float(_) => if &self._type == &Type::Float {
+                println!("Handling a FLOATY type");
                 return;
             },
-            &ColumnDefault::Float(_) => if &self._type != &Type::Float {
+            &ColumnDefault::Boolean(_) => if &self._type == &Type::Boolean {
+                println!("Handling a BOOLEAN type");
                 return;
             },
-            &ColumnDefault::Boolean(_) => if &self._type != &Type::Boolean {
-                return;
-            },
-
-            // FIXME: This comparison is now broken
             _ => {}
         }
-        panic!("Mismatched data type for `default` value!");
+        panic!("Mismatched data type for `default` ({}) value!", def);
     }
 }
 
@@ -230,6 +250,18 @@ impl From<i64> for ColumnDefault {
     }
 }
 
+impl From<i32> for ColumnDefault {
+    fn from(data: i32) -> Self {
+        return ColumnDefault::Integer(data as i64);
+    }
+}
+
+impl From<usize> for ColumnDefault {
+    fn from(data: usize) -> Self {
+        return ColumnDefault::Integer(data as i64);
+    }
+}
+
 impl From<f64> for ColumnDefault {
     fn from(data: f64) -> Self {
         return ColumnDefault::Float(data);
@@ -239,5 +271,28 @@ impl From<f64> for ColumnDefault {
 impl From<bool> for ColumnDefault {
     fn from(data: bool) -> Self {
         return ColumnDefault::Boolean(data);
+    }
+}
+
+use std::fmt::{Display, Formatter, Result};
+
+impl Display for ColumnDefault {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        use self::ColumnDefault::*;
+        return write!(
+            f,
+            "{}",
+            &match *self {
+                Text(ref val) => format!("{}", val),
+                Varchar(ref val) => format!("{}", val),
+                Integer(ref val) => format!("{}", val),
+                Float(ref val) => format!("{}", val),
+                Boolean(ref val) => match val {
+                    &true => format!("t"),
+                    &false => format!("f"),
+                },
+                Foreign(ref val, _) => format!("{}", val),
+            }
+        );
     }
 }

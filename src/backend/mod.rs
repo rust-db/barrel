@@ -6,7 +6,7 @@
 
 mod pg;
 pub use self::pg::Pg;
-use Type;
+use {Type, Column};
 
 /// A generic SQL generator trait
 pub trait SqlGenerator {
@@ -31,7 +31,7 @@ pub trait SqlGenerator {
 
 
     /// Create a new column with a type
-    fn add_column(ex: bool, name: &str, _type: &Type) -> String;
+    fn add_column(ex: bool, name: &str, column: &Column) -> String;
 
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String;
