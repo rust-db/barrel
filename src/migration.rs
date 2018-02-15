@@ -69,6 +69,7 @@ impl Migration {
                 }
                 &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
                 &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
+                &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),
                 _ => {}
             }
         }
