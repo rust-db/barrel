@@ -69,6 +69,11 @@
 #![feature(clone_closures)]
 #![feature(custom_attribute)]
 
+#[cfg(feature = "diesel")]
+extern crate diesel_migrations;
+#[cfg(feature = "diesel")]
+pub mod integrations;
+
 pub mod backend;
 pub mod connectors;
 
@@ -102,7 +107,6 @@ pub enum TableChange {
 /// An enum set that represents a single change on a database
 #[derive(Clone)]
 pub enum DatabaseChange {
-    
     /// Create a new table
     CreateTable(Table, Rc<Fn(&mut Table)>),
 
@@ -140,11 +144,11 @@ pub enum Type {
     Varchar(usize),
 
     /// Create a primary key regardless of database
-    /// 
+    ///
     /// This type is more of a convenience wrapper around other
     /// (64-bit) integer types. It might be changed at some point
     /// or just removed.
-    /// 
+    ///
     /// **Be careful when using this type!**
     Primary,
 
