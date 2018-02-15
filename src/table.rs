@@ -169,9 +169,7 @@ impl Column {
 
     /// Set a default value for this column
     pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
-        let def = data.into();
-        self.compare_types(&def);
-        self.def = Some(def);
+        self.def = Some(data.into());
         return self;
     }
 
@@ -187,41 +185,6 @@ impl Column {
     pub fn increments(&mut self) -> &mut Column {
         self.increments = true;
         return self;
-    }
-
-    /// Check (at runtime) that the provided data matches the column type
-    ///
-    /// This is not ideal. Not only is the code not very nice but it means that
-    /// you can compile your migration tool without knowing if the migration will
-    /// *actually* go through.
-    ///
-    /// What would be much better is if the compiler could (somehow) check at
-    /// compile-time if the data provided matches whatever the column type is.
-    /// But I don't know how 😅
-    fn compare_types(&self, def: &ColumnDefault) {
-        match def {
-            &ColumnDefault::Text(_) => {
-                // FIXME: This is broken by design...
-                if &self._type == &Type::Text || &self._type == &Type::Varchar(255) {
-                    println!("Handling a TEXT type");
-                    return;
-                }
-            }
-            &ColumnDefault::Integer(_) => if &self._type == &Type::Integer {
-                println!("Handling a NUMBER type");
-                return;
-            },
-            &ColumnDefault::Float(_) => if &self._type == &Type::Float {
-                println!("Handling a FLOATY type");
-                return;
-            },
-            &ColumnDefault::Boolean(_) => if &self._type == &Type::Boolean {
-                println!("Handling a BOOLEAN type");
-                return;
-            },
-            _ => {}
-        }
-        panic!("Mismatched data type for `default` ({}) value!", def);
     }
 }
 

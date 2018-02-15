@@ -67,6 +67,8 @@ impl Migration {
                     }
                     s.push_str(")");
                 }
+                &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
+                &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
                 _ => {}
             }
         }

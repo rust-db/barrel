@@ -46,7 +46,6 @@ fn basic_fields_with_defaults() {
     );
 }
 
-
 #[test]
 fn simple_foreign_fields() {
     use Type::*;
@@ -61,3 +60,29 @@ fn simple_foreign_fields() {
     );
 }
 
+#[test]
+fn drop_table() {
+    let mut m = Migration::new();
+    m.drop_table("users");
+
+    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\""));
+}
+
+#[test]
+fn drop_table_if_exists() {
+    let mut m = Migration::new();
+    m.drop_table_if_exists("users");
+
+    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\" IF EXISTS"));
+}
+
+#[test]
+fn rename_table() {
+    let mut m = Migration::new();
+    m.rename_table("users", "cool_users");
+    assert_eq!(m.make::<Pg>(), String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\""));
+}
+
+// m.change_table("users", |t| {
+
+// });
