@@ -12,3 +12,10 @@ documentation = "https://docs.rs/barrel"
 
 categories = [ "database", "web-programming", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
+
+[features]
+default = []
+diesel = ["barrel_diesel"]
+
+[dependencies]
+barrel_diesel = { path = "barrel_diesel", optional = true }
