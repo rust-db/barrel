@@ -67,6 +67,7 @@
 //! always welcome 💚
 #![feature(box_syntax)]
 #![feature(clone_closures)]
+#![feature(custom_attribute)]
 
 pub mod backend;
 pub mod connectors;

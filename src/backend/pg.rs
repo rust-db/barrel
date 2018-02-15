@@ -35,34 +35,31 @@ impl SqlGenerator for Pg {
         use Type::*;
         let t: Type = column._type.clone();
 
-        /* This shouldn't be formatted. It's too long */
+        #[rustfmt_skip] /* This shouldn't be formatted. It's too long */
         let mut s = match t {
-            Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-            Array(it) => format!(
-                "{}\"{}\" {}",
-                Pg::prefix(ex),
-                name,
-                Pg::print_type(Array(box *it))
-            ),
+            Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type( Array(box *it) )),
         };
 
+        /* Add default value if it exists */
         s.push_str(&match (&column.def).as_ref() {
             Some(ref m) => format!(" DEFAULT '{}'", m),
             _ => format!(""),
         });
 
-        // match column.def.as_ref() {
-        //     Some(ref val) => s.push_str(&format!(" DEFAULT '{}'", val)),
-        //     _ => &format!(""),
-        // }
+        /* Include `not null` attributes  */
+        s.push_str(&match column.nullable {
+            true => format!(" NOT NULL"),
+            false => format!(""),
+        });
 
         return s;
     }
