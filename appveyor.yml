@@ -1,8 +1,8 @@
 environment:
   matrix:
-    - RUST: stable
+    - RUST: nightly
       BITS: 32
-    - RUST: stable
+    - RUST: nightly
       BITS: 64
 
 install:
