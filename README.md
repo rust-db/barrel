@@ -2,9 +2,10 @@
 
 [![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)
 [![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master&service=github)](https://coveralls.io/github/spacekookie/barrel?branch=master)
+[![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
-[![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
+
 
 
 A powerful schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
