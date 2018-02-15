@@ -1,6 +1,6 @@
 [package]
-name = "barrel-derive"
-version = "0.1.0"
+name = "barrel_derives"
+version = "0.0.0"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
 
 [lib]
