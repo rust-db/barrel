@@ -1,7 +1,7 @@
 ![](assets/logo_wide.svg)
 
 [![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)
-[![AppVeyor](https://img.shields.io/appveyor/ci/spacekookie/barrel.svg)](https://ci.appveyor.com/project/spacekookie/barrel)
+[![](https://ci.appveyor.com/api/projects/status/7e00r2e1xatxk3bj?svg=true)](https://ci.appveyor.com/project/spacekookie/barrel)
 [![](https://coveralls.io/repos/github/spacekookie/barrel/badge.svg?branch=master&service=github)](https://coveralls.io/github/spacekookie/barrel?branch=master)
 [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
