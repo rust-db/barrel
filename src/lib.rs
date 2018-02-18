@@ -69,10 +69,12 @@
 #![feature(clone_closures)]
 #![feature(custom_attribute)]
 
-#[cfg(feature = "diesel")]
-extern crate diesel_migrations;
+// TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel")]
 pub mod integrations;
+#[cfg(feature = "diesel")]
+pub use integrations::*;
+
 
 pub mod backend;
 pub mod connectors;
