@@ -15,4 +15,7 @@ keywords = ["sql", "database", "schema", "migration"]
 
 [features]
 default = []
-diesel = []
+diesel = ["tempdir"]
+
+[dependencies]
+tempdir = { version = "0.3.4", optional = true }
