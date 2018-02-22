@@ -1,10 +1,23 @@
 //!
 
-use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::io::prelude::*;
+use std::path::Path;
 use std::fs::*;
 use std::fs;
+
+pub fn generate_initial(path: &Path) {
+    let migr_path = path.join("mod.rs");
+    println!("Creating {}", migr_path.display());
+
+    let mut barrel_migr = fs::File::create(migr_path).unwrap();
+    barrel_migr.write(b"/// Handle up migrations \n").unwrap();
+    barrel_migr.write(b"fn up(migr: &mut Migration) {} \n\n").unwrap();
+
+    barrel_migr.write(b"/// Handle down migrations \n").unwrap();
+    barrel_migr.write(b"fn down(migr: &mut Migration) {} \n").unwrap();
+}
+
 
 pub fn migration_from(path: &Path) -> Option<(String, String)> {
     return Some(run_barrel_migration(&path.join("mod.rs")));
@@ -15,7 +28,6 @@ fn run_barrel_migration(migration: &Path) -> (String, String) {
     use tempdir::TempDir;
 
     let dir = TempDir::new("barrel").unwrap();
-    println!("Creating tmp dir: {:?}", dir);
     fs::create_dir_all(&dir.path().join("src")).unwrap();
 
     /* Add a Cargo.toml file */
