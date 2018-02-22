@@ -70,12 +70,14 @@
 #![feature(custom_attribute)]
 
 // TODO: Make this "diesel" block prettier
-#[cfg(feature = "diesel")]
+#[cfg(feature = "diesel_filled")]
 extern crate tempdir;
-#[cfg(feature = "diesel")]
+#[cfg(feature = "diesel_filled")]
 pub mod integrations;
-#[cfg(feature = "diesel")]
+#[cfg(feature = "diesel_filled")]
 pub use integrations::*;
+#[cfg(feature = "diesel_filled")]
+extern crate diesel;
 
 pub mod backend;
 pub mod connectors;
