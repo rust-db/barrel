@@ -1,10 +1,35 @@
 //!
 
+use diesel::migration::{Migration, RunMigrationsError};
+use diesel::connection::SimpleConnection;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::io::prelude::*;
 use std::fs::*;
 use std::fs;
+
+/// Represents a migration run inside Diesel
+pub struct BarrelMigration(PathBuf, String, String, String);
+
+impl Migration for BarrelMigration {
+    fn file_path(&self) -> Option<&Path> {
+        Some(self.0.as_path())
+    }
+
+    fn version(&self) -> &str {
+        &self.1
+    }
+
+    fn run(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
+        try!(conn.batch_execute(&self.2));
+        Ok(())
+    }
+
+    fn revert(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
+        try!(conn.batch_execute(&self.3));
+        Ok(())
+    }
+}
 
 pub fn generate_initial(path: PathBuf) {
     let migr_path = path.join("mod.rs");
@@ -18,9 +43,12 @@ pub fn generate_initial(path: PathBuf) {
     barrel_migr.write(b"fn down(migr: &mut Migration) {} \n").unwrap();
 }
 
-
+/// Generate a Migration from the provided path
 pub fn migration_from(path: &Path) -> Option<(String, String)> {
-    return Some(run_barrel_migration(&path.join("mod.rs")));
+    return match path.join("mod.rs").exists() {
+        true => Some(run_barrel_migration(&path.join("mod.rs"))),
+        false =>  None,
+    };
 }
 
 fn run_barrel_migration(migration: &Path) -> (String, String) {
