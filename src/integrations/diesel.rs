@@ -1,12 +1,12 @@
 //!
 
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::io::prelude::*;
-use std::path::Path;
 use std::fs::*;
 use std::fs;
 
-pub fn generate_initial(path: &Path) {
+pub fn generate_initial(path: PathBuf) {
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
