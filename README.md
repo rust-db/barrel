@@ -1,4 +1,4 @@
-![](assets/logo_wide.svg)
+![](assets/logo.svg)
 
 [![](https://travis-ci.org/spacekookie/barrel.svg?branch=master)](https://travis-ci.org/spacekookie/barrel)
 [![](https://ci.appveyor.com/api/projects/status/7e00r2e1xatxk3bj?svg=true)](https://ci.appveyor.com/project/spacekookie/barrel)
