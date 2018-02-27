@@ -32,6 +32,7 @@ before_script:
 # Build, test, benchmark, document. Gogogogo!
 script:
   - cargo build --verbose --all
+  - cargo build --features="diesel_filled"
   - cargo test --verbose --all
   - cargo bench --all
   - cargo doc
