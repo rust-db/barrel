@@ -9,6 +9,11 @@ use std::fs::*;
 use std::fs;
 
 /// Represents a migration run inside Diesel
+///
+/// 1. Path
+/// 2. Version
+/// 3. Up
+/// 4. Down
 pub struct BarrelMigration(PathBuf, String, String, String);
 
 impl Migration for BarrelMigration {
@@ -31,24 +36,45 @@ impl Migration for BarrelMigration {
     }
 }
 
+/// Generate migration files using the barrel schema builder
 pub fn generate_initial(path: PathBuf) {
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
     let mut barrel_migr = fs::File::create(migr_path).unwrap();
     barrel_migr.write(b"/// Handle up migrations \n").unwrap();
-    barrel_migr.write(b"fn up(migr: &mut Migration) {} \n\n").unwrap();
+    barrel_migr
+        .write(b"fn up(migr: &mut Migration) {} \n\n")
+        .unwrap();
 
     barrel_migr.write(b"/// Handle down migrations \n").unwrap();
-    barrel_migr.write(b"fn down(migr: &mut Migration) {} \n").unwrap();
+    barrel_migr
+        .write(b"fn down(migr: &mut Migration) {} \n")
+        .unwrap();
 }
 
 /// Generate a Migration from the provided path
-pub fn migration_from(path: &Path) -> Option<(String, String)> {
+pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
     return match path.join("mod.rs").exists() {
-        true => Some(run_barrel_migration(&path.join("mod.rs"))),
-        false =>  None,
+        true => Some(run_barrel_migration_wrapper(&path.join("mod.rs"))),
+        false => None,
     };
+}
+
+fn version_from_path(path: &Path) -> Result<String, ()> {
+    path.file_name()
+        .expect(&format!("Can't get file name from path `{:?}`", path))
+        .to_string_lossy()
+        .split('_')
+        .nth(0)
+        .map(|s| Ok(s.replace('-', "")))
+        .unwrap_or_else(|| Err(()))
+}
+
+fn run_barrel_migration_wrapper(path: &Path) -> Box<Migration> {
+    let (up, down) = run_barrel_migration(&path.join("mod.rs"));
+    let version = version_from_path(path).unwrap();
+    return Box::new(BarrelMigration(path.to_path_buf(), version, up, down));
 }
 
 fn run_barrel_migration(migration: &Path) -> (String, String) {
