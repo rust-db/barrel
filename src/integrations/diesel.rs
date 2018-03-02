@@ -37,7 +37,7 @@ impl Migration for BarrelMigration {
 }
 
 /// Generate migration files using the barrel schema builder
-pub fn generate_initial(path: PathBuf) {
+pub fn generate_initial(path: &PathBuf) {
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
