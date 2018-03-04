@@ -2,5 +2,5 @@
 //! 
 //! 
 
-#[cfg(feature = "diesel_filled")]
+#[cfg(feature = "diesel-filled")]
 pub mod diesel;
