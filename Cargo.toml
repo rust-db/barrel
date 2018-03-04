@@ -19,7 +19,7 @@ diesel-filled = ["tempdir", "diesel"]
 
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }
-diesel = { version = "1.1.0", default_features = false, optional = true }
+diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
 
-[patch.crates-io]
-diesel = { git = 'https://github.com/spacekookie/diesel', branch = 'feature/barrel' }
+# [patch.crates-io]
+# diesel = { git = 'https://github.com/spacekookie/diesel', branch = 'feature/barrel' }
