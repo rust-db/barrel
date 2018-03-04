@@ -19,4 +19,4 @@ diesel-filled = ["tempdir", "diesel"]
 
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }
-diesel = { git = "https://github.com/spacekookie/diesel", branch = "feature/barrel", default_features = false, optional = true }
+diesel = { git = "https://github.com/spacekookie/diesel", default_features = false, optional = true }
