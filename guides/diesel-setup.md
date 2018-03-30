@@ -25,7 +25,7 @@ Also make sure that you installed the `diesel_cli` with the `rust-migrations` fe
 
 From this point using `diesel` is very similar to how you normally use it. The only difference is that you should provide a `--type` flag when letting diesel generate a migration for you. Running migrations doesn't change.
 
-```console
+```bash
 ~ diesel migration generate <name> --type="rust"
 ~ diesel migration run
 ```
