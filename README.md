@@ -37,6 +37,10 @@ fn main() {
 
 If you have feedback [regarding the API](https://github.com/spacekookie/barrel/issues/1) or things you would want barrel to do, please open an issue. And documentation PR's are always welcome 💚
 
+## Using Diesel
+
+Since `diesel 1.2.0` it's possible to now use `barrel` for migrations with `diesel`. A guide with some more information on how to get started can be found [here](https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md)
+
 
 ## License
 
