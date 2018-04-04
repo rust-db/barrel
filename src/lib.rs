@@ -175,6 +175,10 @@ pub enum Type {
     /// Provide the name of a table to point to
     Foreign(&'static str),
 
+    /// Used for types not Implemented by the migration system.
+    /// This field is not statically checked.
+    Custom(&'static str),
+
     // FIXME: Figure out a way to do this nicely
     // Foreign(&'static str, &'static str),
     /// Any type can also exist as an array type

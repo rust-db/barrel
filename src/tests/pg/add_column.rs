@@ -54,6 +54,12 @@ fn foreign() {
 }
 
 #[test]
+fn custom() {
+    let sql = Pg::add_column(true, "Point", &Column::new(Custom("POINT")));
+    assert_eq!(String::from("ADD COLUMN \"Point\" POINT"), sql);
+}
+
+#[test]
 fn array_text() {
     let sql = Pg::add_column(true, "Array of Text", &Column::new(Array(box Text)));
     assert_eq!(String::from("ADD COLUMN \"Array of Text\" TEXT[]"), sql);
@@ -93,6 +99,12 @@ fn array_boolean() {
 fn array_binary() {
     let sql = Pg::add_column(true, "Array of Binary", &Column::new(Array(box Binary)));
     assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BINARY[]"), sql);
+}
+
+#[test]
+fn array_custom() {
+    let sql = Pg::add_column(true, "Array of Point", &Column::new(Array(box Custom("POINT"))));
+    assert_eq!(String::from("ADD COLUMN \"Array of Point\" POINT[]"), sql);
 }
 
 #[test]
