@@ -46,6 +46,7 @@ impl SqlGenerator for Pg {
             Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
+            Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type( Array(box *it) )),
         };
 
@@ -95,6 +96,7 @@ impl Pg {
             Double => format!("DOUBLE"),
             Boolean => format!("BOOLEAN"),
             Binary => format!("BINARY"),
+            Custom(t) => format!("{}", t),
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
         };
