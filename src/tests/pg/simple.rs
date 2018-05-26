@@ -1,4 +1,5 @@
 //! Other simple table/ column migrations
+#![allow(unused_imports)]
 
 use backend::{SqlGenerator, Pg};
 use Type::*;

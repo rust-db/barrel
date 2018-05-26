@@ -1,4 +1,5 @@
 //! Some unit tests that create create tables
+#![allow(unused_imports)]
 
 use backend::{Pg, SqlGenerator};
 use {Migration, Table};

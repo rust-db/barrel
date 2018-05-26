@@ -1,9 +1,9 @@
 //! All add_column combinations for pgsql
+#![allow(unused_imports)]
 
-use backend::{SqlGenerator, Pg};
-use Type::*;
+use backend::{Pg, SqlGenerator};
 use Column;
-
+use Type::*;
 
 #[test]
 fn text() {
@@ -50,7 +50,10 @@ fn binary() {
 #[test]
 fn foreign() {
     let sql = Pg::add_column(true, "Foreign", &Column::new(Foreign("posts")));
-    assert_eq!(String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES posts"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES posts"),
+        sql
+    );
 }
 
 #[test]
@@ -67,14 +70,28 @@ fn array_text() {
 
 #[test]
 fn array_varchar() {
-    let sql = Pg::add_column(true, "Array of Varchar", &Column::new(Array(Box::new(Varchar(255)))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Varchar\" VARCHAR(255)[]"), sql);
+    let sql = Pg::add_column(
+        true,
+        "Array of Varchar",
+        &Column::new(Array(Box::new(Varchar(255)))),
+    );
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Varchar\" VARCHAR(255)[]"),
+        sql
+    );
 }
 
 #[test]
 fn array_integer() {
-    let sql = Pg::add_column(true, "Array of Integer", &Column::new(Array(Box::new(Integer))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Integer\" INTEGER[]"), sql);
+    let sql = Pg::add_column(
+        true,
+        "Array of Integer",
+        &Column::new(Array(Box::new(Integer))),
+    );
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Integer\" INTEGER[]"),
+        sql
+    );
 }
 
 #[test]
@@ -85,30 +102,56 @@ fn array_float() {
 
 #[test]
 fn array_double() {
-    let sql = Pg::add_column(true, "Array of Double", &Column::new(Array(Box::new(Double))));
+    let sql = Pg::add_column(
+        true,
+        "Array of Double",
+        &Column::new(Array(Box::new(Double))),
+    );
     assert_eq!(String::from("ADD COLUMN \"Array of Double\" DOUBLE[]"), sql);
 }
 
 #[test]
 fn array_boolean() {
-    let sql = Pg::add_column(true, "Array of Boolean", &Column::new(Array(Box::new(Boolean))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Boolean\" BOOLEAN[]"), sql);
+    let sql = Pg::add_column(
+        true,
+        "Array of Boolean",
+        &Column::new(Array(Box::new(Boolean))),
+    );
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Boolean\" BOOLEAN[]"),
+        sql
+    );
 }
 
 #[test]
 fn array_binary() {
-    let sql = Pg::add_column(true, "Array of Binary", &Column::new(Array(Box::new(Binary))));
+    let sql = Pg::add_column(
+        true,
+        "Array of Binary",
+        &Column::new(Array(Box::new(Binary))),
+    );
     assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BINARY[]"), sql);
 }
 
 #[test]
 fn array_custom() {
-    let sql = Pg::add_column(true, "Array of Point", &Column::new(Array(Box::new(Custom("POINT")))));
+    let sql = Pg::add_column(
+        true,
+        "Array of Point",
+        &Column::new(Array(Box::new(Custom("POINT")))),
+    );
     assert_eq!(String::from("ADD COLUMN \"Array of Point\" POINT[]"), sql);
 }
 
 #[test]
 fn array_array_integer() {
-    let sql = Pg::add_column(true, "Array of Array of Integer", &Column::new(Array(Box::new(Array(Box::new(Integer))))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Array of Integer\" INTEGER[][]"), sql);
+    let sql = Pg::add_column(
+        true,
+        "Array of Array of Integer",
+        &Column::new(Array(Box::new(Array(Box::new(Integer))))),
+    );
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Array of Integer\" INTEGER[][]"),
+        sql
+    );
 }

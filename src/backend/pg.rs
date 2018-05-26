@@ -37,7 +37,7 @@ impl SqlGenerator for Pg {
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{} {} {}",
+            "{}{}{}",
             match t {
                 Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),

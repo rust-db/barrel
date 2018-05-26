@@ -32,9 +32,9 @@ before_script:
 
 # Build, test, benchmark, document. Gogogogo!
 script:
-  - cargo build --verbose --all
-  - cargo test --verbose --all
-  - cargo bench --all
+  - cargo build --verbose --all --features="pg sqlite3"
+  - cargo test --verbose --all --features="pg sqlite3"
+  - cargo bench --all --features="pg sqlite3"
   - cargo doc
 
 # Upload the whole mess
