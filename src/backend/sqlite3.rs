@@ -63,10 +63,12 @@ impl SqlGenerator for Sqlite {
         )
     }
 
+    #[allow(unused_variables)]
     fn drop_column(name: &str) -> String {
         unimplemented!()
     }
 
+    #[allow(unused_variables)]
     fn rename_column(old: &str, new: &str) -> String {
         unimplemented!()
     }
@@ -96,7 +98,7 @@ impl Sqlite {
             Binary => format!("BINARY"),
             Custom(t) => format!("{}", t),
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
-            Array(meh) => format!("{}[]", Pg::print_type(*meh)),
+            Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
         }
     }
 }
