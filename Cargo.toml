@@ -17,9 +17,14 @@ keywords = ["sql", "database", "schema", "migration"]
 default = []
 diesel-filled = ["tempdir", "diesel"]
 
+# Feature flags for per-database SQL generators
+sqlite3 = []
+pg = []
+
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }
 diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
 
-# [patch.crates-io]
-# diesel = { git = 'https://github.com/spacekookie/diesel', branch = 'feature/barrel' }
+[[example]]
+name = "pg_strings"
+required-features = ["pg"]
