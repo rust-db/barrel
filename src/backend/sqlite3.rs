@@ -1,18 +1,18 @@
-//! Postgres implementation of a generator
-//!
-//! This module generates strings that are specific to Postgres
-//! databases. They should be thoroughly tested via unit testing
+//! Sqlite3 implementation of a generator
 
 use super::{Column, SqlGenerator, Type};
 
-pub struct Pg;
-impl SqlGenerator for Pg {
+/// We call this struct Sqlite instead of Sqlite3 because we hope not 
+/// to have to break the API further down the road 
+pub struct Sqlite;
+impl SqlGenerator for Sqlite {
+
     fn create_table(name: &str) -> String {
         format!("CREATE TABLE \"{}\"", name)
     }
 
     fn create_table_if_not_exists(name: &str) -> String {
-        format!("CREATE TABLE \"{}\" IF NOT EXISTS", name)
+        format!("CREATE TABLE IF NOT EXISTS \"{}\"", name)
     }
 
     fn drop_table(name: &str) -> String {
@@ -20,7 +20,7 @@ impl SqlGenerator for Pg {
     }
 
     fn drop_table_if_exists(name: &str) -> String {
-        format!("DROP TABLE \"{}\" IF EXISTS", name)
+        format!("DROP TABLE IF EXISTS \"{}\"", name)
     }
 
     fn rename_table(old: &str, new: &str) -> String {
@@ -31,7 +31,7 @@ impl SqlGenerator for Pg {
         format!("ALTER TABLE \"{}\"", name)
     }
 
-    fn add_column(ex: bool, name: &str, column: &Column) -> String {
+   fn add_column(ex: bool, name: &str, column: &Column) -> String {
         use Type::*;
         let t: Type = column._type.clone();
 
@@ -39,17 +39,17 @@ impl SqlGenerator for Pg {
         format!(
             "{} {} {}",
             match t {
-                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type(Array(Box::new(*it)))
+                Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Array(it) => format!("{}\"{}\" {}",Sqlite::prefix(ex),name,Sqlite::print_type(Array(Box::new(*it)))
                 ),
             },
             match (&column.def).as_ref() {
@@ -64,15 +64,15 @@ impl SqlGenerator for Pg {
     }
 
     fn drop_column(name: &str) -> String {
-        format!("DROP COLUMN \"{}\"", name)
+        unimplemented!()
     }
 
     fn rename_column(old: &str, new: &str) -> String {
-        format!("ALTER COLUMN \"{}\" RENAME TO \"{}\"", old, new)
+        unimplemented!()
     }
 }
 
-impl Pg {
+impl Sqlite {
     fn prefix(ex: bool) -> String {
         match ex {
             true => format!("ADD COLUMN "),
@@ -83,14 +83,14 @@ impl Pg {
     fn print_type(t: Type) -> String {
         use Type::*;
         match t {
-            Primary => format!("SERIAL PRIMARY KEY"),
+            Primary => format!("INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT"),
             Text => format!("TEXT"),
             Varchar(l) => match l {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
             Integer => format!("INTEGER"),
-            Float => format!("FLOAT"),
+            Float => format!("REAL"),
             Double => format!("DOUBLE"),
             Boolean => format!("BOOLEAN"),
             Binary => format!("BINARY"),
