@@ -61,54 +61,54 @@ fn custom() {
 
 #[test]
 fn array_text() {
-    let sql = Pg::add_column(true, "Array of Text", &Column::new(Array(box Text)));
+    let sql = Pg::add_column(true, "Array of Text", &Column::new(Array(Box::new(Text))));
     assert_eq!(String::from("ADD COLUMN \"Array of Text\" TEXT[]"), sql);
 }
 
 #[test]
 fn array_varchar() {
-    let sql = Pg::add_column(true, "Array of Varchar", &Column::new(Array(box Varchar(255))));
+    let sql = Pg::add_column(true, "Array of Varchar", &Column::new(Array(Box::new(Varchar(255)))));
     assert_eq!(String::from("ADD COLUMN \"Array of Varchar\" VARCHAR(255)[]"), sql);
 }
 
 #[test]
 fn array_integer() {
-    let sql = Pg::add_column(true, "Array of Integer", &Column::new(Array(box Integer)));
+    let sql = Pg::add_column(true, "Array of Integer", &Column::new(Array(Box::new(Integer))));
     assert_eq!(String::from("ADD COLUMN \"Array of Integer\" INTEGER[]"), sql);
 }
 
 #[test]
 fn array_float() {
-    let sql = Pg::add_column(true, "Array of Float", &Column::new(Array(box Float)));
+    let sql = Pg::add_column(true, "Array of Float", &Column::new(Array(Box::new(Float))));
     assert_eq!(String::from("ADD COLUMN \"Array of Float\" FLOAT[]"), sql);
 }
 
 #[test]
 fn array_double() {
-    let sql = Pg::add_column(true, "Array of Double", &Column::new(Array(box Double)));
+    let sql = Pg::add_column(true, "Array of Double", &Column::new(Array(Box::new(Double))));
     assert_eq!(String::from("ADD COLUMN \"Array of Double\" DOUBLE[]"), sql);
 }
 
 #[test]
 fn array_boolean() {
-    let sql = Pg::add_column(true, "Array of Boolean", &Column::new(Array(box Boolean)));
+    let sql = Pg::add_column(true, "Array of Boolean", &Column::new(Array(Box::new(Boolean))));
     assert_eq!(String::from("ADD COLUMN \"Array of Boolean\" BOOLEAN[]"), sql);
 }
 
 #[test]
 fn array_binary() {
-    let sql = Pg::add_column(true, "Array of Binary", &Column::new(Array(box Binary)));
+    let sql = Pg::add_column(true, "Array of Binary", &Column::new(Array(Box::new(Binary))));
     assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BINARY[]"), sql);
 }
 
 #[test]
 fn array_custom() {
-    let sql = Pg::add_column(true, "Array of Point", &Column::new(Array(box Custom("POINT"))));
+    let sql = Pg::add_column(true, "Array of Point", &Column::new(Array(Box::new(Custom("POINT")))));
     assert_eq!(String::from("ADD COLUMN \"Array of Point\" POINT[]"), sql);
 }
 
 #[test]
 fn array_array_integer() {
-    let sql = Pg::add_column(true, "Array of Array of Integer", &Column::new(Array(box Array(box Integer))));
+    let sql = Pg::add_column(true, "Array of Array of Integer", &Column::new(Array(Box::new(Array(Box::new(Integer))))));
     assert_eq!(String::from("ADD COLUMN \"Array of Array of Integer\" INTEGER[][]"), sql);
 }

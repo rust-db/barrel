@@ -15,7 +15,7 @@ A powerful schema migration builder for Rust. Write complicated SQL schema migra
 
 ## Example
 
-`barrel` currently requires the nightly compiler. The following code is a simple example of how to get started
+`barrel` now works with the stable compiler. The following code is a simple example of how to get started
 
 ```rust
 extern crate barrel;

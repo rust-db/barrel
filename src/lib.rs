@@ -65,9 +65,7 @@
 //!
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
-#![feature(box_syntax)]
-#![feature(clone_closures)]
-#![feature(custom_attribute)]
+// #![feature(custom_attribute)]
 
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]

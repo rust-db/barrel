@@ -35,7 +35,7 @@ impl SqlGenerator for Pg {
         use Type::*;
         let t: Type = column._type.clone();
 
-        #[rustfmt_skip] /* This shouldn't be formatted. It's too long */
+        #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         let mut s = match t {
             Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
@@ -47,7 +47,7 @@ impl SqlGenerator for Pg {
             Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
             Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type( t )),
-            Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type( Array(box *it) )),
+            Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type( Array(Box::new(*it)) )),
         };
 
         /* Add default value if it exists */
