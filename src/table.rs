@@ -94,9 +94,9 @@ impl Table {
 /// Some metadata about a table that was just created
 #[derive(Clone)]
 pub struct TableMeta {
-    name: String,
-    has_id: bool,
-    encoding: String,
+    pub name: String,
+    pub has_id: bool,
+    pub encoding: String,
 }
 
 impl TableMeta {
