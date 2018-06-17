@@ -14,8 +14,8 @@
 use super::table::{Table, TableMeta};
 use super::{DatabaseChange, Type};
 
-use super::connectors::DatabaseExecutor;
 use super::backend::SqlGenerator;
+use super::connectors::DatabaseExecutor;
 
 use std::rc::Rc;
 
@@ -97,7 +97,9 @@ impl Migration {
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
-        t.add_column("id", Type::Primary).increments();
+        if t.meta.has_id {
+            t.add_column("id", Type::Primary).increments();
+        }
         let c = DatabaseChange::CreateTable(t, Rc::new(cb));
         self.changes.push(c);
 
