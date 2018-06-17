@@ -1,6 +1,6 @@
 [package]
 name = "barrel"
-version = "0.2.1"
+version = "0.2.2"
 
 description = "A powerful schema migration building API for Rust"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
