@@ -119,7 +119,9 @@ impl Migration {
         F: Fn(&mut Table),
     {
         let mut t = Table::new(name);
-        t.add_column("id", Type::Primary).increments();
+        if t.meta.has_id {
+            t.add_column("id", Type::Primary).increments();
+        }
         let c = DatabaseChange::CreateTableIfNotExists(t, Rc::new(cb));
         self.changes.push(c);
 
