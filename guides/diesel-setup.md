@@ -13,7 +13,7 @@ Using rust migrations (via `barrel`) with `diesel` is really simple. First, you 
 
 ```toml
 [dependencies]
-diesel = { version = "1.2", features = ["rust-migrations", "postgres"] }
+diesel = { version = "1.2", features = ["barrel-migrations", "postgres"] }
 # ...
 ```
 
