@@ -85,6 +85,8 @@ pub use table::{Column, Table, TableMeta};
 pub mod migration;
 pub use migration::Migration;
 
+pub mod types;
+
 #[cfg(test)]
 mod tests;
 
