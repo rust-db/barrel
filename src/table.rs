@@ -7,10 +7,17 @@
 //! You can also change existing tables with a closure that can
 //! then access individual columns in that table.
 
-use super::{TableChange, Type};
 use super::backend::SqlGenerator;
+use super::{TableChange, Type};
+use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 
-#[derive(Clone)]
+impl Debug for TableChange {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        f.write_str("TableChange")
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct Table {
     pub meta: TableMeta,
     changes: Vec<TableChange>,
@@ -92,7 +99,7 @@ impl Table {
 }
 
 /// Some metadata about a table that was just created
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct TableMeta {
     pub name: String,
     pub has_id: bool,
@@ -133,7 +140,7 @@ impl TableMeta {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Column {
     /// Is this a unique key
     pub unique: bool,
@@ -188,7 +195,7 @@ impl Column {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum ColumnDefault {
     Text(String),
     Varchar(usize),
@@ -237,10 +244,8 @@ impl From<bool> for ColumnDefault {
     }
 }
 
-use std::fmt::{Display, Formatter, Result};
-
 impl Display for ColumnDefault {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
         use self::ColumnDefault::*;
         return write!(
             f,

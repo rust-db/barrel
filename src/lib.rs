@@ -65,7 +65,6 @@
 //!
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
-// #![feature(custom_attribute)]
 
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]

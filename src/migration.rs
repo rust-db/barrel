@@ -53,6 +53,10 @@ impl Migration {
         for change in &mut changes {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb) => {
+                    if t.meta.has_id {
+                        t.add_column("id", Type::Primary).increments();
+                    }
+
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
                     s.push_str(&T::create_table(&t.meta.name()));
@@ -96,12 +100,8 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-        let mut t = Table::new(name);
-        if t.meta.has_id {
-            t.add_column("id", Type::Primary).increments();
-        }
-        let c = DatabaseChange::CreateTable(t, Rc::new(cb));
-        self.changes.push(c);
+        self.changes
+            .push(DatabaseChange::CreateTable(Table::new(name), Rc::new(cb)));
 
         return match self.changes.last_mut().unwrap() {
             &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
@@ -118,12 +118,10 @@ impl Migration {
     where
         F: Fn(&mut Table),
     {
-        let mut t = Table::new(name);
-        if t.meta.has_id {
-            t.add_column("id", Type::Primary).increments();
-        }
-        let c = DatabaseChange::CreateTableIfNotExists(t, Rc::new(cb));
-        self.changes.push(c);
+        self.changes.push(DatabaseChange::CreateTableIfNotExists(
+            Table::new(name),
+            Rc::new(cb),
+        ));
 
         return match self.changes.last_mut().unwrap() {
             &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
