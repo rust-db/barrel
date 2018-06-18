@@ -16,10 +16,13 @@ keywords = ["sql", "database", "schema", "migration"]
 [features]
 default = []
 diesel-filled = ["tempdir", "diesel"]
-
 # Feature flags for per-database SQL generators
 sqlite3 = []
 pg = []
+
+# Signal that you want all the unstable features
+unstable = []
+
 
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }

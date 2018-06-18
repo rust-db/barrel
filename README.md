@@ -42,6 +42,10 @@ If you have feedback [regarding the API](https://github.com/spacekookie/barrel/i
 Since `diesel 1.2.0` it's possible to now use `barrel` for migrations with `diesel`. A guide with some more information on how to get started can be found [here](https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md)
 
 
+## Unstable features
+
+Starting with `v0.2.4` `barrel` now has an `unstable` feature flag which will hide features and breaking changes that are in-development at the time of a minor or patch release. You can use these features if you so desire, but be aware that their usage will change more rapidely between versions (even patches) and their usage will be badly documented.
+
 ## License
 
 `barrel` is free software: you can redistribute it and/or modify it under the terms of the MIT Public License.
