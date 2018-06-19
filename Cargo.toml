@@ -13,21 +13,6 @@ documentation = "https://docs.rs/barrel"
 categories = [ "database", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
 
-[features]
-default = []
-diesel-filled = ["tempdir", "diesel"]
-# Feature flags for per-database SQL generators
-sqlite3 = []
-pg = []
-
-# Signal that you want all the unstable features
-unstable = []
-
-
-[dependencies]
-tempdir = { version = "0.3.4", optional = true }
-diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
-
 [[example]]
 name = "pg_strings"
 required-features = ["pg"]
@@ -35,3 +20,21 @@ required-features = ["pg"]
 [[example]]
 name = "sqlite_strings"
 required-features = ["sqlite3"]
+
+[features]
+default = []
+diesel-filled = ["tempdir", "diesel"]
+sqlite3 = []
+pg = []
+
+# Enables unstable (in-development) features, 
+#   even for stable version upgrades
+unstable = []
+
+
+[dependencies]
+tempdir = { version = "0.3.4", optional = true }
+diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
+
+[package.metadata.docs.rs]
+all-features = true

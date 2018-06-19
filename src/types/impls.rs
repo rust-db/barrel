@@ -1,12 +1,10 @@
-
-
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
 pub(crate) enum BaseType {
     /// Strings
     Text,
     /// Like a String but worse (and possibly obsolete, let's check that…erm… TODO There)
-    Varchar(usize),
+    Varchar,
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,
     /// Simple integer
@@ -44,13 +42,13 @@ pub(crate) enum BaseType {
 ///
 /// Please see the **default vaulues** section in the `types` module docs!
 pub struct Type {
-    nullable: bool,
-    unique: bool,
-    increments: bool,
-    indexed: bool,
-    default: Option<()>,
-    size: Option<usize>,
-    inner: BaseType,
+    pub nullable: bool,
+    pub unique: bool,
+    pub increments: bool,
+    pub indexed: bool,
+    pub default: Option<String>,
+    pub size: Option<usize>,
+    pub inner: BaseType,
 }
 
 /// This is a public API, be considered about breaking thigns
@@ -66,6 +64,11 @@ impl Type {
             size: None,
             inner,
         }
+    }
+
+    /// Validate provided metadata against
+    pub(crate) fn validate(&self) -> bool {
+        true
     }
 
     /// Function used to hide the inner type to outside users (sneaky, I know)
@@ -95,7 +98,7 @@ impl Type {
     
     /// Provide a default value for a type column
     pub fn default(self, arg: ()) -> Self {
-        Self { default: Some(arg), ..self }
+        Self { default: Some(String::new()), ..self }
     }
     
     /// Specify a size limit (important or varchar & similar)

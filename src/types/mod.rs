@@ -31,6 +31,7 @@
 //! ```
 
 mod builders;
+mod defaults;
 mod impls;
 
 /// Export all builder functions
@@ -38,3 +39,6 @@ pub use self::builders::*;
 
 /// Export only the Type struct
 pub use self::impls::Type;
+
+/// Use Defaults only internally
+pub(crate) use self::defaults::TypeDefault;

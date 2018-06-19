@@ -66,6 +66,9 @@
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
 
+#![feature(core_intrinsics)]
+
+
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]
 extern crate tempdir;
@@ -85,7 +88,7 @@ pub use table::{Column, Table, TableMeta};
 pub mod migration;
 pub use migration::Migration;
 
-#[cfg(feature = "unstable")]
+// #[cfg(feature = "unstable")]
 pub mod types;
 
 #[cfg(test)]
