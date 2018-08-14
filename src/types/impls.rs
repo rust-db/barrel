@@ -32,7 +32,7 @@ pub(crate) enum BaseType {
 /// Using this struct directly is not recommended. Instead, you should be
 /// using the constructor APIs in the `types` module.
 ///
-/// ```
+/// ```norun
 /// use barrel::types::*;
 ///
 /// let column = varchar()

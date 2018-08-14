@@ -21,8 +21,7 @@
 //! 
 //! ## Examples
 //! 
-//! ```rust
-//! 
+//! ```norun
 //! extern crate barrel;
 //! use barrel::types::*;
 //! 
