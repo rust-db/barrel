@@ -1,18 +1,18 @@
 extern crate barrel;
 
-use barrel::backend::Pg;
-use barrel::*;
+// use barrel::backend::Pg;
+// use barrel::*;
 
 fn main() {
 
-    let text = NewType::Textual("Hello");
-    let other = NewType::Primitive;
-    let array = NewType::Array(NewType::Primitive);
+    // let text = NewType::Textual("Hello");
+    // let other = NewType::Primitive;
+    // let array = NewType::Array(NewType::Primitive);
 
-    let mut container = Container::new();
-    container.insert(text);
-    container.insert(other);
-    container.insert(array);
+    // let mut container = Container::new();
+    // container.insert(text);
+    // container.insert(other);
+    // container.insert(array);
 
     // println!("{:#?}", container);
 

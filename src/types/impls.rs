@@ -1,3 +1,5 @@
+//! Implementation specifics for the type system
+
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
 pub(crate) enum BaseType {
@@ -41,19 +43,19 @@ pub(crate) enum BaseType {
 /// ```
 ///
 /// Please see the **default vaulues** section in the `types` module docs!
-pub struct Type {
+pub struct Type<T> {
     pub nullable: bool,
     pub unique: bool,
     pub increments: bool,
     pub indexed: bool,
-    pub default: Option<String>,
+    pub default: Option<T>,
     pub size: Option<usize>,
-    pub inner: BaseType,
+    inner: BaseType,
 }
 
 /// This is a public API, be considered about breaking thigns
 #[cfg_attr(rustfmt, rustfmt_skip)]
-impl Type {
+impl<T> Type<T> {
     pub(crate) fn new(inner: BaseType) -> Self {
         Self {
             nullable: false,
@@ -97,8 +99,8 @@ impl Type {
     }
     
     /// Provide a default value for a type column
-    pub fn default(self, arg: ()) -> Self {
-        Self { default: Some(String::new()), ..self }
+    pub fn default(self, arg: impl Into<T>) -> Self {
+        Self { default: Some(arg.into()), ..self }
     }
     
     /// Specify a size limit (important or varchar & similar)
@@ -106,3 +108,5 @@ impl Type {
         Self { size: Some(arg), ..self }
     }
 }
+
+
