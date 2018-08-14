@@ -37,4 +37,7 @@ tempdir = { version = "0.3.4", optional = true }
 diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
 
 [package.metadata.docs.rs]
-all-features = true
+
+# We need to explicitly toggle features here because
+#   `all-features` causes weird transient bugs
+features = ["diesel-filled", "sqlite3", "pg", "unstable"]
