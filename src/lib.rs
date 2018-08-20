@@ -1,8 +1,10 @@
 //! Powerful schema migration builder API in Rust.
 //!
 //! Barrel is meant to make writing migrations for different databases as easy
-//! as possible. It has three primary models: the [Migration](migration/struct.Migration.html) which represents
-//! all changes and changes made on a database level, the [Table](table/struct.Table.html) and the
+//! as possible. It has three primary models: 
+//! the [Migration](migration/struct.Migration.html) which represents
+//! all changes and changes made on a database level, 
+//! the [Table](table/struct.Table.html) and the
 //! [Column](column/struct.Column.html).
 //!
 //! When creating or altering tables a lambda which exposes `&mut Table` is
@@ -14,6 +16,9 @@
 //! default types and override encodings, nullability or uniqueness of columns.
 //! Some checks are performed at compile-time however most things (including)
 //! correct default values) are only checked at runtime.
+//! 
+//! **Note** Since version `0.3.0` it is required to provide a database backend
+//! in order to compile `barrel`.
 //!
 //! The following code is a simple example of how to get going with `barrel`
 //!
@@ -65,6 +70,9 @@
 //!
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
+
+#[cfg(not(any(feature = "sqlite", feature = "pg")))]
+compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
 
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]

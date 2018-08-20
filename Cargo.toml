@@ -34,7 +34,7 @@ unstable = []
 
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }
-diesel = { version = ">= 1.1, < 2.0", default_features = false, optional = true }
+diesel = { version = ">= 1.2, < 2.0", default_features = false, optional = true }
 
 [package.metadata.docs.rs]
 

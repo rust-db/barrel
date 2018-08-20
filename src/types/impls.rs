@@ -5,7 +5,7 @@
 pub(crate) enum BaseType {
     /// Strings
     Text,
-    /// Like a String but worse (and possibly obsolete, let's check that…erm… TODO There)
+    /// Like a String but worse
     Varchar,
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,

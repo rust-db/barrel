@@ -1,53 +1,58 @@
 //! Builder API's module
 
-use super::Type;
+use types::Type;
 
-///
-pub fn integer() -> Type {
+/// Creates an auto-incrementing primary key type
+pub fn primary() -> Type<u64> {
+    unimplemented!()
+}
+
+/// Create a basic integer type
+pub fn integer() -> Type<i64> {
     unimplemented!()
 }
 
 ///
-pub fn float() -> Type {
+pub fn float() -> Type<f32> {
     unimplemented!()
 }
 
 ///
-pub fn double() -> Type {
+pub fn double() -> Type<f64> {
     unimplemented!()
 }
 
 ///
-pub fn boolean() -> Type {
+pub fn boolean() -> Type<bool> {
     unimplemented!()
 }
 
 ///
-pub fn varchar() -> Type {
+pub fn varchar<'inner>() -> Type<&'inner str> {
     unimplemented!()
 }
 
 ///
-pub fn text() -> Type {
+pub fn text() -> Type<String> {
     unimplemented!()
 }
 
 ///
-pub fn json() -> Type {
+pub fn json() -> Type<()> {
     unimplemented!()
 }
 
 ///
-pub fn binary() -> Type {
+pub fn binary<'inner>() -> Type<&'inner [u8]> {
     unimplemented!()
 }
 
 ///
-pub fn foreign() -> Type {
+pub fn foreign<'inner, I>() -> Type<&'inner Type<I>> {
     unimplemented!()
 }
 
-///
-pub fn array() -> Type {
+/// Create an array of inner types
+pub fn array<I>(inner: Type<I>) -> Type<Type<I>> {
     unimplemented!()
 }
