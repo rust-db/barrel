@@ -21,8 +21,10 @@ use std::rc::Rc;
 
 /// Represents a schema migration on a database
 pub struct Migration {
-    schema: String,
-    changes: Vec<DatabaseChange>,
+    #[doc(hidden)]
+    pub schema: String,
+    #[doc(hidden)]
+    pub changes: Vec<DatabaseChange>,
 }
 
 impl Migration {

@@ -25,8 +25,7 @@
 //! ```
 //! extern crate barrel;
 //!
-//! use barrel::*;
-//! use barrel::backend::Pg;
+//! use barrel::{Migration, Type};
 //!
 //! fn main() {
 //!     let mut m = Migration::new();
@@ -71,8 +70,8 @@
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
 
-#[cfg(not(any(feature = "sqlite", feature = "pg")))]
-compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
+// #[cfg(not(any(feature = "sqlite", feature = "pg")))]
+// compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
 
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]

@@ -8,7 +8,7 @@ use {Migration, Table};
 fn simple_table() {
     use Type::*;
     let mut m = Migration::new();
-    m.create_table("users", |t: &mut Table| {});
+    m.create_table("users", |_: &mut Table| {});
     assert_eq!(
         m.make::<Pg>(),
         String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY)")
