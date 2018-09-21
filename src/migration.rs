@@ -78,6 +78,8 @@ impl Migration {
                 &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),
                 _ => {}
             }
+
+            s.push_str(";");
         }
 
         return s;
