@@ -44,7 +44,7 @@ fn boolean() {
 #[test]
 fn binary() {
     let sql = Pg::add_column(true, "Binary", &Column::new(Binary));
-    assert_eq!(String::from("ADD COLUMN \"Binary\" BINARY"), sql);
+    assert_eq!(String::from("ADD COLUMN \"Binary\" BYTEA"), sql);
 }
 
 #[test]
@@ -130,7 +130,7 @@ fn array_binary() {
         "Array of Binary",
         &Column::new(Array(Box::new(Binary))),
     );
-    assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BINARY[]"), sql);
+    assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BYTEA[]"), sql);
 }
 
 #[test]
