@@ -57,8 +57,8 @@ impl SqlGenerator for Pg {
                 _ => format!(""),
             },
             match column.nullable {
-                true => " NOT NULL",
-                false => "",
+                true => "",
+                false => " NOT NULL",
             }
         )
     }
