@@ -93,7 +93,7 @@ impl Pg {
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
             Boolean => format!("BOOLEAN"),
-            Binary => format!("BINARY"),
+            Binary => format!("BYTEA"),
             Custom(t) => format!("{}", t),
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
