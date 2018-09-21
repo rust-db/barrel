@@ -11,7 +11,7 @@ fn simple_table() {
     m.create_table("users", |_: &mut Table| {});
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY)")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY);")
     );
 }
 
@@ -27,7 +27,7 @@ fn basic_fields() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255), \"age\" INTEGER, \"plushy_sharks_owned\" BOOLEAN)")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255), \"age\" INTEGER, \"plushy_sharks_owned\" BOOLEAN);")
     );
 }
 
@@ -43,7 +43,7 @@ fn basic_fields_with_defaults() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255) DEFAULT 'Anonymous', \"age\" INTEGER DEFAULT '100', \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f')")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255) DEFAULT 'Anonymous', \"age\" INTEGER DEFAULT '100', \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f');")
     );
 }
 
@@ -57,8 +57,26 @@ fn simple_foreign_fields() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"posts\" INTEGER REFERENCES posts)")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"posts\" INTEGER REFERENCES posts);")
     );
+}
+
+#[test]
+fn create_multiple_tables() {
+    use Type::*;
+    let mut m = Migration::new();
+    m.create_table("artist", |t| {
+        t.add_column("name", Text);
+        t.add_column("description", Text);
+        t.add_column("pic", Text);
+        t.add_column("mbid", Text);
+    });
+    m.create_table("album", |t| {
+        t.add_column("name", Text);
+        t.add_column("pic", Text);
+        t.add_column("mbid", Text);
+    });
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"artist\" (\"id\" SERIAL PRIMARY KEY, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);CREATE TABLE \"album\" (\"id\" SERIAL PRIMARY KEY, \"name\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
 }
 
 #[test]
@@ -66,7 +84,7 @@ fn drop_table() {
     let mut m = Migration::new();
     m.drop_table("users");
 
-    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\""));
+    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\";"));
 }
 
 #[test]
@@ -74,14 +92,14 @@ fn drop_table_if_exists() {
     let mut m = Migration::new();
     m.drop_table_if_exists("users");
 
-    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\" IF EXISTS"));
+    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\" IF EXISTS;"));
 }
 
 #[test]
 fn rename_table() {
     let mut m = Migration::new();
     m.rename_table("users", "cool_users");
-    assert_eq!(m.make::<Pg>(), String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\""));
+    assert_eq!(m.make::<Pg>(), String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\";"));
 }
 
 // m.change_table("users", |t| {
