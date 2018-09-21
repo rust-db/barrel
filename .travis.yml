@@ -22,9 +22,9 @@ addons:
 
 # If nightly explodes we don't care aaas much
 matrix:
-  
   allow_failures:
-    - rust: nightly
+  # fail on nightly while we don't have a stable build
+  #  - rust: nightly
 
 # This is a pretty big hack and only really needed on the first of a build chain
 before_script:
