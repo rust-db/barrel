@@ -11,7 +11,7 @@ fn simple_table() {
     m.create_table("users", |_: &mut Table| {});
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY);")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL);")
     );
 }
 
@@ -27,7 +27,7 @@ fn basic_fields() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255), \"age\" INTEGER, \"plushy_sharks_owned\" BOOLEAN);")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" VARCHAR(255) NOT NULL, \"age\" INTEGER NOT NULL, \"plushy_sharks_owned\" BOOLEAN NOT NULL);")
     );
 }
 
@@ -43,7 +43,23 @@ fn basic_fields_with_defaults() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"name\" VARCHAR(255) DEFAULT 'Anonymous', \"age\" INTEGER DEFAULT '100', \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f');")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" VARCHAR(255) DEFAULT 'Anonymous' NOT NULL, \"age\" INTEGER DEFAULT '100' NOT NULL, \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f' NOT NULL);")
+    );
+}
+
+#[test]
+fn basic_fields_nullable() {
+    use Type::*;
+    let mut m = Migration::new();
+    m.create_table("users", |t: &mut Table| {
+        t.add_column("name", Varchar(255)).nullable();
+        t.add_column("age", Integer).nullable();
+        t.add_column("plushy_sharks_owned", Boolean).nullable();
+    });
+
+    assert_eq!(
+        m.make::<Pg>(),
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" VARCHAR(255), \"age\" INTEGER, \"plushy_sharks_owned\" BOOLEAN);")
     );
 }
 
@@ -57,7 +73,7 @@ fn simple_foreign_fields() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY, \"posts\" INTEGER REFERENCES posts);")
+        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"posts\" INTEGER REFERENCES posts NOT NULL);")
     );
 }
 
@@ -76,7 +92,7 @@ fn create_multiple_tables() {
         t.add_column("pic", Text);
         t.add_column("mbid", Text);
     });
-    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"artist\" (\"id\" SERIAL PRIMARY KEY, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);CREATE TABLE \"album\" (\"id\" SERIAL PRIMARY KEY, \"name\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"artist\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" TEXT NOT NULL, \"description\" TEXT NOT NULL, \"pic\" TEXT NOT NULL, \"mbid\" TEXT NOT NULL);CREATE TABLE \"album\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" TEXT NOT NULL, \"pic\" TEXT NOT NULL, \"mbid\" TEXT NOT NULL);"));
 }
 
 #[test]
