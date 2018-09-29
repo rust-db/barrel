@@ -47,8 +47,8 @@ impl SqlGenerator for Pg {
                 Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+                Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Date(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type(Array(Box::new(*it)))
                 ),

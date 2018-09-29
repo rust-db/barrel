@@ -96,6 +96,7 @@ impl Sqlite {
             Float => format!("REAL"),
             Double => format!("DOUBLE"),
             Boolean => format!("BOOLEAN"),
+            Date => format!("DATE"),
             Binary => format!("BINARY"),
             Custom(t) => format!("{}", t),
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
