@@ -38,24 +38,11 @@ impl Migration for BarrelMigration {
 
 /// Generate migration files using the barrel schema builder
 pub fn generate_initial(path: &PathBuf) {
-    let migr_path = path.join("mod.rs");
-    println!("Creating {}", migr_path.display());
-
-    let mut barrel_migr = fs::File::create(migr_path).unwrap();
-    barrel_migr.write(b"/// Handle up migrations \n").unwrap();
-    barrel_migr
-        .write(b"fn up(migr: &mut Migration) {} \n\n")
-        .unwrap();
-
-    barrel_migr.write(b"/// Handle down migrations \n").unwrap();
-    barrel_migr
-        .write(b"fn down(migr: &mut Migration) {} \n")
-        .unwrap();
+    generate_initial_with_content(path, "fn up(migr: &mut Migration) {} \n\n".to_string(), "fn down(migr: &mut Migration) {} \n".to_string())
 }
 
 /// Generate migration files using the barrel schema builder with initial content
 pub fn generate_initial_with_content(path: &PathBuf, up_content: &String, down_content: &String) {
-    println!("Creating {}, {}", up_content, down_content);
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
