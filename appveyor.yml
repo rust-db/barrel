@@ -1,3 +1,6 @@
+build: false
+build_script:
+  - cargo test --verbose %cargoflags%
 environment:
   matrix:
     - channel: stable
@@ -8,8 +11,4 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
-
-build: false
-build_script:
-  - cargo test --verbose %cargoflags%
 
