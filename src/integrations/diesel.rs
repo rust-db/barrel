@@ -53,6 +53,23 @@ pub fn generate_initial(path: &PathBuf) {
         .unwrap();
 }
 
+/// Generate migration files using the barrel schema builder with initial content
+pub fn generate_initial_with_content(path: &PathBuf, up_content: String, down_content: String) {
+    let migr_path = path.join("mod.rs");
+    println!("Creating {}", migr_path.display());
+
+    let mut barrel_migr = fs::File::create(migr_path).unwrap();
+    barrel_migr.write(b"/// Handle up migrations \n").unwrap();
+    barrel_migr
+        .write(up_content.as_bytes())
+        .unwrap();
+
+    barrel_migr.write(b"/// Handle down migrations \n").unwrap();
+    barrel_migr
+        .write(down_content.as_bytes())
+        .unwrap();
+}
+
 /// Generate a Migration from the provided path
 pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
     return match path.join("mod.rs").exists() {
