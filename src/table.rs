@@ -202,7 +202,7 @@ pub enum ColumnDefault {
     Integer(i64),
     Float(f64), // FIXME: Or just use 32-bit floats?
     Boolean(bool),
-
+    Date(String),
     /// A foreign key has a table and id it points to
     Foreign(String, u64),
     // TODO: Figure out storage for other data types
@@ -255,6 +255,7 @@ impl Display for ColumnDefault {
                 Varchar(ref val) => format!("{}", val),
                 Integer(ref val) => format!("{}", val),
                 Float(ref val) => format!("{}", val),
+                Date(ref val) => format!("{}", val),
                 Boolean(ref val) => match val {
                     &true => format!("t"),
                     &false => format!("f"),

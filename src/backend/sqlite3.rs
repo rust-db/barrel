@@ -47,6 +47,7 @@ impl SqlGenerator for Sqlite {
                 Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
                 Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
+                Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
                 Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
                 Array(it) => format!("{}\"{}\" {}",Sqlite::prefix(ex),name,Sqlite::print_type(Array(Box::new(*it)))

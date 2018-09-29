@@ -17,6 +17,8 @@ pub(crate) enum BaseType {
     Double,
     /// True or False
     Boolean,
+    /// Date And Time
+    Date,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
