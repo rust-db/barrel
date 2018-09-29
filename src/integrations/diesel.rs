@@ -55,6 +55,7 @@ pub fn generate_initial(path: &PathBuf) {
 
 /// Generate migration files using the barrel schema builder with initial content
 pub fn generate_initial_with_content(path: &PathBuf, up_content: &String, down_content: &String) {
+    println!("Creating {}, {}", up_content, down_content);
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
