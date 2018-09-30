@@ -14,6 +14,7 @@ fn main() {
         t.add_column("description", Text).nullable(); // Can be null
         t.add_column("age", Integer);
         t.add_column("posts", Foreign("posts"));
+        t.add_column("created_at", Date);
         t.add_column("owns_plushy_sharks", Boolean);
     });
 

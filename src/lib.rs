@@ -179,6 +179,9 @@ pub enum Type {
     /// Create a simple "binary" field
     Binary,
 
+    /// Create a Date field
+    Date,
+
     /// Provide the name of a table to point to
     Foreign(&'static str),
 

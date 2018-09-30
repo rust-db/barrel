@@ -48,6 +48,11 @@ pub fn binary<'inner>() -> Type<&'inner [u8]> {
 }
 
 ///
+pub fn date<'inner, I>() -> Type<&'inner Type<I>> {
+    unimplemented!()
+}
+
+///
 pub fn foreign<'inner, I>() -> Type<&'inner Type<I>> {
     unimplemented!()
 }
