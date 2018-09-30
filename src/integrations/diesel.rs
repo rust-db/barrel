@@ -38,7 +38,11 @@ impl Migration for BarrelMigration {
 
 /// Generate migration files using the barrel schema builder
 pub fn generate_initial(path: &PathBuf) {
-    generate_initial_with_content(path, &"fn up(migr: &mut Migration) {} \n\n".to_string(), &"fn down(migr: &mut Migration) {} \n".to_string())
+    generate_initial_with_content(
+        path,
+        &"fn up(migr: &mut Migration) {} \n\n".to_string(),
+        &"fn down(migr: &mut Migration) {} \n".to_string(),
+    )
 }
 
 /// Generate migration files using the barrel schema builder with initial content
