@@ -58,6 +58,10 @@ pub fn foreign<'inner, I>(inner: &Type<I>) -> Type<&'inner Type<I>> {
     Type::new(BaseType::Foreign(Box::new(inner.get_inner())))
 }
 
+pub fn date<'inner, I>() -> Type<&'inner Type<I>> {
+    unimplemented!()
+}
+
 /// Create an array of inner types
 pub fn array<I>(inner: &Type<I>) -> Type<Type<I>> {
     Type::new(BaseType::Array(Box::new(inner.get_inner())))

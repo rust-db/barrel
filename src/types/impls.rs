@@ -19,6 +19,8 @@ pub(crate) enum BaseType {
     UUID,
     /// True or False
     Boolean,
+    /// Date And Time
+    Date,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table

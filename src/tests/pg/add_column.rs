@@ -48,6 +48,12 @@ fn binary() {
 }
 
 #[test]
+fn date() {
+    let sql = Pg::add_column(true, "Date", &Column::new(Date));
+    assert_eq!(String::from("ADD COLUMN \"Date\" DATE NOT NULL"), sql);
+}
+
+#[test]
 fn foreign() {
     let sql = Pg::add_column(true, "Foreign", &Column::new(Foreign("posts")));
     assert_eq!(
