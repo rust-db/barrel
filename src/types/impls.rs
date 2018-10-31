@@ -13,14 +13,16 @@ pub(crate) enum BaseType {
     Integer,
     /// Floating point number
     Float,
-    /// Like Float but ~~double precision~~
+    /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`
     Double,
+    /// A unique identifier type
+    UUID,
     /// True or False
     Boolean,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
-    Foreign(&'static str),
+    Foreign(Box<BaseType>),
     /// I have no idea what you are – but I *like* it
     Custom(&'static str),
     /// Any of the above, but **many** of them
