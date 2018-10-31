@@ -1,16 +1,32 @@
 //! Builder API's module
 
-use types::Type;
 use super::impls::BaseType;
+use types::Type;
 
-/// Creates an auto-incrementing primary key type
+/// A standard primary numeric key type
+///
+/// It's 64-bit wide, can't be null or non-unique
+/// and auto-increments on inserts.
+/// Maps to `primary` on `Pg` and manually enforces
+/// this behaviour for other Sql variants.
 pub fn primary() -> Type<u64> {
     Type::new(BaseType::Primary)
+        .nullable(false)
+        .increments(true)
+        .unique(true)
+        .indexed(true)
 }
 
-/// Create a UUID primary key
+/// A (standardised) UUID primary key type
+///
+/// Similar to `primary()`, but uses a standard
+/// layout UUID type, mapping to `uuid` on `Pg`
+/// and not supported by all Sql variants.
 pub fn uuid() -> Type<String> {
     Type::new(BaseType::UUID)
+        .nullable(false)
+        .unique(true)
+        .indexed(true)
 }
 
 /// Create a basic integer type
@@ -59,7 +75,7 @@ pub fn foreign<'inner, I>(inner: &Type<I>) -> Type<&'inner Type<I>> {
 }
 
 pub fn date<'inner, I>() -> Type<&'inner Type<I>> {
-    unimplemented!()
+    Type::new(BaseType::Date)
 }
 
 /// Create an array of inner types
