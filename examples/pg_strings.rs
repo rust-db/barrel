@@ -1,11 +1,11 @@
 extern crate barrel;
 
-// use barrel::backend::Pg;
-// use barrel::*;
+use barrel::backend::Pg;
+use barrel::*;
 
 fn main() {
 
-    use Type::*;
+    use barrel::Type::*;
     let mut m = Migration::new();
 
     // A new table is automatically created with an "id" primary key
