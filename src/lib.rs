@@ -92,7 +92,7 @@ pub use table::{Column, Table, TableMeta};
 pub mod migration;
 pub use migration::Migration;
 
-#[cfg(feature = "unstable")]
+// #[cfg(feature = "unstable")]
 pub mod types;
 
 #[cfg(test)]

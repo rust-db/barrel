@@ -1,8 +1,10 @@
 //! Implementation specifics for the type system
 
+use std::time::SystemTime;
+
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
-pub(crate) enum BaseType {
+pub enum BaseType {
     /// Strings
     Text,
     /// Like a String but worse
@@ -31,6 +33,36 @@ pub(crate) enum BaseType {
     Array(Box<BaseType>),
 }
 
+#[derive(PartialEq, Debug, Clone)]
+pub enum WrappedDefault<'outer> {
+    /// Strings
+    Text(String),
+    /// Like a String but worse
+    Varchar(&'outer str),
+    /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
+    Primary,
+    /// Simple integer
+    Integer(i64),
+    /// Floating point number
+    Float(f32),
+    /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`
+    Double(f64),
+    /// A unique identifier type
+    UUID(String), // TODO: Change to UUID type
+    /// True or False
+    Boolean(bool),
+    /// Date And Time
+    Date(SystemTime),
+    /// <inconceivable jibberish>
+    Binary(&'outer [u8]),
+    /// Foreign key to other table
+    Foreign(Box<Type>),
+    /// I have no idea what you are – but I *like* it
+    Custom(&'static str),
+    /// Any of the above, but **many** of them
+    Array(Vec<Type>),
+}
+
 /// A database column type and all the metadata attached to it
 ///
 /// Using this struct directly is not recommended. Instead, you should be
@@ -47,19 +79,20 @@ pub(crate) enum BaseType {
 /// ```
 ///
 /// Please see the **default vaulues** section in the `types` module docs!
-pub struct Type<T> {
-    pub nullable: bool,
-    pub unique: bool,
-    pub increments: bool,
-    pub indexed: bool,
-    pub default: Option<T>,
-    pub size: Option<usize>,
+#[derive(Debug, Clone, PartialEq)]
+pub struct Type {
+    nullable: bool,
+    unique: bool,
+    increments: bool,
+    indexed: bool,
+    default: Option<WrappedDefault<'static>>,
+    size: Option<usize>,
     inner: BaseType,
 }
 
 /// This is a public API, be considered about breaking thigns
 #[cfg_attr(rustfmt, rustfmt_skip)]
-impl<T> Type<T> {
+impl Type {
     pub(crate) fn new(inner: BaseType) -> Self {
         Self {
             nullable: false,
@@ -70,11 +103,6 @@ impl<T> Type<T> {
             size: None,
             inner,
         }
-    }
-
-    /// Validate provided metadata against
-    pub(crate) fn validate(&self) -> bool {
-        true
     }
 
     /// Function used to hide the inner type to outside users (sneaky, I know)
@@ -103,7 +131,7 @@ impl<T> Type<T> {
     }
     
     /// Provide a default value for a type column
-    pub fn default(self, arg: impl Into<T>) -> Self {
+    pub fn default(self, arg: impl Into<WrappedDefault<'static>>) -> Self {
         Self { default: Some(arg.into()), ..self }
     }
     
@@ -112,5 +140,3 @@ impl<T> Type<T> {
         Self { size: Some(arg), ..self }
     }
 }
-
-

@@ -9,7 +9,7 @@ use types::Type;
 /// and auto-increments on inserts.
 /// Maps to `primary` on `Pg` and manually enforces
 /// this behaviour for other Sql variants.
-pub fn primary() -> Type<u64> {
+pub fn primary() -> Type {
     Type::new(BaseType::Primary)
         .nullable(false)
         .increments(true)
@@ -22,7 +22,7 @@ pub fn primary() -> Type<u64> {
 /// Similar to `primary()`, but uses a standard
 /// layout UUID type, mapping to `uuid` on `Pg`
 /// and not supported by all Sql variants.
-pub fn uuid() -> Type<String> {
+pub fn uuid() -> Type {
     Type::new(BaseType::UUID)
         .nullable(false)
         .unique(true)
@@ -30,55 +30,55 @@ pub fn uuid() -> Type<String> {
 }
 
 /// Create a basic integer type
-pub fn integer() -> Type<i64> {
+pub fn integer() -> Type {
     Type::new(BaseType::Integer)
 }
 
 ///
-pub fn float() -> Type<f32> {
+pub fn float() -> Type {
     Type::new(BaseType::Float)
 }
 
 ///
-pub fn double() -> Type<f64> {
+pub fn double() -> Type {
     Type::new(BaseType::Double)
 }
 
 ///
-pub fn boolean() -> Type<bool> {
+pub fn boolean() -> Type {
     Type::new(BaseType::Boolean)
 }
 
 ///
-pub fn varchar<'inner>() -> Type<&'inner str> {
+pub fn varchar() -> Type {
     Type::new(BaseType::Varchar)
 }
 
 ///
-pub fn text() -> Type<String> {
+pub fn text() -> Type {
     Type::new(BaseType::Text)
 }
 
 ///
-pub fn json() -> Type<()> {
+pub fn json() -> Type {
     unimplemented!()
 }
 
 ///
-pub fn binary<'inner>() -> Type<&'inner [u8]> {
+pub fn binary<'inner>() -> Type {
     Type::new(BaseType::Binary)
 }
 
 ///
-pub fn foreign<'inner, I>(inner: &Type<I>) -> Type<&'inner Type<I>> {
+pub fn foreign(inner: &Type) -> Type {
     Type::new(BaseType::Foreign(Box::new(inner.get_inner())))
 }
 
-pub fn date<'inner, I>() -> Type<&'inner Type<I>> {
+pub fn date() -> Type {
     Type::new(BaseType::Date)
 }
 
 /// Create an array of inner types
-pub fn array<I>(inner: &Type<I>) -> Type<Type<I>> {
+pub fn array(inner: &Type) -> Type {
     Type::new(BaseType::Array(Box::new(inner.get_inner())))
 }

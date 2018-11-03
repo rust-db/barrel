@@ -36,4 +36,4 @@ mod impls;
 pub use self::builders::*;
 
 /// Export only the Type struct
-pub use self::impls::Type;
+pub use self::impls::{Type, BaseType, WrappedDefault};
