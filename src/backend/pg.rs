@@ -84,23 +84,24 @@ impl Pg {
     }
 
     fn print_type(t: BaseType) -> String {
+        use self::BaseType::*;
         match t {
-            BaseType::Text => format!("TEXT"),
-            BaseType::Varchar(l) => match l {
+            Text => format!("TEXT"),
+            Varchar(l) => match l {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
-            BaseType::Primary => format!("SERIAL PRIMARY KEY"),
-            BaseType::Integer => format!("INTEGER"),
-            BaseType::Float => format!("FLOAT"),
-            BaseType::Double => format!("DOUBLE"),
-            BaseType::UUID => unimplemented!(),
-            BaseType::Boolean => format!("BOOLEAN"),
-            BaseType::Date => format!("DATE"),
-            BaseType::Binary => format!("BYTEA"),
-            BaseType::Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
-            BaseType::Custom(t) => format!("{}", t),
-            BaseType::Array(meh) => format!("{}[]", Pg::print_type(*meh)),
+            Primary => format!("SERIAL PRIMARY KEY"),
+            Integer => format!("INTEGER"),
+            Float => format!("FLOAT"),
+            Double => format!("DOUBLE"),
+            UUID => unimplemented!(),
+            Boolean => format!("BOOLEAN"),
+            Date => format!("DATE"),
+            Binary => format!("BYTEA"),
+            Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
+            Custom(t) => format!("{}", t),
+            Array(meh) => format!("{}[]", Pg::print_type(*meh)),
         }
     }
 }
