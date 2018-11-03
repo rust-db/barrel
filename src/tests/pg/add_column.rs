@@ -2,8 +2,7 @@
 #![allow(unused_imports)]
 
 use backend::{Pg, SqlGenerator};
-use Column;
-use Type::*;
+use {Column, types};
 
 #[test]
 fn text() {

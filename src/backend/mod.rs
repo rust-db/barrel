@@ -15,7 +15,7 @@ mod sqlite3;
 pub use self::sqlite3::Sqlite;
 
 #[allow(unused_imports)]
-use {Type, Column};
+use types::Type;
 
 /// A generic SQL generator trait
 pub trait SqlGenerator {
@@ -40,7 +40,7 @@ pub trait SqlGenerator {
 
 
     /// Create a new column with a type
-    fn add_column(ex: bool, name: &str, column: &Column) -> String;
+    fn add_column(ex: bool, name: &str, _type: &Type) -> String;
 
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String;

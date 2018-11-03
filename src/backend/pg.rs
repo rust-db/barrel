@@ -3,7 +3,7 @@
 //! This module generates strings that are specific to Postgres
 //! databases. They should be thoroughly tested via unit testing
 
-use super::{Column, SqlGenerator, Type};
+use super::{Column, SqlGenerator, types::{Type, BaseType}};
 
 pub struct Pg;
 impl SqlGenerator for Pg {
@@ -31,29 +31,28 @@ impl SqlGenerator for Pg {
         format!("ALTER TABLE \"{}\"", name)
     }
 
-    fn add_column(ex: bool, name: &str, column: &Column) -> String {
-        use Type::*;
-        let t: Type = column._type.clone();
+    fn add_column(ex: bool, name: &str, tt: &Type) -> String {
+        let bt: BaseType = tt.get_inner();
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
             "{}{}{}",
-            match t {
-                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+            match bt {
                 Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+                Varchar => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+                UUID => unimplemented!(),
                 Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
+                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
                 Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type(Array(Box::new(*it)))
-                ),
             },
-            match (&column.def).as_ref() {
+            match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
                 _ => format!(""),
             },

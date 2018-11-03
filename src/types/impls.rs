@@ -1,5 +1,6 @@
 //! Implementation specifics for the type system
 
+use std::fmt::{self, Display, Formatter};
 use std::time::SystemTime;
 
 /// Core type enum, describing the basic type
@@ -39,8 +40,6 @@ pub enum WrappedDefault<'outer> {
     Text(String),
     /// Like a String but worse
     Varchar(&'outer str),
-    /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
-    Primary,
     /// Simple integer
     Integer(i64),
     /// Floating point number
@@ -63,6 +62,30 @@ pub enum WrappedDefault<'outer> {
     Array(Vec<Type>),
 }
 
+impl<'outer> Display for WrappedDefault<'outer> {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        use self::WrappedDefault::*;
+        write!(
+            f,
+            "{}",
+            &match *self {
+                Text(ref val) => format!("{}", val),
+                Varchar(ref val) => format!("{}", val),
+                Integer(ref val) => format!("{}", val),
+                Float(ref val) => format!("{}", val),
+                Double(ref val) => format!("{}", val),
+                UUID(ref val) => format!("{}", val),
+                Boolean(ref val) => format!("{}", val),
+                Date(ref val) => format!("{:?}", val),
+                Binary(ref val) => format!("{:?}", val),
+                Foreign(ref val) => format!("{:?}", val),
+                Custom(ref val) => format!("{}", val),
+                Array(ref val) => format!("{:?}", val),
+            }
+        )
+    }
+}
+
 /// A database column type and all the metadata attached to it
 ///
 /// Using this struct directly is not recommended. Instead, you should be
@@ -81,13 +104,13 @@ pub enum WrappedDefault<'outer> {
 /// Please see the **default vaulues** section in the `types` module docs!
 #[derive(Debug, Clone, PartialEq)]
 pub struct Type {
-    nullable: bool,
-    unique: bool,
-    increments: bool,
-    indexed: bool,
-    default: Option<WrappedDefault<'static>>,
-    size: Option<usize>,
-    inner: BaseType,
+    pub nullable: bool,
+    pub unique: bool,
+    pub increments: bool,
+    pub indexed: bool,
+    pub default: Option<WrappedDefault<'static>>,
+    pub size: Option<usize>,
+    pub inner: BaseType,
 }
 
 /// This is a public API, be considered about breaking thigns

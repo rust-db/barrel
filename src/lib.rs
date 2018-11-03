@@ -92,7 +92,6 @@ pub use table::{Column, Table, TableMeta};
 pub mod migration;
 pub use migration::Migration;
 
-// #[cfg(feature = "unstable")]
 pub mod types;
 
 #[cfg(test)]
@@ -104,10 +103,10 @@ use std::rc::Rc;
 #[derive(Clone)]
 pub enum TableChange {
     /// Add a column of a name and type
-    AddColumn(String, Column),
+    AddColumn(String, types::Type),
 
     /// Change an existing column
-    ChangeColumn(String, Column, Rc<Fn(&mut Column)>),
+    ChangeColumn(String, types::Type, Rc<Fn(&mut types::Type)>),
 
     /// Simply rename a column
     RenameColumn(String, String),
