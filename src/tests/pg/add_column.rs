@@ -2,7 +2,7 @@
 #![allow(unused_imports)]
 
 use backend::{Pg, SqlGenerator};
-use {Column, types};
+use {types, Column};
 
 #[test]
 fn text() {
@@ -13,7 +13,10 @@ fn text() {
 #[test]
 fn varchar() {
     let sql = Pg::add_column(true, "Varchar", &Column::new(Varchar(255)));
-    assert_eq!(String::from("ADD COLUMN \"Varchar\" VARCHAR(255) NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Varchar\" VARCHAR(255) NOT NULL"),
+        sql
+    );
 }
 
 #[test]
@@ -70,7 +73,10 @@ fn custom() {
 #[test]
 fn array_text() {
     let sql = Pg::add_column(true, "Array of Text", &Column::new(Array(Box::new(Text))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Text\" TEXT[] NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Text\" TEXT[] NOT NULL"),
+        sql
+    );
 }
 
 #[test]
@@ -102,7 +108,10 @@ fn array_integer() {
 #[test]
 fn array_float() {
     let sql = Pg::add_column(true, "Array of Float", &Column::new(Array(Box::new(Float))));
-    assert_eq!(String::from("ADD COLUMN \"Array of Float\" FLOAT[] NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Float\" FLOAT[] NOT NULL"),
+        sql
+    );
 }
 
 #[test]
@@ -112,7 +121,10 @@ fn array_double() {
         "Array of Double",
         &Column::new(Array(Box::new(Double))),
     );
-    assert_eq!(String::from("ADD COLUMN \"Array of Double\" DOUBLE[] NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Double\" DOUBLE[] NOT NULL"),
+        sql
+    );
 }
 
 #[test]
@@ -135,7 +147,10 @@ fn array_binary() {
         "Array of Binary",
         &Column::new(Array(Box::new(Binary))),
     );
-    assert_eq!(String::from("ADD COLUMN \"Array of Binary\" BYTEA[] NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Binary\" BYTEA[] NOT NULL"),
+        sql
+    );
 }
 
 #[test]
@@ -145,7 +160,10 @@ fn array_custom() {
         "Array of Point",
         &Column::new(Array(Box::new(Custom("POINT")))),
     );
-    assert_eq!(String::from("ADD COLUMN \"Array of Point\" POINT[] NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Array of Point\" POINT[] NOT NULL"),
+        sql
+    );
 }
 
 #[test]

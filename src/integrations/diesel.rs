@@ -1,12 +1,12 @@
 //!
 
-use diesel::migration::{Migration, RunMigrationsError};
 use diesel::connection::SimpleConnection;
+use diesel::migration::{Migration, RunMigrationsError};
+use std::fs;
+use std::fs::*;
+use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::io::prelude::*;
-use std::fs::*;
-use std::fs;
 
 /// Represents a migration run inside Diesel
 ///
@@ -52,14 +52,10 @@ pub fn generate_initial_with_content(path: &PathBuf, up_content: &String, down_c
 
     let mut barrel_migr = fs::File::create(migr_path).unwrap();
     barrel_migr.write(b"/// Handle up migrations \n").unwrap();
-    barrel_migr
-        .write(up_content.as_bytes())
-        .unwrap();
+    barrel_migr.write(up_content.as_bytes()).unwrap();
 
     barrel_migr.write(b"/// Handle down migrations \n").unwrap();
-    barrel_migr
-        .write(down_content.as_bytes())
-        .unwrap();
+    barrel_migr.write(down_content.as_bytes()).unwrap();
 }
 
 /// Generate a Migration from the provided path
@@ -108,8 +104,7 @@ authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
 barrel = { git = \"https://github.com/spacekookie/barrel\" }",
-        )
-        .unwrap();
+        ).unwrap();
 
     /* Generate main.rs based on user migration */
     let main_file_path = &dir.path().join("src").join("main.rs");
@@ -140,8 +135,7 @@ fn main() {{
 ",
                 user_migration
             ).as_bytes(),
-        )
-        .unwrap();
+        ).unwrap();
 
     let output = if cfg!(target_os = "windows") {
         Command::new("cargo")

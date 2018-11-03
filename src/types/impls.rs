@@ -9,7 +9,7 @@ pub enum BaseType {
     /// Strings
     Text,
     /// Like a String but worse
-    Varchar,
+    Varchar(usize),
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,
     /// Simple integer

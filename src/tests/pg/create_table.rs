@@ -108,14 +108,20 @@ fn drop_table_if_exists() {
     let mut m = Migration::new();
     m.drop_table_if_exists("users");
 
-    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\" IF EXISTS;"));
+    assert_eq!(
+        m.make::<Pg>(),
+        String::from("DROP TABLE \"users\" IF EXISTS;")
+    );
 }
 
 #[test]
 fn rename_table() {
     let mut m = Migration::new();
     m.rename_table("users", "cool_users");
-    assert_eq!(m.make::<Pg>(), String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\";"));
+    assert_eq!(
+        m.make::<Pg>(),
+        String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\";")
+    );
 }
 
 // m.change_table("users", |t| {

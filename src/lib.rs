@@ -1,9 +1,9 @@
 //! Powerful schema migration builder API in Rust.
 //!
 //! Barrel is meant to make writing migrations for different databases as easy
-//! as possible. It has three primary models: 
+//! as possible. It has three primary models:
 //! the [Migration](migration/struct.Migration.html) which represents
-//! all changes and changes made on a database level, 
+//! all changes and changes made on a database level,
 //! the [Table](table/struct.Table.html) and the
 //! [Column](column/struct.Column.html).
 //!
@@ -16,7 +16,7 @@
 //! default types and override encodings, nullability or uniqueness of columns.
 //! Some checks are performed at compile-time however most things (including)
 //! correct default values) are only checked at runtime.
-//! 
+//!
 //! **Note** Since version `0.3.0` it is required to provide a database backend
 //! in order to compile `barrel`.
 //!
@@ -147,6 +147,8 @@ pub enum DatabaseChange {
 /// t.add_column("posts", Type::Array(box Type::Foreign("posts")));
 /// ```
 #[derive(PartialEq, Debug, Clone)]
+#[deprecated]
+#[allow(deprecated)]
 pub enum Type {
     /// Create a simple "text" field
     Text,

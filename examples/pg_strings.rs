@@ -4,7 +4,6 @@ use barrel::backend::Pg;
 use barrel::*;
 
 fn main() {
-
     use barrel::Type::*;
     let mut m = Migration::new();
 

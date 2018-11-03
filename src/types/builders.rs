@@ -50,8 +50,8 @@ pub fn boolean() -> Type {
 }
 
 ///
-pub fn varchar() -> Type {
-    Type::new(BaseType::Varchar)
+pub fn varchar(len: usize) -> Type {
+    Type::new(BaseType::Varchar(len))
 }
 
 ///

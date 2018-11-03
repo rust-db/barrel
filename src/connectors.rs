@@ -14,7 +14,6 @@
 /// automatically generate and run the given SQL string for a
 /// database connection which is wrapped by it
 pub trait DatabaseExecutor {
-
     /// Execute the migration on a backend
     fn execute<S: Into<String>>(&mut self, sql: S);
 }

@@ -2,11 +2,10 @@
 
 use super::{Column, SqlGenerator, Type};
 
-/// We call this struct Sqlite instead of Sqlite3 because we hope not 
-/// to have to break the API further down the road 
+/// We call this struct Sqlite instead of Sqlite3 because we hope not
+/// to have to break the API further down the road
 pub struct Sqlite;
 impl SqlGenerator for Sqlite {
-
     fn create_table(name: &str) -> String {
         format!("CREATE TABLE \"{}\"", name)
     }
@@ -31,7 +30,7 @@ impl SqlGenerator for Sqlite {
         format!("ALTER TABLE \"{}\"", name)
     }
 
-   fn add_column(ex: bool, name: &str, column: &Column) -> String {
+    fn add_column(ex: bool, name: &str, column: &Column) -> String {
         use Type::*;
         let t: Type = column._type.clone();
 
