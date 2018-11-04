@@ -39,7 +39,7 @@ script:
 
 # Upload the whole mess
 after_success:
-  - cargo coveralls --verbose -- --all-features
+  - cargo coveralls --verbose --all-features
 
 # AND GOD DAMN IT LET ME SLEEP!
 notifications:
