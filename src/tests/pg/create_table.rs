@@ -29,20 +29,20 @@ fn basic_fields() {
     );
 }
 
-#[test]
-fn basic_fields_with_defaults() {
-    let mut m = Migration::new();
-    m.create_table("users", |t: &mut Table| {
-        t.add_column("name", types::varchar(255));
-        t.add_column("age", types::integer());
-        t.add_column("plushy_sharks_owned", types::boolean()); // nobody is allowed plushy sharks
-    });
+// #[test]
+// fn basic_fields_with_defaults() {
+//     let mut m = Migration::new();
+//     m.create_table("users", |t: &mut Table| {
+//         t.add_column("name", types::varchar(255));
+//         t.add_column("age", types::integer());
+//         t.add_column("plushy_sharks_owned", types::boolean()); // nobody is allowed plushy sharks
+//     });
 
-    assert_eq!(
-        m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" VARCHAR(255) DEFAULT 'Anonymous' NOT NULL, \"age\" INTEGER DEFAULT '100' NOT NULL, \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f' NOT NULL);")
-    );
-}
+//     assert_eq!(
+//         m.make::<Pg>(),
+//         String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" VARCHAR(255) DEFAULT 'Anonymous' NOT NULL, \"age\" INTEGER DEFAULT '100' NOT NULL, \"plushy_sharks_owned\" BOOLEAN DEFAULT 'f' NOT NULL);")
+//     );
+// }
 
 #[test]
 fn basic_fields_nullable() {
@@ -50,7 +50,7 @@ fn basic_fields_nullable() {
     m.create_table("users", |t: &mut Table| {
         t.add_column("name", types::varchar(255).nullable(true));
         t.add_column("age", types::integer().nullable(true));
-        t.add_column("plushy_sharks_owned", types::boolean());
+        t.add_column("plushy_sharks_owned", types::boolean().nullable(true));
     });
 
     assert_eq!(
@@ -59,8 +59,7 @@ fn basic_fields_nullable() {
     );
 }
 
-// #[test]
-// fn simple_foreign_fields() {
+// #[test]// fn simple_foreign_fields() {
 //     let mut m = Migration::new();
 //     m.create_table("users", |t: &mut Table| {
 //         t.add_column("posts", types::foreign("poststypes::"));
@@ -118,7 +117,3 @@ fn rename_table() {
         String::from("ALTER TABLE \"users\" RENAME TO \"cool_users\";")
     );
 }
-
-// m.change_table("users", |t| {
-
-// });

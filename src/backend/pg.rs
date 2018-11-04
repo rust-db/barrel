@@ -91,7 +91,8 @@ impl Pg {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
-            Primary => format!("SERIAL PRIMARY KEY"),
+            /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
+            Primary => format!("SERIAL PRIMARY KEY NOT NULL"),
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
