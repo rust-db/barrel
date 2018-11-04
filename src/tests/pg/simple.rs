@@ -1,9 +1,7 @@
 //! Other simple table/ column migrations
 #![allow(unused_imports)]
 
-use backend::{SqlGenerator, Pg};
-use Type::*;
-
+use backend::{Pg, SqlGenerator};
 
 #[test]
 fn create_table() {
@@ -14,7 +12,10 @@ fn create_table() {
 #[test]
 fn create_table_if_not_exists() {
     let sql = Pg::create_table_if_not_exists("table_to_create");
-    assert_eq!(String::from("CREATE TABLE \"table_to_create\" IF NOT EXISTS"), sql);
+    assert_eq!(
+        String::from("CREATE TABLE \"table_to_create\" IF NOT EXISTS"),
+        sql
+    );
 }
 
 #[test]
@@ -32,7 +33,10 @@ fn drop_table_if_exists() {
 #[test]
 fn rename_table() {
     let sql = Pg::rename_table("old_table", "new_table");
-    assert_eq!(String::from("ALTER TABLE \"old_table\" RENAME TO \"new_table\""), sql);
+    assert_eq!(
+        String::from("ALTER TABLE \"old_table\" RENAME TO \"new_table\""),
+        sql
+    );
 }
 
 #[test]
@@ -50,5 +54,8 @@ fn drop_column() {
 #[test]
 fn rename_column() {
     let sql = Pg::rename_column("old_column", "new_column");
-    assert_eq!(String::from("ALTER COLUMN \"old_column\" RENAME TO \"new_column\""), sql);
+    assert_eq!(
+        String::from("ALTER COLUMN \"old_column\" RENAME TO \"new_column\""),
+        sql
+    );
 }

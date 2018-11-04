@@ -8,8 +8,9 @@
 //! then access individual columns in that table.
 
 use super::backend::SqlGenerator;
-use super::{TableChange, Type};
+use super::TableChange;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
+use types::Type;
 
 impl Debug for TableChange {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
@@ -31,37 +32,28 @@ impl Table {
         };
     }
 
-    pub fn add_primary<S: Into<String>>(&mut self, name: S) -> &mut Column {
-        self.changes.push(TableChange::AddColumn(
-            name.into(),
-            Column {
-                indexed: true,
-                unique: true,
-                nullable: false,
-                increments: true,
-                _type: Type::Integer,
-                def: None,
-            },
-        ));
+    // pub fn add_primary<S: Into<String>>(&mut self, name: S) -> &mut Type {
+    //     self.changes.push(TableChange::AddColumn(
+    //         name.into(),
+    //         Column {
+    //             indexed: true,
+    //             unique: true,
+    //             nullable: false,
+    //             increments: true,
+    //             _type: Type::Integer,
+    //             def: None,
+    //         },
+    //     ));
 
-        return match self.changes.last_mut().unwrap() {
-            &mut TableChange::AddColumn(_, ref mut c) => c,
-            _ => unreachable!(),
-        };
-    }
+    //     return match self.changes.last_mut().unwrap() {
+    //         &mut TableChange::AddColumn(_, ref mut c) => c,
+    //         _ => unreachable!(),
+    //     };
+    // }
 
-    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Column {
-        self.changes.push(TableChange::AddColumn(
-            name.into(),
-            Column {
-                indexed: false,
-                unique: false,
-                nullable: false,
-                increments: false,
-                _type: _type,
-                def: None,
-            },
-        ));
+    pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Type {
+        self.changes
+            .push(TableChange::AddColumn(name.into(), _type));
 
         return match self.changes.last_mut().unwrap() {
             &mut TableChange::AddColumn(_, ref mut c) => c,

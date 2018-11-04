@@ -12,7 +12,8 @@
 //! if you're a library developer.
 
 use super::table::{Table, TableMeta};
-use super::{DatabaseChange, Type};
+use super::DatabaseChange;
+use types;
 
 use super::backend::SqlGenerator;
 use super::connectors::DatabaseExecutor;
@@ -56,7 +57,7 @@ impl Migration {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb) => {
                     if t.meta.has_id {
-                        t.add_column("id", Type::Primary).increments();
+                        t.add_column("id", types::primary());
                     }
 
                     cb(t); // Run the user code

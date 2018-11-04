@@ -11,7 +11,7 @@ use types::Type;
 /// this behaviour for other Sql variants.
 pub fn primary() -> Type {
     Type::new(BaseType::Primary)
-        .nullable(false)
+        .nullable(true) // Primary keys are non-null implicitly
         .increments(true)
         .unique(true)
         .indexed(true)
@@ -50,8 +50,8 @@ pub fn boolean() -> Type {
 }
 
 ///
-pub fn varchar() -> Type {
-    Type::new(BaseType::Varchar)
+pub fn varchar(len: usize) -> Type {
+    Type::new(BaseType::Varchar(len))
 }
 
 ///

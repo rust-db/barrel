@@ -4,7 +4,6 @@
 
 use backend::{SqlGenerator, Sqlite};
 
-
 #[test]
 fn create_table() {
     let sql = Sqlite::create_table("table_to_create");
@@ -14,7 +13,10 @@ fn create_table() {
 #[test]
 fn create_table_if_not_exists() {
     let sql = Sqlite::create_table_if_not_exists("table_to_create");
-    assert_eq!(String::from("CREATE TABLE IF NOT EXISTS \"table_to_create\""), sql);
+    assert_eq!(
+        String::from("CREATE TABLE IF NOT EXISTS \"table_to_create\""),
+        sql
+    );
 }
 
 #[test]
@@ -32,7 +34,10 @@ fn drop_table_if_exists() {
 #[test]
 fn rename_table() {
     let sql = Sqlite::rename_table("old_table", "new_table");
-    assert_eq!(String::from("ALTER TABLE \"old_table\" RENAME TO \"new_table\""), sql);
+    assert_eq!(
+        String::from("ALTER TABLE \"old_table\" RENAME TO \"new_table\""),
+        sql
+    );
 }
 
 #[test]
