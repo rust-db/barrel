@@ -25,14 +25,14 @@
 //! ```
 //! extern crate barrel;
 //!
-//! use barrel::{Migration, Type};
+//! use barrel::{types, Migration};
 //!
 //! fn main() {
 //!     let mut m = Migration::new();
 //!     m.create_table("users", |t| {
-//!         t.add_column("name", Type::Varchar(255));
-//!         t.add_column("age", Type::Integer);
-//!         t.add_column("owns_plushy_sharks", Type::Boolean);
+//!         t.add_column("name", types::varchar(255));
+//!         t.add_column("age", types::integer());
+//!         t.add_column("owns_plushy_sharks", types::boolean());
 //!     });
 //! }
 //! ```
