@@ -2,7 +2,6 @@
 #![allow(unused_imports)]
 
 use backend::{Pg, SqlGenerator};
-use Type::*;
 
 #[test]
 fn create_table() {
