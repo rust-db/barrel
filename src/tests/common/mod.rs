@@ -1,5 +1,6 @@
 /* Include some external tests */
 mod cloning;
+mod utils;
 
 use types::{BaseType, Type, WrappedDefault};
 use Migration;
@@ -48,6 +49,7 @@ fn pin_struct_layout() {
     assert_eq!(tt.size, None);
     assert_eq!(tt.inner, BaseType::Custom("GAY"));
 }
+
 #[test]
 fn default_render_text() {
     use self::WrappedDefault::*;
