@@ -77,7 +77,7 @@ fn version_from_path(path: &Path) -> Result<String, ()> {
 }
 
 fn run_barrel_migration_wrapper(path: &Path) -> Box<Migration> {
-    let (up, down) = run_barrel_migration(&path.join("mod.rs"));
+    let (up, down) = run_barrel_migration(&path);
     let version = version_from_path(path).unwrap();
     return Box::new(BarrelMigration(path.to_path_buf(), version, up, down));
 }
@@ -103,7 +103,7 @@ authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
-barrel = { git = \"https://github.com/spacekookie/barrel\" }",
+barrel = { git = \"https://github.com/spacekookie/barrel\", features = [\"pg\"]  }",
         ).unwrap();
 
     /* Generate main.rs based on user migration */
@@ -155,7 +155,7 @@ fn main() {{
     let output = String::from_utf8_lossy(&output.stdout);
     let vec: Vec<&str> = output.split("\n").collect();
     let up = String::from(vec[0]);
-    let down = String::from(vec[0]);
+    let down = String::from(vec[1]);
 
     return (up, down);
 }
