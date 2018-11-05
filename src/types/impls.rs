@@ -36,10 +36,6 @@ pub enum BaseType {
     Array(Box<BaseType>),
 }
 
-/// Provide a default value to some column
-///
-/// Type checks can be performed at runtime whether a given
-/// default value is applicable to a column type or not.
 #[derive(PartialEq, Debug, Clone)]
 pub enum WrappedDefault<'outer> {
     /// Strings
@@ -60,10 +56,10 @@ pub enum WrappedDefault<'outer> {
     Date(SystemTime),
     /// <inconceivable jibberish>
     Binary(&'outer [u8]),
-    /// Foreign key to other table
-    Foreign(Box<Type>),
-    /// I have no idea what you are – but I *like* it
-    Custom(&'static str),
+    // /// Foreign key to other table
+    // Foreign(Box<Type>),
+    // I have no idea what you are – but I *like* it
+    // Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Vec<Type>),
 }
@@ -84,8 +80,6 @@ impl<'outer> Display for WrappedDefault<'outer> {
                 Boolean(ref val) => format!("{}", val),
                 Date(ref val) => format!("{:?}", val),
                 Binary(ref val) => format!("{:?}", val),
-                Foreign(ref val) => format!("{:?}", val),
-                Custom(ref val) => format!("{}", val),
                 Array(ref val) => format!("{:?}", val),
             }
         )
