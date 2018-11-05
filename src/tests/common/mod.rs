@@ -1,4 +1,3 @@
-
 /* Include some external tests */
 mod cloning;
 
@@ -20,6 +19,7 @@ fn pin_public_api() {
     let tt = Type::new(BaseType::Custom("GAY"));
 
     assert_eq!(tt.nullable, false);
+    assert_eq!(tt.indexed, false);
     assert_eq!(tt.unique, false);
     assert_eq!(tt.increments, false);
     assert_eq!(tt.default, None);
@@ -27,6 +27,27 @@ fn pin_public_api() {
     assert_eq!(tt.inner, BaseType::Custom("GAY"));
 }
 
+#[test]
+fn pin_struct_layout() {
+    // The best sql type because it's very queer 🏳️‍🌈
+    let tt = Type {
+        nullable: false,
+        indexed: false,
+        unique: false,
+        increments: false,
+        default: None,
+        size: None,
+        inner: BaseType::Custom("GAY"),
+    };
+
+    assert_eq!(tt.nullable, false);
+    assert_eq!(tt.indexed, false);
+    assert_eq!(tt.unique, false);
+    assert_eq!(tt.increments, false);
+    assert_eq!(tt.default, None);
+    assert_eq!(tt.size, None);
+    assert_eq!(tt.inner, BaseType::Custom("GAY"));
+}
 #[test]
 fn default_render_text() {
     use self::WrappedDefault::*;
@@ -97,4 +118,3 @@ fn default_render_binary() {
 //         "".to_owned()
 //     );
 // }
-
