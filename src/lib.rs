@@ -1,9 +1,9 @@
 //! Powerful schema migration builder API in Rust.
 //!
 //! Barrel is meant to make writing migrations for different databases as easy
-//! as possible. It has three primary models: 
+//! as possible. It has three primary models:
 //! the [Migration](migration/struct.Migration.html) which represents
-//! all changes and changes made on a database level, 
+//! all changes and changes made on a database level,
 //! the [Table](table/struct.Table.html) and the
 //! [Column](column/struct.Column.html).
 //!
@@ -16,7 +16,7 @@
 //! default types and override encodings, nullability or uniqueness of columns.
 //! Some checks are performed at compile-time however most things (including)
 //! correct default values) are only checked at runtime.
-//! 
+//!
 //! **Note** Since version `0.3.0` it is required to provide a database backend
 //! in order to compile `barrel`.
 //!
@@ -25,14 +25,14 @@
 //! ```
 //! extern crate barrel;
 //!
-//! use barrel::{Migration, Type};
+//! use barrel::{types, Migration};
 //!
 //! fn main() {
 //!     let mut m = Migration::new();
 //!     m.create_table("users", |t| {
-//!         t.add_column("name", Type::Varchar(255));
-//!         t.add_column("age", Type::Integer);
-//!         t.add_column("owns_plushy_sharks", Type::Boolean);
+//!         t.add_column("name", types::varchar(255));
+//!         t.add_column("age", types::integer());
+//!         t.add_column("owns_plushy_sharks", types::boolean());
 //!     });
 //! }
 //! ```
@@ -92,7 +92,6 @@ pub use table::{Column, Table, TableMeta};
 pub mod migration;
 pub use migration::Migration;
 
-#[cfg(feature = "unstable")]
 pub mod types;
 
 #[cfg(test)]
@@ -104,10 +103,10 @@ use std::rc::Rc;
 #[derive(Clone)]
 pub enum TableChange {
     /// Add a column of a name and type
-    AddColumn(String, Column),
+    AddColumn(String, types::Type),
 
     /// Change an existing column
-    ChangeColumn(String, Column, Rc<Fn(&mut Column)>),
+    ChangeColumn(String, types::Type, Rc<Fn(&mut types::Type)>),
 
     /// Simply rename a column
     RenameColumn(String, String),
@@ -148,6 +147,8 @@ pub enum DatabaseChange {
 /// t.add_column("posts", Type::Array(box Type::Foreign("posts")));
 /// ```
 #[derive(PartialEq, Debug, Clone)]
+#[deprecated]
+#[allow(deprecated)]
 pub enum Type {
     /// Create a simple "text" field
     Text,
@@ -178,6 +179,9 @@ pub enum Type {
 
     /// Create a simple "binary" field
     Binary,
+
+    /// Create a Date field
+    Date,
 
     /// Provide the name of a table to point to
     Foreign(&'static str),

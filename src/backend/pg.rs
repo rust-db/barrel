@@ -3,8 +3,10 @@
 //! This module generates strings that are specific to Postgres
 //! databases. They should be thoroughly tested via unit testing
 
-use super::{Column, SqlGenerator, Type};
+use super::SqlGenerator;
+use types::{BaseType, Type};
 
+/// Postgres SQL generator backend
 pub struct Pg;
 impl SqlGenerator for Pg {
     fn create_table(name: &str) -> String {
@@ -31,34 +33,35 @@ impl SqlGenerator for Pg {
         format!("ALTER TABLE \"{}\"", name)
     }
 
-    fn add_column(ex: bool, name: &str, column: &Column) -> String {
-        use Type::*;
-        let t: Type = column._type.clone();
+    fn add_column(ex: bool, name: &str, tt: &Type) -> String {
+        let bt: BaseType = tt.get_inner();
+        use self::BaseType::*;
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
             "{}{}{}",
-            match t {
-                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(t)),
-                Array(it) => format!("{}\"{}\" {}",Pg::prefix(ex),name,Pg::print_type(Array(Box::new(*it)))
-                ),
+            match bt {
+                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                UUID => unimplemented!(),
+                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it))))
             },
-            match (&column.def).as_ref() {
+            match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
                 _ => format!(""),
             },
-            match column.nullable {
-                true => " NOT NULL",
-                false => "",
+            match tt.nullable {
+                true => "",
+                false => " NOT NULL",
             }
         )
     }
@@ -80,22 +83,25 @@ impl Pg {
         }
     }
 
-    fn print_type(t: Type) -> String {
-        use Type::*;
+    fn print_type(t: BaseType) -> String {
+        use self::BaseType::*;
         match t {
-            Primary => format!("SERIAL PRIMARY KEY"),
             Text => format!("TEXT"),
             Varchar(l) => match l {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
+            Primary => format!("SERIAL PRIMARY KEY NOT NULL"),
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
+            UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
-            Binary => format!("BINARY"),
+            Date => format!("DATE"),
+            Binary => format!("BYTEA"),
+            Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
             Custom(t) => format!("{}", t),
-            Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
         }
     }

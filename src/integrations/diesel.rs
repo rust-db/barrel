@@ -1,12 +1,12 @@
 //!
 
-use diesel::migration::{Migration, RunMigrationsError};
 use diesel::connection::SimpleConnection;
+use diesel::migration::{Migration, RunMigrationsError};
+use std::fs;
+use std::fs::*;
+use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::io::prelude::*;
-use std::fs::*;
-use std::fs;
 
 /// Represents a migration run inside Diesel
 ///
@@ -38,19 +38,24 @@ impl Migration for BarrelMigration {
 
 /// Generate migration files using the barrel schema builder
 pub fn generate_initial(path: &PathBuf) {
+    generate_initial_with_content(
+        path,
+        &"fn up(migr: &mut Migration) {} \n\n".to_string(),
+        &"fn down(migr: &mut Migration) {} \n".to_string(),
+    )
+}
+
+/// Generate migration files using the barrel schema builder with initial content
+pub fn generate_initial_with_content(path: &PathBuf, up_content: &String, down_content: &String) {
     let migr_path = path.join("mod.rs");
     println!("Creating {}", migr_path.display());
 
     let mut barrel_migr = fs::File::create(migr_path).unwrap();
     barrel_migr.write(b"/// Handle up migrations \n").unwrap();
-    barrel_migr
-        .write(b"fn up(migr: &mut Migration) {} \n\n")
-        .unwrap();
+    barrel_migr.write(up_content.as_bytes()).unwrap();
 
     barrel_migr.write(b"/// Handle down migrations \n").unwrap();
-    barrel_migr
-        .write(b"fn down(migr: &mut Migration) {} \n")
-        .unwrap();
+    barrel_migr.write(down_content.as_bytes()).unwrap();
 }
 
 /// Generate a Migration from the provided path
@@ -98,9 +103,8 @@ authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
-barrel = { git = \"https://github.com/spacekookie/barrel\", features = [\"pg\"] }",
-        )
-        .unwrap();
+barrel = { git = \"https://github.com/spacekookie/barrel\", features = [\"pg\"]  }",
+        ).unwrap();
 
     /* Generate main.rs based on user migration */
     let main_file_path = &dir.path().join("src").join("main.rs");
@@ -131,8 +135,7 @@ fn main() {{
 ",
                 user_migration
             ).as_bytes(),
-        )
-        .unwrap();
+        ).unwrap();
 
     let output = if cfg!(target_os = "windows") {
         Command::new("cargo")

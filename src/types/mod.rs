@@ -18,13 +18,13 @@
 //! - `unique`: `false`
 //! - `default`:  `None`
 //! - `size`: `None` (which will error if size is important)
-//! 
+//!
 //! ## Examples
-//! 
+//!
 //! ```norun
 //! extern crate barrel;
 //! use barrel::types::*;
-//! 
+//!
 //! // Make your own Primary key :)
 //! let col = integer().increments(true).unique(true);
 //! ```
@@ -36,4 +36,4 @@ mod impls;
 pub use self::builders::*;
 
 /// Export only the Type struct
-pub use self::impls::Type;
+pub use self::impls::{BaseType, Type, WrappedDefault};

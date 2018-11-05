@@ -1,12 +1,12 @@
 //! Sqlite3 implementation of a generator
 
-use super::{Column, SqlGenerator, Type};
+use super::SqlGenerator;
+use types::{BaseType, Type};
 
-/// We call this struct Sqlite instead of Sqlite3 because we hope not 
-/// to have to break the API further down the road 
+/// We call this struct Sqlite instead of Sqlite3 because we hope not
+/// to have to break the API further down the road
 pub struct Sqlite;
 impl SqlGenerator for Sqlite {
-
     fn create_table(name: &str) -> String {
         format!("CREATE TABLE \"{}\"", name)
     }
@@ -31,34 +31,35 @@ impl SqlGenerator for Sqlite {
         format!("ALTER TABLE \"{}\"", name)
     }
 
-   fn add_column(ex: bool, name: &str, column: &Column) -> String {
-        use Type::*;
-        let t: Type = column._type.clone();
+    fn add_column(ex: bool, name: &str, tt: &Type) -> String {
+        let bt: BaseType = tt.get_inner();
+        use self::BaseType::*;
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{} {} {}",
-            match t {
-                Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(t)),
-                Array(it) => format!("{}\"{}\" {}",Sqlite::prefix(ex),name,Sqlite::print_type(Array(Box::new(*it)))
-                ),
+            "{}{}{}",
+            match bt {
+                Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                UUID => unimplemented!(),
+                Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it))))
             },
-            match (&column.def).as_ref() {
+            match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
                 _ => format!(""),
             },
-            match column.nullable {
-                true => " NOT NULL",
-                false => "",
+            match tt.nullable {
+                true => "",
+                false => " NOT NULL",
             }
         )
     }
@@ -82,22 +83,24 @@ impl Sqlite {
         }
     }
 
-    fn print_type(t: Type) -> String {
-        use Type::*;
+    fn print_type(t: BaseType) -> String {
+        use self::BaseType::*;
         match t {
-            Primary => format!("INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT"),
             Text => format!("TEXT"),
             Varchar(l) => match l {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Primary => format!("INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT"),
             Integer => format!("INTEGER"),
             Float => format!("REAL"),
             Double => format!("DOUBLE"),
+            UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
+            Date => format!("DATE"),
             Binary => format!("BINARY"),
+            Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
             Custom(t) => format!("{}", t),
-            Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
         }
     }
