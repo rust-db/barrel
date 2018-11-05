@@ -55,20 +55,20 @@ fn date() {
     assert_eq!(String::from("ADD COLUMN \"Date\" DATE NOT NULL"), sql);
 }
 
-// #[test]
-// fn foreign() {
-//     let sql = Pg::add_column(true, "Foreign", &types::foreign("posts"));
-//     assert_eq!(
-//         String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES posts NOT NULL"),
-//         sql
-//     );
-// }
+#[test]
+fn foreign() {
+    let sql = Pg::add_column(true, "Foreign", &types::foreign("posts"));
+    assert_eq!(
+        String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES posts NOT NULL"),
+        sql
+    );
+}
 
-// #[test]
-// fn custom() {
-//     let sql = Pg::add_column(true, "Point", &types::custom("POINT"));
-//     assert_eq!(String::from("ADD COLUMN \"Point\" POINT NOT NULL"), sql);
-// }
+#[test]
+fn custom() {
+    let sql = Pg::add_column(true, "Point", &types::custom("POINT"));
+    assert_eq!(String::from("ADD COLUMN \"Point\" POINT NOT NULL"), sql);
+}
 
 #[test]
 fn array_text() {

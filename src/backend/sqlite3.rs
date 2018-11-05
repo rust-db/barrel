@@ -46,6 +46,7 @@ impl SqlGenerator for Sqlite {
                 Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 UUID => unimplemented!(),
+                Json => unimplemented!(),
                 Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
@@ -98,8 +99,9 @@ impl Sqlite {
             UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
+            Json => panic!("Json is not supported by Sqlite3"),
             Binary => format!("BINARY"),
-            Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
+            Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
         }

@@ -48,6 +48,7 @@ impl SqlGenerator for Pg {
                 Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 UUID => unimplemented!(),
+                Json => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
@@ -99,8 +100,9 @@ impl Pg {
             UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
+            Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(t) => format!("INTEGER REFERENCES {}", Self::print_type(*t)),
+            Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
         }

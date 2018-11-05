@@ -22,18 +22,24 @@ pub enum BaseType {
     UUID,
     /// True or False
     Boolean,
+    /// Json encoded data
+    Json,
     /// Date And Time
     Date,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
-    Foreign(Box<BaseType>),
+    Foreign(&'static str),
     /// I have no idea what you are – but I *like* it
     Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Box<BaseType>),
 }
 
+/// Provide a default value to some column
+///
+/// Type checks can be performed at runtime whether a given
+/// default value is applicable to a column type or not.
 #[derive(PartialEq, Debug, Clone)]
 pub enum WrappedDefault<'outer> {
     /// Strings

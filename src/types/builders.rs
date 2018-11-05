@@ -59,19 +59,23 @@ pub fn text() -> Type {
     Type::new(BaseType::Text)
 }
 
-///
+/// A json-type column – not supported by all backends
 pub fn json() -> Type {
-    unimplemented!()
+    Type::new(BaseType::Json)
 }
 
-///
+/// Embed binary data
 pub fn binary<'inner>() -> Type {
     Type::new(BaseType::Binary)
 }
 
-///
-pub fn foreign(inner: &Type) -> Type {
-    Type::new(BaseType::Foreign(Box::new(inner.get_inner())))
+/// Create a column that points to some foreign table
+pub fn foreign(inner: &'static str) -> Type {
+    Type::new(BaseType::Foreign(inner))
+}
+
+pub fn custom(sql: &'static str) -> Type {
+    Type::new(BaseType::Custom(sql))
 }
 
 pub fn date() -> Type {
