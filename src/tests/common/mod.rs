@@ -1,5 +1,8 @@
-use types::{BaseType, Type, WrappedDefault};
 
+/* Include some external tests */
+mod cloning;
+
+use types::{BaseType, Type, WrappedDefault};
 use Migration;
 
 #[test]
@@ -94,3 +97,4 @@ fn default_render_binary() {
 //         "".to_owned()
 //     );
 // }
+
