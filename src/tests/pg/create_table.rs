@@ -104,7 +104,7 @@ fn drop_table_if_exists() {
 
     assert_eq!(
         m.make::<Pg>(),
-        String::from("DROP TABLE \"users\" IF EXISTS;")
+        String::from("DROP TABLE IF EXISTS \"users\";")
     );
 }
 
