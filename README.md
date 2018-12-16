@@ -7,15 +7,16 @@
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
 
+A powerful schema migration builder, that let's you write your SQL migrations in Rust.
 
-A powerful schema migration builder for Rust. Write complicated SQL schema migrations in Rust and easily switch databases.
+`barrel` makes writing migrations for different databases as easy as possible. It provides you with a common API over SQL, with certain features only provided for database specific implementations.
+This way you can focus on your Rust code, and stop worrying about SQL.
 
-`barrel` is meant to make writing migrations for different databases as easy as possible. It creates a simple to use API over SQL which allows you to focus on managing your database, not fighting with SQL.
-
+While `barrel` works on stable rust with most features, please note that some experimental features might require the nightly compiler.
 
 ## Example
 
-`barrel` now works with the stable compiler. The following code is a simple example of how to get started
+The following example will help you get started
 
 ```rust
 extern crate barrel;

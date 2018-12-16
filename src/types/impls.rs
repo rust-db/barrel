@@ -91,17 +91,34 @@ impl<'outer> Display for WrappedDefault<'outer> {
 /// Using this struct directly is not recommended. Instead, you should be
 /// using the constructor APIs in the `types` module.
 ///
-/// ```norun
+/// A `Type` is an enum provided to other `barrel` APIs in order
+/// to generate SQL datatypes. Working with them directly is possible
+/// but not recommended.
+///
+/// Instead, you can use these helper functions to construct `Type` enums of
+/// different...types and constraints. Field metadata is added via chainable
+/// factory pattern functions.
+///
+/// ## Default values
+///
+/// If no additional arguments are provided, some assumptions will be made
+/// about the metadata of a column type.
+///
+/// - `nullable`: `false`
+/// - `indexed`: `false`
+/// - `unique`: `false`
+/// - `default`:  `None`
+/// - `size`: `None` (which will error if size is important)
+///
+/// ## Examples
+///
+/// ```rust,norun
+/// extern crate barrel;
 /// use barrel::types::*;
 ///
-/// let column = varchar()
-///                 .size(255)
-///                 .nullable(true)
-///                 .indexed(true)
-///                 .unique(true);
+/// // Make your own Primary key :)
+/// let col = integer().increments(true).unique(true);
 /// ```
-///
-/// Please see the **default vaulues** section in the `types` module docs!
 #[derive(Debug, Clone, PartialEq)]
 pub struct Type {
     pub nullable: bool,
