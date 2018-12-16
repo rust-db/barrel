@@ -1,11 +1,15 @@
-//! Powerful schema migration builder API in Rust.
+//! Powerful schema migration builder, that let's you write your SQL migrations in Rust.
 //!
-//! Barrel is meant to make writing migrations for different databases as easy
-//! as possible. It has three primary models:
+//! `barrel` makes writing migrations for different databases as easy as possible.
+//! It provides you with a common API over SQL,
+//! with certain features only provided for database specific implementations.
+//! This way you can focus on your Rust code, and stop worrying about SQL.
+//! 
+//! `barrel` has three primary models:
 //! the [Migration](migration/struct.Migration.html) which represents
 //! all changes and changes made on a database level,
 //! the [Table](table/struct.Table.html) and the
-//! [Column](column/struct.Column.html).
+//! [Type](types/struct.Type.html).
 //!
 //! When creating or altering tables a lambda which exposes `&mut Table` is
 //! provided for initialisation. Adding columns is then as easy as calling
@@ -22,7 +26,7 @@
 //!
 //! The following code is a simple example of how to get going with `barrel`
 //!
-//! ```
+//! ```rust
 //! extern crate barrel;
 //!
 //! use barrel::{types, Migration};
@@ -36,9 +40,9 @@
 //!     });
 //! }
 //! ```
-//! `barrel` also supports more advanced types, such as `Foreign(...)`
-//! and `Array(...)` however currently doesn't support nested Array types on
-//! foreign keys (such as `Array(Array(Foreign(...)))`). Each column addition
+//! `barrel` also supports more advanced types, such as `foreign(...)`
+//! and `array(...)` however currently doesn't support nested Array types on
+//! foreign keys (such as `array(array(foreign(...)))`). Each column addition
 //! returns a Column object which can then be used to provide further
 //! configuration.
 //!
@@ -46,7 +50,7 @@
 //! migration yourself simply run `Migration::exec()` where you provide a
 //! generic `SqlGenerator` type according to your database backend
 //!
-//! ```norun
+//! ```rust,ignore
 //! // Example for pgsql
 //! m.make::<Pg>();
 //! ```
@@ -56,12 +60,13 @@
 //! `DatabaseExecutor` trait for a type of yours that knows how to execute SQL.
 //! Running a migration with `barrel` is then super easy.
 //!
-//! ```norun
+//! ```rust,ignore
 //! m.execute(executor);
 //! ```
 //!
 //! In this case `executor` is your provided type which implements the required
-//! trait. You can read more about this in the `connectors` module docs.
+//! trait. You can read more about this in the [connectors](connectors/index.html)
+//! module docs.
 //!
 //! **Important**: This crate is still early in development and the API might
 //! change rapidely between pre-release versions. I will try as best I can to
@@ -70,8 +75,8 @@
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
 
-// #[cfg(not(any(feature = "sqlite", feature = "pg")))]
-// compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
+#[cfg(not(any(feature = "sqlite", feature = "pg")))]
+compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
 
 // TODO: Make this "diesel" block prettier
 #[cfg(feature = "diesel-filled")]
@@ -85,14 +90,12 @@ extern crate diesel;
 
 pub mod backend;
 pub mod connectors;
-
 pub mod table;
-pub use table::{Column, Table, TableMeta};
-
 pub mod migration;
-pub use migration::Migration;
-
 pub mod types;
+
+pub use migration::Migration;
+pub use table::{Column, Table, TableMeta};
 
 #[cfg(test)]
 mod tests;
