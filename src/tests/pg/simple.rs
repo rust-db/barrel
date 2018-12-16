@@ -26,7 +26,7 @@ fn drop_table() {
 #[test]
 fn drop_table_if_exists() {
     let sql = Pg::drop_table_if_exists("table_to_drop");
-    assert_eq!(String::from("DROP TABLE \"table_to_drop\" IF EXISTS"), sql);
+    assert_eq!(String::from("DROP TABLE IF EXISTS \"table_to_drop\""), sql);
 }
 
 #[test]

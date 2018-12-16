@@ -108,7 +108,7 @@ fn drop_table_if_exists() {
     let mut m = Migration::new();
     m.drop_table_if_exists("users");
 
-    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE \"users\" IF EXISTS;"));
+    assert_eq!(m.make::<Pg>(), String::from("DROP TABLE IF EXISTS \"users\";"));
 }
 
 #[test]

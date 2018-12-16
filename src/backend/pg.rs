@@ -20,7 +20,7 @@ impl SqlGenerator for Pg {
     }
 
     fn drop_table_if_exists(name: &str) -> String {
-        format!("DROP TABLE \"{}\" IF EXISTS", name)
+        format!("DROP TABLE IF EXISTS \"{}\"", name)
     }
 
     fn rename_table(old: &str, new: &str) -> String {
