@@ -34,7 +34,7 @@ fn float() {
 #[test]
 fn double() {
     let sql = Pg::add_column(true, "Double", &types::double());
-    assert_eq!(String::from("ADD COLUMN \"Double\" DOUBLE NOT NULL"), sql);
+    assert_eq!(String::from("ADD COLUMN \"Double\" DOUBLE PRECISION NOT NULL"), sql);
 }
 
 #[test]
@@ -114,7 +114,7 @@ fn array_float() {
 fn array_double() {
     let sql = Pg::add_column(true, "Array of Double", &types::array(&types::double()));
     assert_eq!(
-        String::from("ADD COLUMN \"Array of Double\" DOUBLE[] NOT NULL"),
+        String::from("ADD COLUMN \"Array of Double\" DOUBLE PRECISION[] NOT NULL"),
         sql
     );
 }

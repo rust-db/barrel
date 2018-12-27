@@ -96,7 +96,7 @@ impl Pg {
             Primary => format!("SERIAL PRIMARY KEY NOT NULL"),
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
-            Double => format!("DOUBLE"),
+            Double => format!("DOUBLE PRECISION"),
             UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
