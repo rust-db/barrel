@@ -24,8 +24,8 @@ required-features = ["sqlite3"]
 [features]
 default = []
 diesel-filled = ["tempdir", "diesel"]
-mysql = []
 sqlite3 = []
+mysql = []
 pg = []
 
 # Enables unstable (in-development) features, 

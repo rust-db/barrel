@@ -75,7 +75,7 @@
 //! Also, if there is missing or invalid documentation for this crate, PR's are
 //! always welcome 💚
 
-#[cfg(not(any(feature = "sqlite", feature = "pg", feature = "mysql" )))]
+#[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql" )))]
 compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
 
 // TODO: Make this "diesel" block prettier
