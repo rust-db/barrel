@@ -24,6 +24,7 @@ required-features = ["sqlite3"]
 [features]
 default = []
 diesel-filled = ["tempdir", "diesel"]
+mysql = []
 sqlite3 = []
 pg = []
 
@@ -40,4 +41,4 @@ diesel = { version = ">= 1.2, < 2.0", default_features = false, optional = true 
 
 # We need to explicitly toggle features here because
 #   `all-features` causes weird transient bugs
-features = ["diesel-filled", "sqlite3", "pg", "unstable"]
+features = ["diesel-filled", "mysql", "sqlite3", "pg", "unstable"]

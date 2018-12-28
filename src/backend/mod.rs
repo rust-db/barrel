@@ -3,6 +3,10 @@
 //!
 //! It also re-exports the generators for existing databases
 //! so they can be used more conveniently.
+#[cfg(feature = "mysql")]
+mod mysql;
+#[cfg(feature = "mysql")]
+pub use self::mysql::MySql;
 
 #[cfg(feature = "pg")]
 mod pg;
