@@ -10,11 +10,11 @@ use types::{BaseType, Type};
 pub struct MySql;
 impl SqlGenerator for MySql {
     fn create_table(name: &str) -> String {
-        format!("CREATE TABLE \"{}\"", name)
+        format!("CREATE TABLE {}", name)
     }
 
     fn create_table_if_not_exists(name: &str) -> String {
-        format!("CREATE TABLE IF NOT EXISTS \"{}\"", name)
+        format!("CREATE TABLE IF NOT EXISTS {}", name)
     }
 
     fn drop_table(name: &str) -> String {
