@@ -14,15 +14,15 @@ impl SqlGenerator for MySql {
     }
 
     fn create_table_if_not_exists(name: &str) -> String {
-        format!("CREATE TABLE IF NOT EXISTS {}", name)
+        format!("CREATE TABLE {} IF NOT EXISTS", name)
     }
 
     fn drop_table(name: &str) -> String {
-        format!("DROP TABLE \"{}\"", name)
+        format!("DROP TABLE {}", name)
     }
 
     fn drop_table_if_exists(name: &str) -> String {
-        format!("DROP TABLE IF EXISTS {}", name)
+        format!("DROP TABLE {} IF EXISTS", name)
     }
 
     fn rename_table(old: &str, new: &str) -> String {
@@ -93,7 +93,7 @@ impl MySql {
                 _ => format!("VARCHAR({})", l),
             },
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
-            Primary => format!("SERIAL PRIMARY KEY NOT NULL"),
+            Primary => format!("INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY"),
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
