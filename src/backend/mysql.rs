@@ -26,7 +26,7 @@ impl SqlGenerator for MySql {
     }
 
     fn rename_table(old: &str, new: &str) -> String {
-        format!("ALTER TABLE \"{}\" RENAME TO \"{}\"", old, new)
+        format!("RENAME TABLE \"{}\" TO \"{}\"", old, new)
     }
 
     fn alter_table(name: &str) -> String {
@@ -72,7 +72,7 @@ impl SqlGenerator for MySql {
     }
 
     fn rename_column(old: &str, new: &str) -> String {
-        format!("ALTER COLUMN \"{}\" RENAME TO \"{}\"", old, new)
+        format!("CHANGE COLUMN \"{}\"  \"{}\"", old, new)
     }
 }
 
