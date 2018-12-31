@@ -97,7 +97,7 @@ impl MySql {
             Integer => format!("INTEGER"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
-            UUID => unimplemented!(),
+            UUID => format!("CHAR(36)"),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
             Json => format!("JSON"),
