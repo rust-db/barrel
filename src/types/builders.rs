@@ -34,27 +34,27 @@ pub fn integer() -> Type {
     Type::new(BaseType::Integer)
 }
 
-///
+/// A 32-bit floating point type
 pub fn float() -> Type {
     Type::new(BaseType::Float)
 }
 
-///
+/// A 64-bit floating point type
 pub fn double() -> Type {
     Type::new(BaseType::Double)
 }
 
-///
+/// A boolean data type (true, false)
 pub fn boolean() -> Type {
     Type::new(BaseType::Boolean)
 }
 
-///
+/// A fixed-length string type
 pub fn varchar(len: usize) -> Type {
     Type::new(BaseType::Varchar(len))
 }
 
-///
+/// A variable-length string type
 pub fn text() -> Type {
     Type::new(BaseType::Text)
 }
@@ -74,10 +74,12 @@ pub fn foreign(inner: &'static str) -> Type {
     Type::new(BaseType::Foreign(inner))
 }
 
+/// Any custom SQL type that is embedded into a migration
 pub fn custom(sql: &'static str) -> Type {
     Type::new(BaseType::Custom(sql))
 }
 
+/// An SQL date type
 pub fn date() -> Type {
     Type::new(BaseType::Date)
 }
