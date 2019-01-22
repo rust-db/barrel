@@ -77,6 +77,20 @@ impl Migration {
                 &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
                 &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
                 &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),
+                &mut ChangeTable(ref mut t, ref mut cb) => {
+                    cb(t);
+                    let vec = t.make::<T>(true);
+                    s.push_str(&T::alter_table(&t.meta.name()));
+                    s.push_str(" ");
+                    let l = vec.len();
+                    for (i, slice) in vec.iter().enumerate() {
+                        s.push_str(slice);
+
+                        if i < l - 1 {
+                            s.push_str(", ");
+                        }
+                    }
+                }
                 _ => {}
             }
 
