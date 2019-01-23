@@ -26,11 +26,11 @@ impl SqlGenerator for MySql {
     }
 
     fn rename_table(old: &str, new: &str) -> String {
-        format!("RENAME TABLE \"{}\" TO \"{}\"", old, new)
+        format!("RENAME TABLE `{}` TO `{}`", old, new)
     }
 
     fn alter_table(name: &str) -> String {
-        format!("ALTER TABLE \"{}\"", name)
+        format!("ALTER TABLE `{}`", name)
     }
 
     fn add_column(ex: bool, name: &str, tt: &Type) -> String {
