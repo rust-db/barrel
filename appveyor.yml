@@ -1,6 +1,6 @@
 build: false
 build_script:
-  - cargo test --verbose %cargoflags%
+  - cargo test --verbose %cargoflags% --all-features
 environment:
   matrix:
     - channel: stable
