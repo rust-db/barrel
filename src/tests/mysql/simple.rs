@@ -35,7 +35,7 @@ fn drop_table_if_exists() {
 fn rename_table() {
     let sql = MySql::rename_table("old_table", "new_table");
     assert_eq!(
-        String::from("RENAME TABLE \"old_table\" TO \"new_table\""),
+        String::from("RENAME TABLE `old_table` TO `new_table`"),
         sql
     );
 }
@@ -43,5 +43,5 @@ fn rename_table() {
 #[test]
 fn alter_table() {
     let sql = MySql::alter_table("table_to_alter");
-    assert_eq!(String::from("ALTER TABLE \"table_to_alter\""), sql);
+    assert_eq!(String::from("ALTER TABLE `table_to_alter`"), sql);
 }
