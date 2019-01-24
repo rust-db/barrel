@@ -25,11 +25,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.852319"
-     inkscape:cx="236.82384"
-     inkscape:cy="73.021524"
+     inkscape:zoom="3.6650702"
+     inkscape:cx="161.02141"
+     inkscape:cy="72.370108"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g839"
      showgrid="false"
      inkscape:window-width="1914"
      inkscape:window-height="1032"
@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -134,7 +134,7 @@
          height="38.852245"
          width="11.822151"
          id="rect815-6-8"
-         style="opacity:0.70700001;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.68609262;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.64878049;paint-order:fill markers stroke" />
+         style="opacity:0.55;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.68609262;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.64878049;paint-order:fill markers stroke" />
       <rect
          transform="rotate(-45)"
          y="200.44443"
@@ -145,22 +145,15 @@
          style="opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#868686;stroke-width:0.62221843;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
       <text
          id="text913"
-         y="276.52188"
-         x="11.07508"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.17028904px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.32925725"
+         y="276.47345"
+         x="10.648504"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.76389503px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';letter-spacing:0px;word-spacing:0px;fill:#202020;fill-opacity:1;stroke:none;stroke-width:0.3190974"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.268116px;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';stroke-width:0.32925725"
-           y="276.52188"
-           x="11.07508"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.1055584px;font-family:Quicksand;-inkscape-font-specification:'Quicksand Bold';fill:#202020;fill-opacity:1;stroke-width:0.3190974"
+           y="276.47345"
+           x="10.648504"
            id="tspan911"
            sodipodi:role="line">SQL</tspan></text>
-      <rect
-         y="255.37721"
-         x="16.446571"
-         height="38.852242"
-         width="11.822153"
-         id="rect815-6-8-0"
-         style="opacity:0.1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.68609262;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.64878049;paint-order:fill markers stroke" />
       <rect
          y="254.88242"
          x="21.650042"
@@ -168,6 +161,13 @@
          width="2.9549315"
          id="rect815-4"
          style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26192206;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.64878049;paint-order:fill markers stroke" />
+      <rect
+         y="255.37721"
+         x="16.446571"
+         height="38.852242"
+         width="11.822153"
+         id="rect815-6-8-0"
+         style="opacity:0.1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.68609262;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.64878049;paint-order:fill markers stroke" />
     </g>
   </g>
 </svg>
