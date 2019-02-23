@@ -67,8 +67,10 @@ pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
 }
 
 fn version_from_path(path: &Path) -> Result<String, ()> {
-    path.file_name()
-        .expect(&format!("Can't get file name from path `{:?}`", path))
+    path.parent()
+        .unwrap_or_else(|| panic!("Migration doesn't appear to be in a directory: `{:?}`", path))
+        .file_name()
+        .unwrap_or_else(|| panic!("Can't get file name from path `{:?}`", path))
         .to_string_lossy()
         .split('_')
         .nth(0)
@@ -79,7 +81,11 @@ fn version_from_path(path: &Path) -> Result<String, ()> {
 fn run_barrel_migration_wrapper(path: &Path) -> Box<Migration> {
     let (up, down) = run_barrel_migration(&path);
     let version = version_from_path(path).unwrap();
-    return Box::new(BarrelMigration(path.to_path_buf(), version, up, down));
+    let migration_path = match path.parent() {
+        Some(parent_path) => parent_path.to_path_buf(),
+        None => path.to_path_buf(),
+    };
+    return Box::new(BarrelMigration(migration_path, version, up, down));
 }
 
 fn run_barrel_migration(migration: &Path) -> (String, String) {
