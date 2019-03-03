@@ -15,6 +15,18 @@ fn simple_table() {
 }
 
 #[test]
+fn create_table_if_not_exists_doesnt_hit_unreachable() {
+    let mut m = Migration::new();
+    m.create_table_if_not_exists("artist", |t| {
+        t.add_column("name", types::text().nullable(true));
+        t.add_column("description", types::text().nullable(true));
+        t.add_column("pic", types::text().nullable(true));
+        t.add_column("mbid", types::text().nullable(true));
+    });
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"artist\" IF NOT EXISTS (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
+}
+
+#[test]
 fn basic_fields() {
     let mut m = Migration::new();
     m.create_table("users", |t: &mut Table| {

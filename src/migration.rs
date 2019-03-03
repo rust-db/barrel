@@ -73,7 +73,27 @@ impl Migration {
                         }
                     }
                     s.push_str(")");
-                }
+                },
+                &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
+                    if t.meta.has_id {
+                        t.add_column("id", types::primary());
+                    }
+
+                    cb(t); // Run the user code
+                    let vec = t.make::<T>(false);
+                    s.push_str(&T::create_table_if_not_exists(&t.meta.name()));
+                    s.push_str(" (");
+                    let l = vec.len();
+                    for (i, slice) in vec.iter().enumerate() {
+                        s.push_str(slice);
+
+                        if i < l - 1 {
+                            s.push_str(", ");
+                        }
+                    }
+                    s.push_str(")");
+                },
+
                 &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
                 &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
                 &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),

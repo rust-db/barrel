@@ -75,6 +75,7 @@ impl Table {
         let mut s = Vec::new();
 
         for change in &mut self.changes {
+            println!("in make's change loop change: {:?}", change.clone());
             s.push(match change {
                 &mut AddColumn(ref name, ref col) => {
                     let mut s = T::add_column(ex, name, &col);
