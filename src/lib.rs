@@ -27,8 +27,6 @@
 //! The following code is a simple example of how to get going with `barrel`
 //!
 //! ```rust
-//! extern crate barrel;
-//!
 //! use barrel::{types, Migration};
 //!
 //! fn main() {
@@ -50,7 +48,10 @@
 //! migration yourself simply run `Migration::exec()` where you provide a
 //! generic `SqlGenerator` type according to your database backend
 //!
-//! ```rust,ignore
+//! ```rust
+//! # use barrel::backend::Pg;
+//! # use barrel::Migration;
+//! # let mut m = Migration::new();
 //! // Example for pgsql
 //! m.make::<Pg>();
 //! ```
@@ -60,20 +61,30 @@
 //! `DatabaseExecutor` trait for a type of yours that knows how to execute SQL.
 //! Running a migration with `barrel` is then super easy.
 //!
-//! ```rust,ignore
-//! m.execute(executor);
+//! ```rust
+//! use barrel::connectors::DatabaseExecutor;
+//! # use barrel::Migration;
+//! # use barrel::backend::Pg;
+//!
+//! struct MyExecutor;
+//! impl DatabaseExecutor for MyExecutor {
+//!     fn execute<S: Into<String>>(&mut self, sql: S) {
+//!         # let s: String = sql.into();
+//!         // ...
+//!     }
+//! }
+//!
+//! # let mut m = Migration::new();
+//! # let mut executor = MyExecutor;
+//! m.execute::<MyExecutor, Pg>(&mut executor);
 //! ```
 //!
 //! In this case `executor` is your provided type which implements the required
 //! trait. You can read more about this in the [connectors](connectors/index.html)
 //! module docs.
 //!
-//! **Important**: This crate is still early in development and the API might
-//! change rapidely between pre-release versions. I will try as best I can to
-//! include changes in the `CHANGELOG` but can not guarantee perfect coverage.
-//!
-//! Also, if there is missing or invalid documentation for this crate, PR's are
-//! always welcome 💚
+//! If you find database-specific features or documentation lacking,
+//! don't hesitate to open an issue/PR about it.
 
 #[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql" )))]
 compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
