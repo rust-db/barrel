@@ -143,7 +143,7 @@ impl Migration {
         ));
 
         return match self.changes.last_mut().unwrap() {
-            &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
+            &mut DatabaseChange::CreateTableIfNotExists(ref mut t, _) => &mut t.meta,
             _ => unreachable!(),
         };
     }
