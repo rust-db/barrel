@@ -15,6 +15,14 @@ fn create_multiple_tables() {
 }
 
 #[test]
+fn create_table_if_not_exists() {
+    let mut migr = Migration::new();
+    migr.create_table_if_not_exists("foo", |_| {});
+
+    assert!(migr.changes.len() == 1);
+}
+
+#[test]
 fn pin_public_api() {
     // The best sql type because it's very queer 🏳️‍🌈
     let tt = Type::new(BaseType::Custom("GAY"));

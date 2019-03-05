@@ -55,14 +55,19 @@ impl Migration {
         let mut changes = self.changes.clone();
         for change in &mut changes {
             match change {
-                &mut CreateTable(ref mut t, ref mut cb) => {
+                &mut CreateTable(ref mut t, ref mut cb) |
+                &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     if t.meta.has_id {
                         t.add_column("id", types::primary());
                     }
 
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
-                    s.push_str(&T::create_table(&t.meta.name()));
+                    s.push_str( &match change {
+                        CreateTable(_, _) => T::create_table(&t.meta.name()),
+                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&t.meta.name()),
+                        _ => unreachable!()
+                    });
                     s.push_str(" (");
                     let l = vec.len();
                     for (i, slice) in vec.iter().enumerate() {
@@ -73,7 +78,7 @@ impl Migration {
                         }
                     }
                     s.push_str(")");
-                }
+                },
                 &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
                 &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
                 &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),
@@ -102,7 +107,7 @@ impl Migration {
 
     /// Automatically infer the `down` step of this migration
     ///
-    /// Will thrown an error if behaviour is ambigous or not
+    /// Will thrown an error if behaviour is ambiguous or not
     /// possible to infer (e.g. revert a `drop_table`)
     pub fn revert<T: SqlGenerator>(&self) -> String {
         unimplemented!()
@@ -143,7 +148,7 @@ impl Migration {
         ));
 
         return match self.changes.last_mut().unwrap() {
-            &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
+            &mut DatabaseChange::CreateTableIfNotExists(ref mut t, _) => &mut t.meta,
             _ => unreachable!(),
         };
     }
