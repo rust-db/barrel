@@ -67,7 +67,12 @@ pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
 
 fn version_from_path(path: &Path) -> Result<String, ()> {
     path.parent()
-        .unwrap_or_else(|| panic!("Migration doesn't appear to be in a directory: `{:?}`", path))
+        .unwrap_or_else(|| {
+            panic!(
+                "Migration doesn't appear to be in a directory: `{:?}`",
+                path
+            )
+        })
         .file_name()
         .unwrap_or_else(|| panic!("Can't get file name from path `{:?}`", path))
         .to_string_lossy()
@@ -109,7 +114,8 @@ authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
 barrel = { git = \"https://github.com/spacekookie/barrel\", features = [\"pg\"]  }",
-        ).unwrap();
+        )
+        .unwrap();
 
     /* Generate main.rs based on user migration */
     let main_file_path = &dir.path().join("src").join("main.rs");
@@ -139,8 +145,10 @@ fn main() {{
 }}
 ",
                 user_migration
-            ).as_bytes(),
-        ).unwrap();
+            )
+            .as_bytes(),
+        )
+        .unwrap();
 
     let output = if cfg!(target_os = "windows") {
         Command::new("cargo")

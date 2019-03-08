@@ -2,7 +2,7 @@
 
 #![allow(unused_imports)]
 
-use crate::backend::{SqlGenerator, MySql};
+use crate::backend::{MySql, SqlGenerator};
 
 #[test]
 fn create_table() {
@@ -34,10 +34,7 @@ fn drop_table_if_exists() {
 #[test]
 fn rename_table() {
     let sql = MySql::rename_table("old_table", "new_table");
-    assert_eq!(
-        String::from("RENAME TABLE `old_table` TO `new_table`"),
-        sql
-    );
+    assert_eq!(String::from("RENAME TABLE `old_table` TO `new_table`"), sql);
 }
 
 #[test]
