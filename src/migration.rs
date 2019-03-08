@@ -12,7 +12,6 @@
 //! if you're a library developer.
 
 use crate::table::{Table, TableMeta};
-use crate::types;
 use crate::DatabaseChange;
 
 use crate::backend::SqlGenerator;
@@ -57,10 +56,6 @@ impl Migration {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
-                    if t.meta.has_id {
-                        t.add_column("id", types::primary());
-                    }
-
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
 

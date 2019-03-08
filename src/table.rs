@@ -10,7 +10,7 @@
 use super::backend::SqlGenerator;
 use super::TableChange;
 use crate::types::Type;
-use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
+use std::fmt::{Debug, Formatter, Result as FmtResult};
 
 impl Debug for TableChange {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
@@ -32,25 +32,16 @@ impl Table {
         };
     }
 
-    // pub fn add_primary<S: Into<String>>(&mut self, name: S) -> &mut Type {
-    //     self.changes.push(TableChange::AddColumn(
-    //         name.into(),
-    //         Column {
-    //             indexed: true,
-    //             unique: true,
-    //             nullable: false,
-    //             increments: true,
-    //             _type: Type::Integer,
-    //             def: None,
-    //         },
-    //     ));
-
-    //     return match self.changes.last_mut().unwrap() {
-    //         &mut TableChange::AddColumn(_, ref mut c) => c,
-    //         _ => unreachable!(),
-    //     };
-    // }
-
+    /// Add a new column to a table
+    ///
+    /// ```rust
+    /// # use barrel::{types, Migration};
+    /// # let mut m = Migration::new();
+    /// # m.create_table("users", |table| {
+    /// table.add_column("id", types::primary());
+    /// table.add_column("name", types::varchar(64));
+    /// # });
+    /// ```
     pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Type {
         self.changes
             .push(TableChange::AddColumn(name.into(), _type));
@@ -91,7 +82,6 @@ impl Table {
 #[derive(Debug, Clone)]
 pub struct TableMeta {
     pub name: String,
-    pub has_id: bool,
     pub encoding: String,
 }
 
@@ -100,7 +90,6 @@ impl TableMeta {
     pub fn new(name: String) -> TableMeta {
         return TableMeta {
             name: name,
-            has_id: true,
             encoding: "utf-8".to_owned(),
         };
     }
@@ -110,147 +99,10 @@ impl TableMeta {
         return self.name.clone();
     }
 
-    /// Disable the auto-key feature
-    ///
-    /// A table is by default created with an auto-incrementing primary
-    /// key called "id". You can disable this feature here. If you do and still
-    /// want a priamry key, you will have to specify it yourself in the table
-    /// init closure
-    pub fn without_id(&mut self) -> &mut TableMeta {
-        self.has_id = false;
-        return self;
-    }
-
     /// Specify an encoding for this table which might vary from the main encoding
     /// of your database
     pub fn encoding<S: Into<String>>(&mut self, enc: S) -> &mut TableMeta {
         self.encoding = enc.into();
         return self;
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Column {
-    /// Is this a unique key
-    pub unique: bool,
-
-    /// Should the database create an index
-    pub indexed: bool,
-
-    /// Can this column be NULL
-    pub nullable: bool,
-
-    /// Does it auto-increment
-    pub increments: bool,
-
-    /// What's the column type
-    pub _type: Type,
-
-    /// What's default value records in this column
-    pub def: Option<ColumnDefault>,
-}
-
-impl Column {
-    /// Lazy constructor mostly used in unit tests
-    pub fn new(t: Type) -> Column {
-        return Column {
-            indexed: false,
-            unique: false,
-            nullable: false,
-            increments: false,
-            _type: t,
-            def: None,
-        };
-    }
-
-    /// Set a default value for this column
-    pub fn default<T: Into<ColumnDefault>>(&mut self, data: T) -> &mut Column {
-        self.def = Some(data.into());
-        return self;
-    }
-
-    /// Set a column to allow being null
-    pub fn nullable(&mut self) -> &mut Column {
-        self.nullable = true;
-        return self;
-    }
-
-    /// Setup this column to automatically increment (such as integers)
-    ///
-    /// Throws an error if the column type *can't* increment (like booleans)
-    pub fn increments(&mut self) -> &mut Column {
-        self.increments = true;
-        return self;
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum ColumnDefault {
-    Text(String),
-    Varchar(usize),
-    Integer(i64),
-    Float(f64), // FIXME: Or just use 32-bit floats?
-    Boolean(bool),
-    Date(String),
-    /// A foreign key has a table and id it points to
-    Foreign(String, u64),
-    // TODO: Figure out storage for other data types
-}
-
-impl From<&'static str> for ColumnDefault {
-    fn from(data: &'static str) -> Self {
-        return ColumnDefault::Text(data.into());
-    }
-}
-
-impl From<i64> for ColumnDefault {
-    fn from(data: i64) -> Self {
-        return ColumnDefault::Integer(data);
-    }
-}
-
-impl From<i32> for ColumnDefault {
-    fn from(data: i32) -> Self {
-        return ColumnDefault::Integer(data as i64);
-    }
-}
-
-impl From<usize> for ColumnDefault {
-    fn from(data: usize) -> Self {
-        return ColumnDefault::Integer(data as i64);
-    }
-}
-
-impl From<f64> for ColumnDefault {
-    fn from(data: f64) -> Self {
-        return ColumnDefault::Float(data);
-    }
-}
-
-impl From<bool> for ColumnDefault {
-    fn from(data: bool) -> Self {
-        return ColumnDefault::Boolean(data);
-    }
-}
-
-impl Display for ColumnDefault {
-    fn fmt(&self, f: &mut Formatter) -> FmtResult {
-        use self::ColumnDefault::*;
-        return write!(
-            f,
-            "{}",
-            &match *self {
-                Text(ref val) => format!("{}", val),
-                Varchar(ref val) => format!("{}", val),
-                Integer(ref val) => format!("{}", val),
-                Float(ref val) => format!("{}", val),
-                Date(ref val) => format!("{}", val),
-                Boolean(ref val) => match val {
-                    &true => format!("t"),
-                    &false => format!("f"),
-                },
-                Foreign(ref val, _) => format!("{}", val),
-            }
-        );
     }
 }

@@ -101,7 +101,7 @@ pub mod table;
 pub mod types;
 
 pub use migration::Migration;
-pub use table::{Column, Table, TableMeta};
+pub use table::{Table, TableMeta};
 
 #[cfg(test)]
 mod tests;

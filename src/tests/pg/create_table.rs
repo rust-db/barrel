@@ -8,16 +8,14 @@ use crate::{types, Migration, Table};
 fn simple_table() {
     let mut m = Migration::new();
     m.create_table("users", |_: &mut Table| {});
-    assert_eq!(
-        m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" (\"id\" SERIAL PRIMARY KEY NOT NULL);")
-    );
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"users\" ();"));
 }
 
 #[test]
 fn create_table_if_not_exists_doesnt_hit_unreachable() {
     let mut m = Migration::new();
     m.create_table_if_not_exists("artist", |t| {
+        t.add_column("id", types::primary());
         t.add_column("name", types::text().nullable(true));
         t.add_column("description", types::text().nullable(true));
         t.add_column("pic", types::text().nullable(true));
@@ -30,6 +28,7 @@ fn create_table_if_not_exists_doesnt_hit_unreachable() {
 fn basic_fields() {
     let mut m = Migration::new();
     m.create_table("users", |t: &mut Table| {
+        t.add_column("id", types::primary());
         t.add_column("name", types::varchar(255));
         t.add_column("age", types::integer());
         t.add_column("plushy_sharks_owned", types::boolean());
@@ -60,6 +59,7 @@ fn basic_fields() {
 fn basic_fields_nullable() {
     let mut m = Migration::new();
     m.create_table("users", |t: &mut Table| {
+        t.add_column("id", types::primary());
         t.add_column("name", types::varchar(255).nullable(true));
         t.add_column("age", types::integer().nullable(true));
         t.add_column("plushy_sharks_owned", types::boolean().nullable(true));
@@ -74,6 +74,7 @@ fn basic_fields_nullable() {
 // #[test]// fn simple_foreign_fields() {
 //     let mut m = Migration::new();
 //     m.create_table("users", |t: &mut Table| {
+// t.add_column("id", types::primary());
 //         t.add_column("posts", types::foreign("poststypes::"));
 //         ()
 //     });
@@ -88,12 +89,14 @@ fn basic_fields_nullable() {
 fn create_multiple_tables() {
     let mut m = Migration::new();
     m.create_table("artist", |t| {
+        t.add_column("id", types::primary());
         t.add_column("name", types::text());
         t.add_column("description", types::text());
         t.add_column("pic", types::text());
         t.add_column("mbid", types::text());
     });
     m.create_table("album", |t| {
+        t.add_column("id", types::primary());
         t.add_column("name", types::text());
         t.add_column("pic", types::text());
         t.add_column("mbid", types::text());
