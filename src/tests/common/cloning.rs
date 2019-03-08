@@ -74,8 +74,7 @@ pub fn create_table_if_not_exists(name: &str, columns: &Vec<ColumnDef>) {
             let cname: &str = &cd.name;
             t.add_column(cname, cd.data_type.to_database_type());
         }
-    })
-    .without_id();
+    });
 }
 
 #[test]
