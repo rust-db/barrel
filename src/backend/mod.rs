@@ -19,7 +19,7 @@ mod sqlite3;
 pub use self::sqlite3::Sqlite;
 
 #[allow(unused_imports)]
-use types::Type;
+use crate::types::Type;
 
 /// A generic SQL generator trait
 pub trait SqlGenerator {

@@ -1,7 +1,7 @@
 //! Other simple table/ column migrations
 #![allow(unused_imports)]
 
-use backend::{Pg, SqlGenerator};
+use crate::backend::{Pg, SqlGenerator};
 
 #[test]
 fn create_table() {

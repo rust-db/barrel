@@ -1,7 +1,7 @@
 //! Builder API's module
 
 use super::impls::BaseType;
-use types::Type;
+use crate::types::Type;
 
 /// A standard primary numeric key type
 ///

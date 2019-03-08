@@ -11,12 +11,12 @@
 //! You can also use `Migration::exec` with your SQL connection for convenience
 //! if you're a library developer.
 
-use super::table::{Table, TableMeta};
-use super::DatabaseChange;
-use types;
+use crate::table::{Table, TableMeta};
+use crate::types;
+use crate::DatabaseChange;
 
-use super::backend::SqlGenerator;
-use super::connectors::DatabaseExecutor;
+use crate::backend::SqlGenerator;
+use crate::connectors::DatabaseExecutor;
 
 use std::rc::Rc;
 
@@ -55,18 +55,20 @@ impl Migration {
         let mut changes = self.changes.clone();
         for change in &mut changes {
             match change {
-                &mut CreateTable(ref mut t, ref mut cb) |
-                &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
+                &mut CreateTable(ref mut t, ref mut cb)
+                | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     if t.meta.has_id {
                         t.add_column("id", types::primary());
                     }
 
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
-                    s.push_str( &match change {
-                        CreateTable(_, _) => T::create_table(&t.meta.name()),
-                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&t.meta.name()),
-                        _ => unreachable!()
+
+                    let name = t.meta.name().clone();
+                    s.push_str(&match change {
+                        CreateTable(_, _) => T::create_table(&name),
+                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&name),
+                        _ => unreachable!(),
                     });
                     s.push_str(" (");
                     let l = vec.len();
@@ -78,7 +80,7 @@ impl Migration {
                         }
                     }
                     s.push_str(")");
-                },
+                }
                 &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
                 &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
                 &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),

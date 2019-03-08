@@ -4,7 +4,7 @@
 //! It provides you with a common API over SQL,
 //! with certain features only provided for database specific implementations.
 //! This way you can focus on your Rust code, and stop worrying about SQL.
-//! 
+//!
 //! `barrel` has three primary models:
 //! the [Migration](migration/struct.Migration.html) which represents
 //! all changes and changes made on a database level,
@@ -86,23 +86,18 @@
 //! If you find database-specific features or documentation lacking,
 //! don't hesitate to open an issue/PR about it.
 
-#[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql" )))]
-compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
+#[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql")))]
+compile_error!("`barrel` cannot be built without a database backend specified");
 
-// TODO: Make this "diesel" block prettier
-#[cfg(feature = "diesel-filled")]
-extern crate tempdir;
-#[cfg(feature = "diesel-filled")]
+#[cfg(feature = "diesel")]
 pub mod integrations;
-#[cfg(feature = "diesel-filled")]
+#[cfg(feature = "diesel")]
 pub use integrations::*;
-#[cfg(feature = "diesel-filled")]
-extern crate diesel;
 
 pub mod backend;
 pub mod connectors;
-pub mod table;
 pub mod migration;
+pub mod table;
 pub mod types;
 
 pub use migration::Migration;
@@ -150,4 +145,3 @@ pub enum DatabaseChange {
     /// Only drop a table if it exists
     DropTableIfExists(String),
 }
-

@@ -1,7 +1,7 @@
 //! Sqlite3 implementation of a generator
 
 use super::SqlGenerator;
-use types::{BaseType, Type};
+use crate::types::{BaseType, Type};
 
 /// We call this struct Sqlite instead of Sqlite3 because we hope not
 /// to have to break the API further down the road

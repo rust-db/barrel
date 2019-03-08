@@ -1,9 +1,8 @@
 //!
 
-use diesel::connection::SimpleConnection;
-use diesel::migration::{Migration, RunMigrationsError};
-use std::fs;
-use std::fs::*;
+use diesel_rs::connection::SimpleConnection;
+use diesel_rs::migration::{Migration, RunMigrationsError};
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -26,12 +25,12 @@ impl Migration for BarrelMigration {
     }
 
     fn run(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
-        try!(conn.batch_execute(&self.2));
+        conn.batch_execute(&self.2)?;
         Ok(())
     }
 
     fn revert(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
-        try!(conn.batch_execute(&self.3));
+        conn.batch_execute(&self.3)?;
         Ok(())
     }
 }
@@ -68,7 +67,12 @@ pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
 
 fn version_from_path(path: &Path) -> Result<String, ()> {
     path.parent()
-        .unwrap_or_else(|| panic!("Migration doesn't appear to be in a directory: `{:?}`", path))
+        .unwrap_or_else(|| {
+            panic!(
+                "Migration doesn't appear to be in a directory: `{:?}`",
+                path
+            )
+        })
         .file_name()
         .unwrap_or_else(|| panic!("Can't get file name from path `{:?}`", path))
         .to_string_lossy()
@@ -110,7 +114,8 @@ authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
 barrel = { git = \"https://github.com/spacekookie/barrel\", features = [\"pg\"]  }",
-        ).unwrap();
+        )
+        .unwrap();
 
     /* Generate main.rs based on user migration */
     let main_file_path = &dir.path().join("src").join("main.rs");
@@ -140,8 +145,10 @@ fn main() {{
 }}
 ",
                 user_migration
-            ).as_bytes(),
-        ).unwrap();
+            )
+            .as_bytes(),
+        )
+        .unwrap();
 
     let output = if cfg!(target_os = "windows") {
         Command::new("cargo")
