@@ -106,4 +106,3 @@ impl TableMeta {
         return self;
     }
 }
-

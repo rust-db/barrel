@@ -56,7 +56,6 @@ impl Migration {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
-
                     cb(t); // Run the user code
                     let vec = t.make::<T>(false);
 

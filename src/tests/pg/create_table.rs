@@ -8,10 +8,7 @@ use crate::{types, Migration, Table};
 fn simple_table() {
     let mut m = Migration::new();
     m.create_table("users", |_: &mut Table| {});
-    assert_eq!(
-        m.make::<Pg>(),
-        String::from("CREATE TABLE \"users\" ();")
-    );
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"users\" ();"));
 }
 
 #[test]
@@ -77,7 +74,7 @@ fn basic_fields_nullable() {
 // #[test]// fn simple_foreign_fields() {
 //     let mut m = Migration::new();
 //     m.create_table("users", |t: &mut Table| {
-        // t.add_column("id", types::primary());
+// t.add_column("id", types::primary());
 //         t.add_column("posts", types::foreign("poststypes::"));
 //         ()
 //     });
