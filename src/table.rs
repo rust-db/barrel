@@ -9,8 +9,8 @@
 
 use super::backend::SqlGenerator;
 use super::TableChange;
+use crate::types::Type;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
-use types::Type;
 
 impl Debug for TableChange {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
@@ -76,10 +76,7 @@ impl Table {
 
         for change in &mut self.changes {
             s.push(match change {
-                &mut AddColumn(ref name, ref col) => {
-                    let mut s = T::add_column(ex, name, &col);
-                    s
-                }
+                &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
                 &mut DropColumn(ref name) => T::drop_column(name),
                 &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
                 &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name),

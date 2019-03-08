@@ -4,7 +4,7 @@
 //! databases. They should be thoroughly tested via unit testing
 
 use super::SqlGenerator;
-use types::{BaseType, Type};
+use crate::types::{BaseType, Type};
 
 /// Postgres SQL generator backend
 pub struct Pg;

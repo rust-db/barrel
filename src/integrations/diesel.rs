@@ -1,9 +1,8 @@
 //!
 
-use diesel::connection::SimpleConnection;
-use diesel::migration::{Migration, RunMigrationsError};
-use std::fs;
-use std::fs::*;
+use diesel_rs::connection::SimpleConnection;
+use diesel_rs::migration::{Migration, RunMigrationsError};
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -26,12 +25,12 @@ impl Migration for BarrelMigration {
     }
 
     fn run(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
-        try!(conn.batch_execute(&self.2));
+        conn.batch_execute(&self.2)?;
         Ok(())
     }
 
     fn revert(&self, conn: &SimpleConnection) -> Result<(), RunMigrationsError> {
-        try!(conn.batch_execute(&self.3));
+        conn.batch_execute(&self.3)?;
         Ok(())
     }
 }

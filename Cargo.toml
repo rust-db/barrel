@@ -3,8 +3,9 @@ name = "barrel"
 version = "0.5.0-rc.1"
 
 description = "A powerful schema migration building API for Rust"
-authors = ["Katharina Fey <kookie@spacekookie.de>"]
+authors = ["Katharina Fey <kookie@spacekookie.de>", "Rob Rowe <rippinrobr@gmail.com"]
 license = "MIT/X11 OR Apache-2.0"
+edition = "2018"
 
 readme = "README.md"
 repository = "https://github.com/spacekookie/barrel"
@@ -23,7 +24,7 @@ required-features = ["sqlite3"]
 
 [features]
 default = []
-diesel-filled = ["tempdir", "diesel"]
+diesel = ["tempdir", "diesel_rs"]
 sqlite3 = []
 mysql = []
 pg = []
@@ -35,10 +36,10 @@ unstable = []
 
 [dependencies]
 tempdir = { version = "0.3.4", optional = true }
-diesel = { version = ">= 1.2, < 2.0", default_features = false, optional = true }
+diesel_rs = { version = ">= 1.2, < 2.0", package = "diesel", default_features = false, optional = true }
 
 [package.metadata.docs.rs]
 
 # We need to explicitly toggle features here because
 #   `all-features` causes weird transient bugs
-features = ["diesel-filled", "mysql", "sqlite3", "pg", "unstable"]
+features = ["diesel", "mysql", "sqlite3", "pg", "unstable"]

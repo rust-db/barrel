@@ -89,15 +89,10 @@
 #[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql" )))]
 compile_error!("`barrel` cannot be built without a database backend speccified via cargo `--features`");
 
-// TODO: Make this "diesel" block prettier
-#[cfg(feature = "diesel-filled")]
-extern crate tempdir;
-#[cfg(feature = "diesel-filled")]
+#[cfg(feature = "diesel")]
 pub mod integrations;
-#[cfg(feature = "diesel-filled")]
+#[cfg(feature = "diesel")]
 pub use integrations::*;
-#[cfg(feature = "diesel-filled")]
-extern crate diesel;
 
 pub mod backend;
 pub mod connectors;
