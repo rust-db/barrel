@@ -96,7 +96,6 @@ impl Migration {
                         }
                     }
                 }
-                _ => {}
             }
 
             s.push_str(";");
