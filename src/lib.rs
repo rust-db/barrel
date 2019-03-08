@@ -62,12 +62,12 @@
 //! Running a migration with `barrel` is then super easy.
 //!
 //! ```rust
-//! use barrel::connectors::DatabaseExecutor;
+//! use barrel::connectors::SqlRunner;
 //! # use barrel::Migration;
 //! # use barrel::backend::Pg;
 //!
-//! struct MyExecutor;
-//! impl DatabaseExecutor for MyExecutor {
+//! struct MyRunner;
+//! impl SqlRunner for MyRunner {
 //!     fn execute<S: Into<String>>(&mut self, sql: S) {
 //!         # let s: String = sql.into();
 //!         // ...
@@ -75,8 +75,8 @@
 //! }
 //!
 //! # let mut m = Migration::new();
-//! # let mut executor = MyExecutor;
-//! m.execute::<MyExecutor, Pg>(&mut executor);
+//! # let mut executor = MyRunner;
+//! m.execute::<Pg, _>(&mut executor);
 //! ```
 //!
 //! In this case `executor` is your provided type which implements the required

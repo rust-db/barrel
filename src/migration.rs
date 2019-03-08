@@ -16,7 +16,7 @@ use crate::types;
 use crate::DatabaseChange;
 
 use crate::backend::SqlGenerator;
-use crate::connectors::DatabaseExecutor;
+use crate::connectors::SqlRunner;
 
 use std::rc::Rc;
 
@@ -116,7 +116,7 @@ impl Migration {
 
     /// Pass a reference to a migration toolkit runner which will
     /// automatically generate and execute
-    pub fn execute<T: DatabaseExecutor, S: SqlGenerator>(&self, runner: &mut T) {
+    pub fn execute<S: SqlGenerator, T: SqlRunner>(&self, runner: &mut T) {
         runner.execute(self.make::<S>());
     }
 
