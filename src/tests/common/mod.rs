@@ -2,8 +2,8 @@
 mod cloning;
 mod utils;
 
-use types::{BaseType, Type, WrappedDefault};
-use Migration;
+use crate::types::{BaseType, Type, WrappedDefault};
+use crate::Migration;
 
 #[test]
 fn create_multiple_tables() {

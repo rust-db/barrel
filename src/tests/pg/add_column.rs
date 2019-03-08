@@ -1,8 +1,8 @@
 //! All add_column combinations for pgsql
 #![allow(unused_imports)]
 
-use backend::{Pg, SqlGenerator};
-use types;
+use crate::backend::{Pg, SqlGenerator};
+use crate::types;
 
 #[test]
 fn text() {
@@ -34,7 +34,10 @@ fn float() {
 #[test]
 fn double() {
     let sql = Pg::add_column(true, "Double", &types::double());
-    assert_eq!(String::from("ADD COLUMN \"Double\" DOUBLE PRECISION NOT NULL"), sql);
+    assert_eq!(
+        String::from("ADD COLUMN \"Double\" DOUBLE PRECISION NOT NULL"),
+        sql
+    );
 }
 
 #[test]

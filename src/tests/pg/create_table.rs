@@ -1,8 +1,8 @@
 //! Some unit tests that create create tables
 #![allow(unused_imports)]
 
-use backend::{Pg, SqlGenerator};
-use {types, Migration, Table};
+use crate::backend::{Pg, SqlGenerator};
+use crate::{types, Migration, Table};
 
 #[test]
 fn simple_table() {

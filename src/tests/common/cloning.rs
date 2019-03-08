@@ -1,8 +1,8 @@
-use std::fmt;
-use {
+use crate::{
     types::{self, Type},
     Migration,
 };
+use std::fmt;
 
 #[derive(PartialEq, Clone, Copy)]
 pub enum DataTypes {
@@ -74,7 +74,8 @@ pub fn create_table_if_not_exists(name: &str, columns: &Vec<ColumnDef>) {
             let cname: &str = &cd.name;
             t.add_column(cname, cd.data_type.to_database_type());
         }
-    }).without_id();
+    })
+    .without_id();
 }
 
 #[test]

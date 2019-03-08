@@ -1,4 +1,4 @@
-use types;
+use crate::types;
 
 #[test]
 fn cloning_types() {

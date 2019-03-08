@@ -2,7 +2,7 @@
 
 #![allow(unused_imports)]
 
-use backend::{SqlGenerator, Sqlite};
+use crate::backend::{SqlGenerator, Sqlite};
 
 #[test]
 fn create_table() {
