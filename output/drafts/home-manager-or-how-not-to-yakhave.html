@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Brown Stone  
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20100928
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>`home-manager`. Or: how not to yakhave</title>
+<link href="/theme/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/" type="application/atom+xml" rel="alternate" title="barrel.rs ATOM Feed" />
+<link href="/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs RSS Feed" />
+</head>
+<body>
+<div id="wrapper">
+	<div id="page">
+		<div id="page-bgtop">
+			<div id="page-bgbtm">
+    
+                        	<div id="content">
+					<div class="post">
+						<h2 class="title"><a href="drafts/home-manager-or-how-not-to-yakhave.html">`home-manager`. Or: how not to yakhave</a></h2>
+						<p class="meta"><span class="date">Le 2018-12-07 </span><span class="posted">Par <a href="#">Sql People</a></span><span>&nbsp; | Catégorie : <a href="/blog">Blog</a></span></p>
+					<p class="meta">Tags : <span><a href="/devdiary">/dev/diary</a> / </span>
+<span><a href="/reflections">reflections</a> / </span>
+<span><a href="/programming">programming</a> / </span>
+<span><a href="/nix">nix</a> / </span>
+</p>	
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+						 <p>Don't expect the bait-and-switch titles to remain forever.
+I just thought it was fitting for this one too 😉.</p>
+<h2>Some background</h2>
+<p>Ever since I started venturing into computer programming and
+using more and more tools that used <code>dotfiles</code>, I've been
+frustrated at the lack of good tools when it came to synchronising
+these files.</p>
+<p>And that's not for lack of options.
+Either I disagree fundamentally with what I want a sync tool to do
+or nobody had come at the problem from the same angle as me before.
+This is not to bash on other projects or solutions.
+I know many people who are very happy with
+either keeping their dotfiles in a large git repo, symlinking manually,
+making <code>~</code> a git repo or using various tools that automate the symlink
+process.</p>
+<p>The problem I had was that not all my computers were the same.
+As in, I didn't neccessarily want the same configs on all of them.
+Because this is where it becomes complicated.</p>
+<p>I had been thinking about writing a tool to do the things I wanted to do before.
+Thinking back to my post about failure and limiting scope, I never started it.
+While making a lot of drawing board attempts, I never wrote a single line of code
+because I could tell that it would lead me down a dark path.</p>
+<p>Reading about people on reddit from time to time who started their own
+"ansible but for dotfiles" projects that never went anywhere,
+I felt like I was doing the right thing by not even starting.</p>
+<p>So nothing happened for a while. Until recently.</p>
+<h2>Enter: nix</h2>
+<p>In case you don't know it, <code>nix</code> is a functional programming language
+and pure package-manager for unix systems.
+Yes, that includes MacOS and whatnot.
+There is a linux distribution built around it called <a href="https://nixos.org/nixos">NixOS</a> which utilises
+<code>nix</code> as a package manager and configuration language heavily.</p>
+<p>So what does pure-packaging really even mean?
+Have you ever had the situation where you upgraded your system
+and half way through something failed and now you ended up with a broken system
+because some of the packages had already changed while others had not?</p>
+<p>Yea, that's what people would call "impure packaging".</p>
+<p>With <code>nix</code> on the other hand this cannot happen,
+since packages are atomic, meaning that after something is built,
+it can't be changed again. Doing an update? New package.
+Changing a small config? New package.
+It means that not only can failing upgrades be seemlessly be rolled back
+but also that two different versions of the same library
+can easily be installed at the same time.</p>
+<p>Yes, that's right: no more "DLL hell"!</p>
+<p>Well okay so why am I fangirling about <code>nix</code> here?
+Apart from the fact that I've been dabbling with NixOS quite a bit recently,
+wanting to replace all my <a href="https://archlinux.org">Arch</a> installs with NixOS...</p>
+<h2>Enter: home-manager</h2>
+<p>You already saw it in the title of this post, but I wanted to re-introduce it.
+What exactly is <code>home-manager</code>? </p>
+<p>It's <code>nix</code>, but for your userspace!
+Not only does it not require root permissions,
+meaning you can install packages just for you locally
+(well okay, <code>nix</code> can do this as well but...besides the point).</p>
+<p>More importantly, <code>home-manager</code> adds modules and utilities to manage userspace configurations.
+Everything is sourced from <code>~/.config/nixpkgs/</code> (you can move that IIRC)
+which is then used to generate all your configuration files.</p>
+<p>Config files are kept in the nix store (which is usually located at <code>/nix</code>)
+and then symlinked to their destination.</p>
+<p>Right. Now I can practically hear you all saying:
+"but didn't you say you didn't like tools that just symlinked stuff?"</p>
+<p>Well..yes, and no. Obviously symlinking a config is much nicer than having to copy them around.
+What I disliked about tools that symlink configs to places from some other place
+was that I was still responsible for manage that "other place".</p>
+<p>With <code>nix</code>, I never touch the store directly. In fact you don't ever do that!
+Instead I edit the <code>home.nix</code> configuration (or sub-configs when it gets too complicated)
+that then take some inputs, define the outputs and <code>nix</code> makes sure that the configs
+are then where they need to be.</p>
+<p>It gives me a single source of truth, but the best thing is
+that it's not a dumb source of truth: nix is a programming language!
+What that means is that I can dynamically adjust some config contents
+according to what system I'm running on, while not having to worry about
+keeping it all sane.</p>
+<p>I'm really happy I didn't write my own "ansible but for dotfiles"
+and I think I'd recommend nobody do that
+(I mean...unless that's your kink - I don't judge!).
+But I'm even more happy of having been introduced to <code>nix</code>
+and <code>home-manager</code> in particular.</p>
+<p>I'd much rather help write some re-usable modules,
+that other people can also take advantage of,
+than reinventing the wheel from scratch. Again.</p>	
+						</div>
+					</div>
+			      
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!-- end #content -->
+				<div id="sidebar">
+					<div id="logo">
+						<h1><a href="">barrel.rs</a></h1>
+					</div>
+					<div id="menu">
+						<ul>
+							<li ><a href="">Home</a></li>
+							<li ><a href="/archives.html">Archives</a></li>
+						</ul>
+					</div>
+					<ul>
+						<li>
+							<h2>Catégories</h2>
+							<ul>
+								 <li class="active"><a href="/blog">Blog</a></li>
+							</ul>
+						</li>
+						<li>
+						        <h2>Tags</h2>
+						        <ul>
+                                                                <li><a href="/devdiary">/dev/diary</a></li>
+                                                                <li><a href="/rust">rust</a></li>
+                                                                <li><a href="/ccc">CCC</a></li>
+                                                                <li><a href="/reflections">reflections</a></li>
+                                                                <li><a href="/programming">programming</a></li>
+                                                                <li><a href="/meta">meta</a></li>
+                                                                <li><a href="/moonscript">moonscript</a></li>
+                                                                <li><a href="/libgdx">libgdx</a></li>
+                                                                <li><a href="/game-dev">game dev</a></li>
+                                                                <li><a href="/java">java</a></li>
+                                                                <li><a href="/c3">c3</a></li>
+                                                                <li><a href="/gsoc2016">gsoc2016</a></li>
+                                                                <li><a href="/hardware">hardware</a></li>
+                                                                <li><a href="/data-recovery">data recovery</a></li>
+                                                                <li><a href="/linux">linux</a></li>
+						        </ul>
+						</li>
+						
+						
+					</ul>
+				</div>
+				<!-- end #sidebar -->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<!-- end #page -->
+
+<div id="footer">
+	<p>Copyright (c) 2008 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">CSS Templates</a>.</p>
+	<p>Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">pelican</a>, which takes great advantages of <a href="http://python.org">python</a>.
+</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>

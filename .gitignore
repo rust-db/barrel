@@ -1,7 +1,6 @@
 _site
 .sass-cache
 .jekyll-metadata
-output
 srv.pid
 **/*.pyc
 env

@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Brown Stone  
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20100928
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>LibGDX interface containers</title>
+<link href="/theme/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/" type="application/atom+xml" rel="alternate" title="barrel.rs ATOM Feed" />
+<link href="/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs RSS Feed" />
+</head>
+<body>
+<div id="wrapper">
+	<div id="page">
+		<div id="page-bgtop">
+			<div id="page-bgbtm">
+    
+                        	<div id="content">
+					<div class="post">
+						<h2 class="title"><a href="blog/libgdx-interface-containers">LibGDX interface containers</a></h2>
+						<p class="meta"><span class="date">Le 2017-01-24 </span><span class="posted">Par <a href="#">Sql People</a></span><span>&nbsp; | Catégorie : <a href="/blog">Blog</a></span></p>
+					<p class="meta">Tags : <span><a href="/devdiary">/dev/diary</a> / </span>
+<span><a href="/libgdx">libgdx</a> / </span>
+<span><a href="/game-dev">game dev</a> / </span>
+<span><a href="/java">java</a> / </span>
+</p>	
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+						 <p><strong>Let me tell you a factual statement</strong>: UI programming is terrible</p>
+<p><strong>Let me tell you an even more factual statement</strong>: UI programming in LibGDX is even more terrible</p>
+<p>I am a big fan of LibGDX. It's a really nifty library/ framework to get started with game development if you're more comfortable inside a code editor than a full blown game engine that is more targeted towards designers and artists. And I put my money where my mouth is: I have a series about LibGDX development for beginners on this blog and work almost exclusively with it when it comes to my own projects.</p>
+<p>Yet, there is something that bothers me and there didn't seem to be a great solution to fix it. UI code structure. In this post I want to highlight a utility I have written for LibGDX which is very easily embeddable into your existing projects which will you help structure UI code more efficiently.</p>
+<h1>The root problem</h1>
+<p>The reason I dislike UI programming with LibGDX is that it usually results in very long code files or passing dozens of parameters into sub-classes that are needed to update the UI for button presses, etc.</p>
+<p>This goes so far that I have written an editor for game assets before just to realise that (once the development was complete) it had become completely unmaintainable and I had to start from scratch with better structure. It is incredibly easy to just throw out a UI design with Scene2D and LibGDX but unfortunately it is equally easy to produce very bad code which will turn into a big spaghetti mess.</p>
+<p>Let's look at an example problem that I wanted to solve.</p>
+<p><img alt="LibGDX UI design problem" src="/images/libgdx_ui/01_base_problem.png"></p>
+<p>Looking at this structure we have three main components that interact with each other. We have a class that handles UI logic (setting up actors in tables, adding listeners, etc), we have a window state which in the particular case which made me write an alternative was a "Lobby Handle" which coordinated what players were going to enter a match, the map, game mode and if everybody in the multiplayer match was set to "Ready". Lastly we have the actual network signal handlers that listen to TCP/ UDP packets and execute code to write/ read from the window state as well as update UI elements.</p>
+<p>Implementing this structure with Scene2D and LibGDX will result in a lot of very ugly code. Because the network signals need to know everything about the UI (how it is structured, etc). And our window state can be written to by two different sources which means that we need to mutex it to avoid race conditions.</p>
+<h1>Maybe a solution</h1>
+<p>So, what was I trying to solve? First a bit of limitation of scope. Because a lot of UI problems have been solved over and over again and usually at the cost of runtime performance or with a <em>lot</em> of extra code.</p>
+<ol>
+<li>UI code doesn't have to be embedded in a screen</li>
+<li>All UI code can access the shared context of the screen</li>
+<li>UI elements can update each other</li>
+<li>Clean API that can be called on from anywhere (with a reference to the handle) that triggers range of functions.</li>
+</ol>
+<p>So with that in mind, this is what I did.</p>
+<div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">MyUIHandle</span> <span class="n">extands</span> <span class="n">UIHandle</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">enum</span> <span class="n">UI</span> <span class="kd">implements</span> <span class="n">UI_BASE</span> <span class="o">{</span>
+        <span class="n">PLAYER_LIST</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="o">{</span> <span class="cm">/** Initialiser block for new objects */</span>
+
+        <span class="n">registerHandle</span><span class="o">(</span><span class="k">new</span> <span class="n">PlayerList</span><span class="o">(),</span> <span class="n">UI</span><span class="o">.</span><span class="na">PLAYER_LIST</span><span class="o">);</span>
+        <span class="c1">// ... more handles</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">initialise</span><span class="o">(</span><span class="n">Stage</span> <span class="n">s</span><span class="o">,</span> <span class="n">Object</span> <span class="o">...</span> <span class="n">var</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PlayerList</span> <span class="kd">extends</span> <span class="n">UIContainer</span> <span class="o">{</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">initialise</span><span class="o">(</span><span class="n">Stage</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+
+        <span class="c1">// Define more API here ...</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>When we initialise a new <code>UIHandle</code> the initialiser block will create our <code>PlayerLists</code> and register them with the <code>UIHandle</code>. That code is hidden away from you. You can see that we're implementing a different enum type that we overload with values so that we can address submodules via a compile-time checkable value (such as enums). From inside (and outside) this class <code>UIContainer's</code> are available via <code>handle.get(UI.SUB_HANDLE)</code>. Obviously keeping your enum labels short will make your function calls snappier :)</p>
+<p>The following graphic will sort-of explain the layout in more detail.</p>
+<p><img alt="Super UI fixing attempt" src="/images/libgdx_ui/02_ui_structure.png"></p>
+<p>What you might also notice is that the <code>UIHandle</code> has an initialise function with variadic parameters while the <code>UIContainer</code> class only takes a stage. That is because window context is stored once in the <code>UIHandle</code> and then accessable from all <code>UIContainer</code> classes. This way we only need to do the inversion of control pattern once instead of for every sub-component.</p>
+<p>You can keep the <code>UIContainer</code> classes outside this code-file. Then you might however want to provide a construct that does another inversion of control so that an external <code>UIContainer</code> can access the context provided via initialise!</p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PlayerList</span> <span class="kd">extends</span> <span class="n">UIContainer</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">MyUIHandle</span> <span class="n">parent</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">PlayerList</span><span class="o">(</span><span class="n">MyUIHandle</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">;</span> <span class="o">}</span>
+
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Now let's talk about that public API. In our original example we wanted to have networking code update some UI elements. And we want UI elements to update other UI elements. So first of all, we keep context in each <code>UIContainer</code> about what UI elements are accessable to it. So what we can do in every of our submodules is this:</p>
+<div class="highlight"><pre><span></span>    <span class="n">parent</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">UI</span><span class="o">.</span><span class="na">PLAYER_LIST</span><span class="o">).</span><span class="na">updatePlayers</span><span class="o">(</span><span class="n">playerList</span><span class="o">);</span>
+</pre></div>
+
+
+<p>It also means that if we get new data from – say – a network socket or AI simulation, we can very easily update data in some random UI element. </p>
+<div class="highlight"><pre><span></span>    <span class="n">handle</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">UI</span><span class="o">.</span><span class="na">PLAYER_LIST</span><span class="o">).</span><span class="na">populate</span><span class="o">(</span><span class="n">playerList</span><span class="o">);</span>
+</pre></div>
+
+
+<p>So all in all, we have solved the following problems:</p>
+<ol>
+<li>We have access to all game state in the UI code without passing too many parameters into lots of sub-classes</li>
+<li>UI code can be moved into lots of files for easier understandability</li>
+<li>Context isn't duplicated</li>
+<li>UI code can update other UI code without needing a direct reference to it.</li>
+</ol>
+<p>The individual <code>UIContainer</code> instances are essentially independant of each other via dependency injection.</p>
+<p>This library isn't done yet. Most of this is kinda hacked together to fit into <strong>my</strong> game. But I'm interested in making it more generic and putting it on Github. Especially because I can see myself using it again in the future.</p>
+<p>Hope this might be useful to somebody out there. If you have questions, comments, hatemail...</p>
+<p><a href="https://twitter.com/spacekookie">Twitter</a> or <a href="mailto:kookie@spacekookie.de">E-Mail</a></p>	
+						</div>
+					</div>
+			      
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!-- end #content -->
+				<div id="sidebar">
+					<div id="logo">
+						<h1><a href="">barrel.rs</a></h1>
+					</div>
+					<div id="menu">
+						<ul>
+							<li ><a href="">Home</a></li>
+							<li ><a href="/archives.html">Archives</a></li>
+						</ul>
+					</div>
+					<ul>
+						<li>
+							<h2>Catégories</h2>
+							<ul>
+								 <li class="active"><a href="/blog">Blog</a></li>
+							</ul>
+						</li>
+						<li>
+						        <h2>Tags</h2>
+						        <ul>
+                                                                <li><a href="/devdiary">/dev/diary</a></li>
+                                                                <li><a href="/rust">rust</a></li>
+                                                                <li><a href="/ccc">CCC</a></li>
+                                                                <li><a href="/reflections">reflections</a></li>
+                                                                <li><a href="/programming">programming</a></li>
+                                                                <li><a href="/meta">meta</a></li>
+                                                                <li><a href="/moonscript">moonscript</a></li>
+                                                                <li><a href="/libgdx">libgdx</a></li>
+                                                                <li><a href="/game-dev">game dev</a></li>
+                                                                <li><a href="/java">java</a></li>
+                                                                <li><a href="/c3">c3</a></li>
+                                                                <li><a href="/gsoc2016">gsoc2016</a></li>
+                                                                <li><a href="/hardware">hardware</a></li>
+                                                                <li><a href="/data-recovery">data recovery</a></li>
+                                                                <li><a href="/linux">linux</a></li>
+						        </ul>
+						</li>
+						
+						
+					</ul>
+				</div>
+				<!-- end #sidebar -->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<!-- end #page -->
+
+<div id="footer">
+	<p>Copyright (c) 2008 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">CSS Templates</a>.</p>
+	<p>Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">pelican</a>, which takes great advantages of <a href="http://python.org">python</a>.
+</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>

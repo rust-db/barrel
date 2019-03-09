@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Brown Stone  
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20100928
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Open Plantbot – Rev A</title>
+<link href="/theme/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/" type="application/atom+xml" rel="alternate" title="barrel.rs ATOM Feed" />
+<link href="/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs RSS Feed" />
+</head>
+<body>
+<div id="wrapper">
+	<div id="page">
+		<div id="page-bgtop">
+			<div id="page-bgbtm">
+    
+                        	<div id="content">
+					<div class="post">
+						<h2 class="title"><a href="blog/open-plantbot-rev-a">Open Plantbot – Rev A</a></h2>
+						<p class="meta"><span class="date">Le 2016-03-16 </span><span class="posted">Par <a href="#">Sql People</a></span><span>&nbsp; | Catégorie : <a href="/blog">Blog</a></span></p>
+					<p class="meta">Tags : <span><a href="/devdiary">/dev/diary</a> / </span>
+<span><a href="/hardware">hardware</a> / </span>
+</p>	
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+						 <p>Spring is coming in Berlin and thus my thoughts – as every year – are with plants and growing them. I live in an appartment with a tiny tiny balcony so I don't have much space but that has never stopped me from wanting to cram as many plants into the space as possible to the point of starting nuclear fusion.</p>
+<p>In addition to that I have a few house-plants and very water-sensitive trees in my appartment. My current approach is to go around with a jug of water every couple of days and water them individually – making sure the soil has a certain moisture and doesn't exceed a certain limit – but I've always had the dream of being able to automate away as much as possible. That's where the idea of <code>Plantb0t</code> started. And I want to tell you a little bit about it.</p>
+<p>The basic idea is to have a little controller in each plant-pot that measure the moisture of the soil and reports that back to me via an ESP-12 SOM (System on a Module). The ESP has WiFi capabilities and would log to an MQTT server on my home media server. This way (when I'm at home – none of that IoT shit) I can see how my plans are doing.</p>
+<h1>Current state</h1>
+<p>So that's what Revision A of Plantb0t is. I also added a second sensor slot which is meant to be populated by a temperature sensor but could theoretically house a second moisture sensor. In the end the probes are only sticks in the ground that have a resistance between them.</p>
+<p>Here is a dynamic render of the board (that went into prototype production on the 29th of march, 2016).</p>
+<p><img alt="Plantb0t Rev A" src="/images/plantb0t_RevA_front.png"></p>
+<p>As you can see it's powered by an ESP-12 and comes with it's own programmer (The lovely CP2102) and micro-USB header. The USB-Port is currently the only way to power the board.</p>
+<p>In the future it is planned to bypass the USB power and only use it for the programmer and otherwise drive everything off an externla powerboard which provides 3.3V for the Plantb0t.</p>
+<p>In the bottom you see two constant current sources that can power two analogue sensors that get multiplexed into the ADC of the ESP-12.</p>
+<p>GPIO pin headers are included for external gismoz such as a pump to act on the moisture data as well as screwholes to mount the whole thing in a 3D printed case.</p>
+<p>In total the board is only 5x5cm big!</p>
+<h1>Future plans</h1>
+<p>A few things I want to realise with this project in the next coming weeks:</p>
+<ul>
+<li>Primarily the Rev A board needs to be tested to make sure that the programmer works</li>
+<li>Figure out a good way to calibrate the sensors. Maybe drive a button via GPIO?</li>
+<li>Design a power board that generates 3.3V for the board (but not the programmer!) from a solar panel and a battery to decouple the entire sensor-board from all power-sockets.</li>
+</ul>
+<p>For the next revision of the board (Rev B) I want to include more sensor slots. Maybe work on the part spacing a bit and increase footprint sizes. It should be easier to solder and someof the parts are ridiculously small. I mean...I have the whole back to work with?</p>
+<p>I also have some crazy ideas for a "Plantb0t+" Version with even MOAR SENSORS (Including a pH-value sensor!). But that's all faaaaar in the future.</p>
+<p>Either way...I'm excited for my boards to get here (hopefully in the next 7-8 days) as well as all the parts I need for the prototypes.</p>
+<p>I leave you with a screenshot from KiCad where you get to see under the hood of the board. Cheers o/</p>
+<p><img alt="Plantb0t Rev A" src="/images/plantb0t_RevA_naked.png"></p>
+<p>(The project has a <a href="https://github.com/spacekookie/open_plantb0t">Github</a> repo where I will try to populate the wiki with as much info as possible)</p>	
+						</div>
+					</div>
+			      
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!-- end #content -->
+				<div id="sidebar">
+					<div id="logo">
+						<h1><a href="">barrel.rs</a></h1>
+					</div>
+					<div id="menu">
+						<ul>
+							<li ><a href="">Home</a></li>
+							<li ><a href="/archives.html">Archives</a></li>
+						</ul>
+					</div>
+					<ul>
+						<li>
+							<h2>Catégories</h2>
+							<ul>
+								 <li class="active"><a href="/blog">Blog</a></li>
+							</ul>
+						</li>
+						<li>
+						        <h2>Tags</h2>
+						        <ul>
+                                                                <li><a href="/devdiary">/dev/diary</a></li>
+                                                                <li><a href="/rust">rust</a></li>
+                                                                <li><a href="/ccc">CCC</a></li>
+                                                                <li><a href="/reflections">reflections</a></li>
+                                                                <li><a href="/programming">programming</a></li>
+                                                                <li><a href="/meta">meta</a></li>
+                                                                <li><a href="/moonscript">moonscript</a></li>
+                                                                <li><a href="/libgdx">libgdx</a></li>
+                                                                <li><a href="/game-dev">game dev</a></li>
+                                                                <li><a href="/java">java</a></li>
+                                                                <li><a href="/c3">c3</a></li>
+                                                                <li><a href="/gsoc2016">gsoc2016</a></li>
+                                                                <li><a href="/hardware">hardware</a></li>
+                                                                <li><a href="/data-recovery">data recovery</a></li>
+                                                                <li><a href="/linux">linux</a></li>
+						        </ul>
+						</li>
+						
+						
+					</ul>
+				</div>
+				<!-- end #sidebar -->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<!-- end #page -->
+
+<div id="footer">
+	<p>Copyright (c) 2008 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">CSS Templates</a>.</p>
+	<p>Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">pelican</a>, which takes great advantages of <a href="http://python.org">python</a>.
+</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+
+Name       : Brown Stone  
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20100928
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>First steps...baby steps</title>
+<link href="/theme/css/style.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/" type="application/atom+xml" rel="alternate" title="barrel.rs ATOM Feed" />
+<link href="/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs RSS Feed" />
+</head>
+<body>
+<div id="wrapper">
+	<div id="page">
+		<div id="page-bgtop">
+			<div id="page-bgbtm">
+    
+                        	<div id="content">
+					<div class="post">
+						<h2 class="title"><a href="blog/first-stepsbaby-steps">First steps...baby steps</a></h2>
+						<p class="meta"><span class="date">Le 2016-06-02 </span><span class="posted">Par <a href="#">Sql People</a></span><span>&nbsp; | Catégorie : <a href="/blog">Blog</a></span></p>
+					<p class="meta">Tags : <span><a href="/devdiary">/dev/diary</a> / </span>
+<span><a href="/gsoc2016">gsoc2016</a> / </span>
+</p>	
+						<div style="clear: both;">&nbsp;</div>
+						<div class="entry">
+						 <p>So it's been almost two months, the community bonding period has passed, blog posts were written, talks held and slowly but surely I'm working myself into the qaul.net codebase.</p>
+<p>It's always weird joining a larger project and seeing established build setups, code conventions or generally things where your first thought is "I would have done that differently...". But it's really fun.</p>
+<p>I'm currently working myself into <a href="https://tls.mbed.org/">mbed.tls</a> which is the crypto library which was chosen to power the cryptographic backend for libqaul (which powers qaul.net).</p>
+<p>That includes some code that will probably not make it into a later version of my branch: the debugger.</p>
+<h1>The De-bugger?!</h1>
+<p><img alt="Debugger Pro 2016" src="/images/gsoc/01_debugger.png" title="Debugger"></p>
+<p>Well...debuger might be a bit of a strong word, it's basically a way to develop core functions of qaul.net without having to start a GUI, going through NetworkManager dialup or oslr bootup.</p>
+<p>There I am currently busy writing a wrapper around a new namespace added to libqaul: <code>qcry</code> (short for qaul crypto) and properly integrate all the mbed.tls sources into the library so they can be accessed by libqaul. The idea being that I don't have to leave vim and the terminal to develop on the core cryptographic components such as:</p>
+<ul>
+<li>Key generation</li>
+<li>Identify generation (with private key fingerprints)</li>
+<li>Identity verification</li>
+<li>???</li>
+</ul>
+<p>Only in the last step of the last bulletin do I actually have to involve the GUI of qaul.net. And until that point I wish to not come in contact with it (if avoidable).</p>
+<p>So most of next week will be getting to know mbed-tls as I have never worked with it before. But hey...can't be worse than the gcrypt documentation¹ 😂</p>
+<p>Hope to read you soon with more updates (probably rants).</p>
+<p>Kate o/</p>
+<hr>
+<p>¹I am sure I will eat my words in 4 weeks</p>	
+						</div>
+					</div>
+			      
+					<div style="clear: both;">&nbsp;</div>
+				</div>
+				<!-- end #content -->
+				<div id="sidebar">
+					<div id="logo">
+						<h1><a href="">barrel.rs</a></h1>
+					</div>
+					<div id="menu">
+						<ul>
+							<li ><a href="">Home</a></li>
+							<li ><a href="/archives.html">Archives</a></li>
+						</ul>
+					</div>
+					<ul>
+						<li>
+							<h2>Catégories</h2>
+							<ul>
+								 <li class="active"><a href="/blog">Blog</a></li>
+							</ul>
+						</li>
+						<li>
+						        <h2>Tags</h2>
+						        <ul>
+                                                                <li><a href="/devdiary">/dev/diary</a></li>
+                                                                <li><a href="/rust">rust</a></li>
+                                                                <li><a href="/ccc">CCC</a></li>
+                                                                <li><a href="/reflections">reflections</a></li>
+                                                                <li><a href="/programming">programming</a></li>
+                                                                <li><a href="/meta">meta</a></li>
+                                                                <li><a href="/moonscript">moonscript</a></li>
+                                                                <li><a href="/libgdx">libgdx</a></li>
+                                                                <li><a href="/game-dev">game dev</a></li>
+                                                                <li><a href="/java">java</a></li>
+                                                                <li><a href="/c3">c3</a></li>
+                                                                <li><a href="/gsoc2016">gsoc2016</a></li>
+                                                                <li><a href="/hardware">hardware</a></li>
+                                                                <li><a href="/data-recovery">data recovery</a></li>
+                                                                <li><a href="/linux">linux</a></li>
+						        </ul>
+						</li>
+						
+						
+					</ul>
+				</div>
+				<!-- end #sidebar -->
+				<div style="clear: both;">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<!-- end #page -->
+
+<div id="footer">
+	<p>Copyright (c) 2008 Sitename.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">CSS Templates</a>.</p>
+	<p>Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">pelican</a>, which takes great advantages of <a href="http://python.org">python</a>.
+</p>
+</div>
+<!-- end #footer -->
+</body>
+</html>
