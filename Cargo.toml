@@ -3,7 +3,7 @@ name = "barrel"
 version = "0.5.0"
 
 description = "A powerful schema migration building API for Rust"
-authors = ["Katharina Fey <kookie@spacekookie.de>", "Rob Rowe <rippinrobr@gmail.com"]
+authors = ["Katharina Fey <kookie@spacekookie.de>", "Rob Rowe <rippinrobr@gmail.com>"]
 license = "MIT/X11 OR Apache-2.0"
 edition = "2018"
 
