@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ SITENAME }}{% if articles_page.number != 1 %} | Page {{ articles_page.number }}{% endif %}{% endblock %}
+{% block content %}
+{% set date = None %}
+{% for article in articles_page.object_list %}
+{%   if date != article.date.date() %}
+{%     set first_article_of_day = True %}
+{%   else %}
+{%     set first_article_of_day = False %}
+{%   endif %}
+{%   set date = article.date.date() %}
+{%   include "article_stub.html" %}
+{% endfor %}
+
+{% include "pagination.html" %}
+{% endblock %}

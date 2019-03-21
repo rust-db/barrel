@@ -1,0 +1,342 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+v2.0 | 20110126
+License: none (public domain)
+ */
+/* Mockingbird Theme by Nevan Scott nevanscott.com */
+/* Modified by Jody Frankowski */
+/* Modified by ix5 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+em {
+    font-style: italic;
+}
+strong {
+    font-weight: bold;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+body {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5em;
+    color: #444;
+}
+
+header, #wrapper {
+    padding: 0 10px;
+    min-width: 500px;
+    max-width: 910px;
+    margin: auto;
+}
+
+a {
+    text-decoration: none;
+    color: #15A9DB;
+}
+
+ul {
+    list-style: outside disc;
+}
+
+ol {
+    list-style: outside decimal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: sans-serif;
+    font-weight: bold;
+}
+h1, h2, h3 {
+    font-size: 1.5em;
+    line-height: 1em;
+    margin: 1em 0;
+}
+
+img, p, .post > .highlight, .highlighttable, h4, h5, h6 {
+    margin-top: 1.2em;
+}
+
+blockquote {
+    margin: 1.5em 1.5em 1.5em .75em;
+    padding-left: .75em;
+    border-left: 1px solid #EEE;
+}
+
+.date {
+    color: #CCC;
+    float: left;
+    clear: both;
+    width: 130px;
+    font-size: 1.5em;
+    line-height: 1em;
+    margin: 0 20px 1em 0;
+}
+
+.info {
+    margin-top: 1.3em;
+    font-family: sans-serif;
+    text-align: right;
+    color: #BBB;
+}
+.info a {
+    color: inherit;
+}
+.info a.tags {
+    background: #CCC;
+    color: #FFF;
+    display: inline-block;
+    padding: 0 .3em;
+    border: 1px transparent solid;
+    border-radius: 5px;
+    margin: 0 0 0.3em 0;
+}
+.info a.tags:hover {
+    background: inherit;
+    color: inherit;
+}
+.info a.tags.selected {
+    border: 1px #999 solid;
+}
+
+.post {
+    margin: 0 0 4.5em 150px;
+}
+.post.archives {
+    margin-bottom: 1.5em;
+    margin-left: 160px;
+}
+.post p {
+    text-align: justify;
+}
+
+.page {
+    margin: 0 90px;
+}
+
+.highlight {
+    border-radius: 3px;
+}
+.code > .highlight {
+    border-radius: 0px 3px 3px 0px;
+}
+.linenos {
+    border-radius: 3px 0px 0px 3px;
+    background-color: #073642;
+    border-right: 1px solid #00232C;
+    color: #586E75;
+    text-shadow: 0px -1px #021014;
+}
+td.code {
+    width: 100%;
+    max-width: 100px;
+}
+.linenos a {
+    color: #586E75;
+}
+
+img {
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 0.3em;
+    max-width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*sub and sup stolen from Twitter bootstrap.*/
+sub, sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+.post pre, .page pre {
+    padding: .8em;
+    font-size: 12px;
+    font-family: Monospace;
+    line-height: 1.1em;
+    overflow: auto;
+}
+
+form.inline_edit {
+    clear: both;
+    margin: 4.5em 0;
+    background-color: #DDD;
+    color: #000;
+    padding: 20px;
+    border-radius: 5px;
+}
+.inline_edit .sub {
+    color: #888;
+    white-space: nowrap;
+}
+.inline_edit label {
+    float: left;
+    clear: both;
+    width: 140px;
+    margin-right: 20px;
+}
+.inline_edit .buttons {
+    display: block;
+    text-align: right;
+}
+
+nav ul {
+    float: right;
+    list-style: none;
+    margin: 0 0 0 3em;
+    padding: 0;
+}
+nav li {
+    float: left;
+}
+nav a {
+    display: block;
+    padding: 4.5em 10px 10px 10px;
+}
+nav a:hover {
+    background-color: #d3d3d3;
+    color: #FFF;
+}
+nav li.selected a {
+    background-color: #15A9DB;
+    color: #FFF;
+}
+
+header .header_box {
+    padding-top: 4.5em;
+}
+header h1 {
+    font-size: 1.5em;
+    line-height: 1em;
+    margin: 0;
+}
+header h2 {
+    font-size: 1em;
+    margin: .3em 0;
+    color: #DDD;
+}
+
+#content {
+    margin-top: 3em;
+}
+
+.pages {
+    font-family: sans-serif;
+    line-height: 2.5em;
+    margin: 4.5em 0 3em;
+    background-color: #F9F9F9;
+    color: #444;
+    border-radius: 5px;
+}
+.pages a.next_page {
+    float: right;
+    width: 140px;
+    text-align: center;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #EEE;
+}
+.pages a.prev_page {
+    float: left;
+    width: 140px;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #EEE;
+}
+.pages a {
+    color: inherit;
+    border: none;
+}
+.pages a:hover {
+    background-color: #DDD;
+}
+.pages span {
+    display: block;
+    margin: 0 160px;
+    text-align: center;
+}
+
+code {
+    background-color: #F9F2F4;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-sizing: border-box;
+    color: #C7254E;
+    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+    font-size: 12.6px;
+    line-height: 18px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 2px;
+    white-space: nowrap;
+}
+
+footer {
+    font-family: sans-serif;
+    line-height: 2.5em;
+    text-align: center;
+    color: #BBB;
+    margin: 3em 0;
+    border: 1px solid #EEE;
+    border-radius: 5px;
+}
+footer p { margin: 0; }
+
+.right { float: right; }
+
+.clear { clear: both; }

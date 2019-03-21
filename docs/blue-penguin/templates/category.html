@@ -1,0 +1,6 @@
+{% extends "index.html" %}
+{% block title %}{{ SITENAME }} | articles in the "{{ category }}" category{% if articles_page.number != 0 %} | Page {{ articles_page.number }}{% endif %}{% endblock %}
+{% block ephemeral_nav %}
+
+                {{ ephemeral_nav_link(category, output_file, True) }}
+{% endblock %}

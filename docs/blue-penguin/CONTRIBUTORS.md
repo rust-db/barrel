@@ -1,0 +1,16 @@
+# Contributors
+
+* [Nevan Scott](https://github.com/nevanscott/Mockingbird) (original author)
+* [wrl](http://ghttps://github.com/guikcdithub.com/wrl) (port to pelican, pelican-mockingbird)
+* [Jody Frankowski](http://github.com/jody-frankowski) (Blue Penguin)
+* [Grimbox](https://github.com/Grimbox)
+* [ix5](https://github.com/ix5)
+* [dn0](https://github.com/dn0)
+* [anhtuann](https://github.com/anhtuann)
+* [aperep](https://github.com/aperep)
+* [iranzo](https://github.com/iranzo)
+* [thetlk](https://github.com/thetlk)
+* [SnorlaxYum](https://github.com/SnorlaxYum)
+* [guikcd](https://github.com/guikcd)
+* [jorgesumle](https://github.com/jorgesumle)
+* [crxxn](https://github.com/crxxn)
