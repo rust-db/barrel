@@ -1,6 +1,6 @@
 Title: Releasing 0.5.0
 Category: Blog
-Date: 2019-03-09 22:00
+Date: 2019-03-21 21:30
 
 So `barrel.rs` has a blog now 🎉!
 
