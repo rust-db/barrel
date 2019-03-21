@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'Sql People'
+AUTHOR = 'Squirrel People'
 SITENAME = 'barrel.rs'
 SITEURL = ''
 
-THEME = 'aboutwilson'
+THEME = 'blue-penguin'
 
 EXTRA_PATH_METADATA = {
   'favicon.ico': {'path': 'favicon.ico'}
@@ -17,10 +17,8 @@ DEBUG = True
 READ_TIME = 180
 
 PATH = 'content'
-STATIC_PATHS = ['images', 'downloads', 'kookie.txt']
+STATIC_PATHS = ['images']
 SITE_LOGO = 'favicon.ico'
-
-SUMMARY_MAX_LENGTH = 140
 
 #############################################
 #############################################
@@ -31,9 +29,15 @@ DEFAULT_DATE = 'fs'
 DISPLAY_CATEGORIES_ON_MENU = False
 DISPLAY_PAGES_ON_MENU = False
 
+# use those if you want pelican standard pages to appear in your menu
+MENU_INTERNAL_PAGES = (
+    # ('Tags', TAGS_URL, TAGS_SAVE_AS),
+    # ('Authors', AUTHORS_URL, AUTHORS_SAVE_AS),
+    ('Blog', 'blog/', 'blog/index.html'),
+    # ('Archives', ARCHIVES_URL, ARCHIVES_SAVE_AS),
+)
+
 MENUITEMS = (
-  ('About', '/'),
-  ('Blog', '/blog/'),
 )
 
 ARTICLE_URL = '{category}/{slug}'
@@ -69,5 +73,5 @@ JINJA_ENVIRONMENT = {
   'extensions': ['webassets.ext.jinja2.AssetsExtension', 'jinja2.ext.with_']
 }
 
-DEFAULT_PAGINATION = 20
+# DEFAULT_PAGINATION = 20
 

@@ -1,0 +1,38 @@
+{# Use PAGINATION_PATTERNS or pagination may break #}
+{% if DEFAULT_PAGINATION and (articles_page.has_previous() or articles_page.has_next()) %}
+
+                <div class="clear"></div>
+                <div class="pages">
+	{% if PAGINATION_PATTERNS[0][0] != 0 %}
+                {%- if articles_page.has_previous() %}
+                {%   if articles_page.previous_page_number() == 1 %}
+
+                    <a href="{{ SITEURL }}/" class="prev_page">&larr;&nbsp;Previous</a>
+                {%-   else %}
+
+                    <a href="{{ SITEURL }}/page/{{ articles_page.previous_page_number() }}" class="prev_page">&larr;&nbsp;Previous</a>
+                {%-   endif %}
+                {%- endif %}
+                {%- if articles_page.has_next() %}
+
+                    <a href="{{ SITEURL }}/page/{{ articles_page.next_page_number() }}" class="next_page">Next&nbsp;&rarr;</a>
+                {%- endif %}
+    {% else %}
+                {%- if articles_page.has_previous() %}
+                {%   if articles_page.previous_page_number() == 1 %}
+
+                    <a href="{{ SITEURL }}/{{ page_name }}.html" class="prev_page">&larr;&nbsp;Previous</a>
+                {%-   else %}
+
+                    <a href="{{ SITEURL }}/{{ page_name }}{{ articles_page.previous_page_number() }}.html" class="prev_page">&larr;&nbsp;Previous</a>
+                {%-   endif %}
+                {%- endif %}
+                {%- if articles_page.has_next() %}
+
+                    <a href="{{ SITEURL }}/{{ page_name }}{{ articles_page.next_page_number() }}.html" class="next_page">Next&nbsp;&rarr;</a>
+                {%- endif %}
+    {% endif %}
+
+                    <span>Page {{ articles_page.number }} of {{ articles_paginator.num_pages }}</span>
+                </div>
+{% endif %}
