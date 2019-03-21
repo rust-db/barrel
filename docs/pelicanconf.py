@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Squirrel People'
 SITENAME = 'barrel.rs'
-SITEURL = ''
+SITEURL = 'https://rust-db.github.io/barrel'
 
 THEME = 'blue-penguin'
 
