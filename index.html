@@ -57,30 +57,6 @@ This way you can focus on your Rust code, and stop worrying about SQL.</p>
 
 <h2>Using Diesel</h2>
 <p>Since <code>diesel 1.2.0</code> it's possible to now use <code>barrel</code> for migrations with <code>diesel</code>. A guide with some more information on how to get started can be found <a href="https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md">here</a></p>
-<h3>Migration guide</h3>
-<p>If you've been using <code>barrel</code> to write migrations for <code>diesel</code> before the <code>0.5.0</code> release,
-some migration of your migrations will be required.
-Since <code>0.5.0</code> the way types are constructed changed.
-Instead of constructing a type with <code>Types::VarChar(255)</code> (an enum variant),
-the types are now provided by a module called <code>types</code> and builder functions.
-The same type would now be <code>types::varchar(255)</code> (a function call),
-which then returns a <code>Type</code> enum.</p>
-<p>You can also directly created your own <code>Type</code> builders this way.
-Check the docs for details!</p>
-<h2>Unstable features</h2>
-<p>Starting with <code>v0.2.4</code> <code>barrel</code> now has an <code>unstable</code> feature flag which will hide features and breaking changes that are in-development at the time of a minor or patch release. You can use these features if you so desire, but be aware that their usage will change more rapidely between versions (even patches) and their usage will be badly documented.</p>
-<h2>License</h2>
-<p><code>barrel</code> is free software: you can redistribute it and/or modify it
-under the terms of the MIT Public License.</p>
-<p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the MIT Public License for more details.</p>
-<h2>Conduct</h2>
-<p>In the interest of fostering an open and welcoming environment,
-the <code>barrel</code> project pledges to making participation a harassment-free experience for everyone.
-See <a href="code_of_conduct.md">Code of Conduct</a> for details.
-In case of violations, e-mail <a href="mailto:kookie@spacekookie.de">kookie@spacekookie.de</a>.</p>
             </div>
 
             <div class="clear"></div>
