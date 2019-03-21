@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>barrel.rs | Releasing 0.5.0</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs RSS Feed" />
+    <link href="/blog/rss.xml" type="application/rss+xml" rel="alternate" title="barrel.rs Categories RSS Feed" />
+    <link rel="stylesheet" href="/theme/css/screen.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="/theme/css/print.css" type="text/css" media="print" />
+    <meta name="generator" content="Pelican" />
+    <meta name="description" content="" />
+    <meta name="author" content="Squirrel People" />
+
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+            <!--  -->
+                <li><a href="/">Home</a></li>
+                <li><a href="/blog/">Blog</a></li>
+            </ul>
+        </nav>
+        <div class="header_box">
+            <h1><a href="/">barrel.rs</a></h1>
+        </div>
+    </header>
+    <div id="wrapper">
+        <div id="content">            <h4 class="date">Mar 09, 2019</h4>
+
+            <article class="post">
+                <h2 class="title">
+                    <a href="/blog/releasing-050" rel="bookmark" title="Permanent Link to &quot;Releasing 0.5.0&quot;">Releasing 0.5.0</a>
+                </h2>
+
+                
+                
+
+                <p>So <code>barrel.rs</code> has a blog now 🎉!</p>
+<p>Today we are also happy to announce the release of version <code>0.5.0</code>.
+A lot of work as gone into this release and breaks the API in a few ways.
+This post will quickly highlight new features and also changes to the API.</p>
+<h3>New type system</h3>
+<p>This release adds <code>barrel::types</code> which replaces the old <code>Column</code> types.
+While types are still enums with different type variants, the creation
+is now much more streamlined with a builder-style API.</p>
+<div class="highlight"><pre><span></span><span class="n">types</span>::<span class="n">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">nullable</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">.</span><span class="n">default</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+
+
+<p>This change allows us to more easily support database specific types
+in the future and makes it easier for you to create your own custom
+type builders.
+Check out the <code>barrel::types</code> documentation for details.</p>
+<h3>Explicit IDs for tables</h3>
+<p>Since <code>0.2.0</code> a new table had an implicit <code>PRIMARY</code> key called <code>id</code>.
+It was brought up several times that <code>barrel</code> should not have implicit behaviour like this
+and and as such we have no reverted this!</p>
+<p>Now you will need to create a new <code>id</code> field explicitly</p>
+<div class="highlight"><pre><span></span><span class="n">table</span><span class="p">.</span><span class="n">add_column</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">types</span>::<span class="n">primary</span><span class="p">())</span><span class="w"></span>
+</pre></div>
+
+
+<p>We're still evaluating the option to add a <code>table.id()</code> function
+(or similar) to make this process easier.</p>
+<h3>Various changes</h3>
+<p>The <code>DatabaseExecutor</code> was renamed to <code>SqlRunner</code>,
+there were several bug-fixes around <code>diesel</code> integration as well as
+the table API.</p>
+<p>Most importantly, you will need a very recent <code>diesel</code> version
+which then depends on <code>0.5.0</code>.
+If you're using barrel currently, nothing will change until you update.
+Be aware that your existing migrations will need adjustment if you plan
+on re-running them!</p>
+<hr>
+<p>All in all, this is a pretty big step forward.
+We're also tracking some things to implement on a roadmap
+for an upcoming <code>1.0.0</code> release later this year (maybe!)</p>
+                <div class="clear"></div>
+
+                <div class="info">
+                    <a href="/blog/releasing-050">posted at 22:00</a>
+                    &nbsp;&middot;&nbsp;<a href="/blog" rel="tag">Blog</a>
+                </div>
+            </article>
+            <div class="clear"></div>
+            <footer>
+                <p>
+                <a href="https://github.com/jody-frankowski/blue-penguin">Blue Penguin</a> Theme
+                &middot;
+                Powered by <a href="http://getpelican.com">Pelican</a>
+            </footer>
+        </div>
+        <div class="clear"></div>
+    </div>
+</body>
+</html>
