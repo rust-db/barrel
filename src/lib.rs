@@ -86,9 +86,6 @@
 //! If you find database-specific features or documentation lacking,
 //! don't hesitate to open an issue/PR about it.
 
-#[cfg(not(any(feature = "sqlite3", feature = "pg", feature = "mysql")))]
-compile_error!("`barrel` cannot be built without a database backend specified");
-
 #[cfg(feature = "diesel")]
 pub mod integrations;
 #[cfg(feature = "diesel")]
