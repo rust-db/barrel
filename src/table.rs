@@ -61,7 +61,7 @@ impl Table {
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
 
-    pub fn make<T: SqlGenerator>(&mut self, ex: bool) -> Vec<String> {
+    pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> Vec<String> {
         use TableChange::*;
         let mut s = Vec::new();
 
@@ -70,7 +70,7 @@ impl Table {
                 &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
                 &mut DropColumn(ref name) => T::drop_column(name),
                 &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
-                &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name),
+                &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),
             });
         }
 
