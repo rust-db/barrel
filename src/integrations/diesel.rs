@@ -59,10 +59,10 @@ pub fn generate_initial_with_content(path: &PathBuf, up_content: &String, down_c
 
 /// Generate a Migration from the provided path
 pub fn migration_from(path: &Path) -> Option<Box<Migration>> {
-    return match path.join("mod.rs").exists() {
+    match path.join("mod.rs").exists() {
         true => Some(run_barrel_migration_wrapper(&path.join("mod.rs"))),
         false => None,
-    };
+    }
 }
 
 fn version_from_path(path: &Path) -> Result<String, ()> {
@@ -89,7 +89,7 @@ fn run_barrel_migration_wrapper(path: &Path) -> Box<Migration> {
         Some(parent_path) => parent_path.to_path_buf(),
         None => path.to_path_buf(),
     };
-    return Box::new(BarrelMigration(migration_path, version, up, down));
+    Box::new(BarrelMigration(migration_path, version, up, down))
 }
 
 fn run_barrel_migration(migration: &Path) -> (String, String) {
@@ -170,5 +170,5 @@ fn main() {{
     let up = String::from(vec[0]);
     let down = String::from(vec[1]);
 
-    return (up, down);
+    (up, down)
 }

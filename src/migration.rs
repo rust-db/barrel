@@ -47,13 +47,12 @@ impl Migration {
     /// in the process to auto-infer the down-behaviour
     pub fn make<T: SqlGenerator>(&self) -> String {
         use DatabaseChange::*;
-        let mut s = String::new();
 
         /* What happens in make, stays in make (sort of) */
         let mut changes = self.changes.clone();
         let schema = self.schema.as_ref().map(|s| s.as_str());
 
-        for change in &mut changes {
+        changes.iter_mut().fold(String::new(), |mut sql, change| {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
@@ -61,45 +60,44 @@ impl Migration {
                     let vec = t.make::<T>(false, schema);
 
                     let name = t.meta.name().clone();
-                    s.push_str(&match change {
+                    sql.push_str(&match change {
                         CreateTable(_, _) => T::create_table(&name, schema),
                         CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&name, schema),
                         _ => unreachable!(),
                     });
-                    s.push_str(" (");
+                    sql.push_str(" (");
                     let l = vec.len();
                     for (i, slice) in vec.iter().enumerate() {
-                        s.push_str(slice);
+                        sql.push_str(slice);
 
                         if i < l - 1 {
-                            s.push_str(", ");
+                            sql.push_str(", ");
                         }
                     }
-                    s.push_str(")");
+                    sql.push_str(")");
                 }
-                &mut DropTable(ref name) => s.push_str(&T::drop_table(name, schema)),
-                &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name, schema)),
-                &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new, schema)),
+                &mut DropTable(ref name) => sql.push_str(&T::drop_table(name, schema)),
+                &mut DropTableIfExists(ref name) => sql.push_str(&T::drop_table_if_exists(name, schema)),
+                &mut RenameTable(ref old, ref new) => sql.push_str(&T::rename_table(old, new, schema)),
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
                     let vec = t.make::<T>(true, schema);
-                    s.push_str(&T::alter_table(&t.meta.name(), schema));
-                    s.push_str(" ");
+                    sql.push_str(&T::alter_table(&t.meta.name(), schema));
+                    sql.push_str(" ");
                     let l = vec.len();
                     for (i, slice) in vec.iter().enumerate() {
-                        s.push_str(slice);
+                        sql.push_str(slice);
 
                         if i < l - 1 {
-                            s.push_str(", ");
+                            sql.push_str(", ");
                         }
                     }
                 }
             }
 
-            s.push_str(";");
-        }
-
-        return s;
+            sql.push_str(";");
+            sql
+        })
     }
 
     /// Automatically infer the `down` step of this migration
@@ -124,10 +122,10 @@ impl Migration {
         self.changes
             .push(DatabaseChange::CreateTable(Table::new(name), Rc::new(cb)));
 
-        return match self.changes.last_mut().unwrap() {
+        match self.changes.last_mut().unwrap() {
             &mut DatabaseChange::CreateTable(ref mut t, _) => &mut t.meta,
             _ => unreachable!(),
-        };
+        }
     }
 
     /// Create a new table *only* if it doesn't exist yet
@@ -144,10 +142,10 @@ impl Migration {
             Rc::new(cb),
         ));
 
-        return match self.changes.last_mut().unwrap() {
+        match self.changes.last_mut().unwrap() {
             &mut DatabaseChange::CreateTableIfNotExists(ref mut t, _) => &mut t.meta,
             _ => unreachable!(),
-        };
+        }
     }
 
     /// Change fields on an existing table

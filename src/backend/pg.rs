@@ -15,7 +15,6 @@ macro_rules! prefix {
     };
 }
 
-
 /// Postgres SQL generator backend
 pub struct Pg;
 impl SqlGenerator for Pg {

@@ -25,11 +25,11 @@ pub struct Table {
 }
 
 impl Table {
-    pub fn new<S: Into<String>>(name: S) -> Table {
-        return Table {
+    pub fn new<S: Into<String>>(name: S) -> Self {
+        Self {
             meta: TableMeta::new(name.into()),
             changes: Vec::new(),
-        };
+        }
     }
 
     /// Add a new column to a table
@@ -46,10 +46,10 @@ impl Table {
         self.changes
             .push(TableChange::AddColumn(name.into(), _type));
 
-        return match self.changes.last_mut().unwrap() {
+        match self.changes.last_mut().unwrap() {
             &mut TableChange::AddColumn(_, ref mut c) => c,
             _ => unreachable!(),
-        };
+        }
     }
 
     pub fn drop_column<S: Into<String>>(&mut self, name: S) {
@@ -63,18 +63,16 @@ impl Table {
 
     pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> Vec<String> {
         use TableChange::*;
-        let mut s = Vec::new();
 
-        for change in &mut self.changes {
-            s.push(match change {
+        self.changes
+            .iter_mut()
+            .map(|change| match change {
                 &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
                 &mut DropColumn(ref name) => T::drop_column(name),
                 &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
                 &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),
-            });
-        }
-
-        return s;
+            })
+            .collect()
     }
 }
 
@@ -87,22 +85,22 @@ pub struct TableMeta {
 
 impl TableMeta {
     /// Create a new tablemeta with default values
-    pub fn new(name: String) -> TableMeta {
-        return TableMeta {
-            name: name,
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
             encoding: "utf-8".to_owned(),
-        };
+        }
     }
 
-    /// Return a clone of the table name
+    /// Get a clone of the table name
     pub fn name(&self) -> String {
-        return self.name.clone();
+        self.name.clone()
     }
 
     /// Specify an encoding for this table which might vary from the main encoding
     /// of your database
     pub fn encoding<S: Into<String>>(&mut self, enc: S) -> &mut TableMeta {
         self.encoding = enc.into();
-        return self;
+        self
     }
 }
