@@ -22,23 +22,22 @@ use std::rc::Rc;
 /// Represents a schema migration on a database
 pub struct Migration {
     #[doc(hidden)]
-    pub schema: String,
+    pub schema: Option<String>,
     #[doc(hidden)]
     pub changes: Vec<DatabaseChange>,
 }
 
 impl Migration {
     pub fn new() -> Migration {
-        return Migration {
-            schema: String::new(),
+        Migration {
+            schema: None,
             changes: Vec::new(),
-        };
+        }
     }
 
     /// Specify a database schema name for this migration
-    pub fn schema<S: Into<String>>(mut self, schema: S) -> Migration {
-        self.schema = schema.into();
-        return self;
+    pub fn schema<S: Into<String>>(self, schema: S) -> Migration {
+        Self { schema: Some(schema.into()), ..self }
     }
 
     /// Creates the SQL for this migration for a specific backend
@@ -52,17 +51,19 @@ impl Migration {
 
         /* What happens in make, stays in make (sort of) */
         let mut changes = self.changes.clone();
+        let schema = self.schema.as_ref().map(|s| s.as_str());
+
         for change in &mut changes {
             match change {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     cb(t); // Run the user code
-                    let vec = t.make::<T>(false);
+                    let vec = t.make::<T>(false, schema);
 
                     let name = t.meta.name().clone();
                     s.push_str(&match change {
-                        CreateTable(_, _) => T::create_table(&name),
-                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&name),
+                        CreateTable(_, _) => T::create_table(&name, schema),
+                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&name, schema),
                         _ => unreachable!(),
                     });
                     s.push_str(" (");
@@ -76,13 +77,13 @@ impl Migration {
                     }
                     s.push_str(")");
                 }
-                &mut DropTable(ref name) => s.push_str(&T::drop_table(name)),
-                &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name)),
-                &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new)),
+                &mut DropTable(ref name) => s.push_str(&T::drop_table(name, schema)),
+                &mut DropTableIfExists(ref name) => s.push_str(&T::drop_table_if_exists(name, schema)),
+                &mut RenameTable(ref old, ref new) => s.push_str(&T::rename_table(old, new, schema)),
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
-                    let vec = t.make::<T>(true);
-                    s.push_str(&T::alter_table(&t.meta.name()));
+                    let vec = t.make::<T>(true, schema);
+                    s.push_str(&T::alter_table(&t.meta.name(), schema));
                     s.push_str(" ");
                     let l = vec.len();
                     for (i, slice) in vec.iter().enumerate() {

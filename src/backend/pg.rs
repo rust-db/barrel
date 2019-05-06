@@ -6,31 +6,42 @@
 use super::SqlGenerator;
 use crate::types::{BaseType, Type};
 
+/// A simple macro that will generate a schema prefix if it exists
+macro_rules! prefix {
+    ($schema:expr) => {
+        $schema
+            .map(|s| format!("\"{}\".", s))
+            .unwrap_or_else(|| String::new())
+    };
+}
+
+
 /// Postgres SQL generator backend
 pub struct Pg;
 impl SqlGenerator for Pg {
-    fn create_table(name: &str) -> String {
-        format!("CREATE TABLE \"{}\"", name)
+    fn create_table(name: &str, schema: Option<&str>) -> String {
+        format!("CREATE TABLE {}\"{}\"", prefix!(schema), name)
     }
 
-    fn create_table_if_not_exists(name: &str) -> String {
-        format!("CREATE TABLE \"{}\" IF NOT EXISTS", name)
+    fn create_table_if_not_exists(name: &str, schema: Option<&str>) -> String {
+        format!("CREATE TABLE {}\"{}\" IF NOT EXISTS", prefix!(schema), name)
     }
 
-    fn drop_table(name: &str) -> String {
-        format!("DROP TABLE \"{}\"", name)
+    fn drop_table(name: &str, schema: Option<&str>) -> String {
+        format!("DROP TABLE {}\"{}\"", prefix!(schema), name)
     }
 
-    fn drop_table_if_exists(name: &str) -> String {
-        format!("DROP TABLE IF EXISTS \"{}\"", name)
+    fn drop_table_if_exists(name: &str, schema: Option<&str>) -> String {
+        format!("DROP TABLE IF EXISTS {}\"{}\"", prefix!(schema), name)
     }
 
-    fn rename_table(old: &str, new: &str) -> String {
-        format!("ALTER TABLE \"{}\" RENAME TO \"{}\"", old, new)
+    fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
+        let schema = prefix!(schema);
+        format!("ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"", schema, old, schema, new)
     }
 
-    fn alter_table(name: &str) -> String {
-        format!("ALTER TABLE \"{}\"", name)
+    fn alter_table(name: &str, schema: Option<&str>) -> String {
+        format!("ALTER TABLE {}\"{}\"", prefix!(schema), name)
     }
 
     fn add_column(ex: bool, name: &str, tt: &Type) -> String {
