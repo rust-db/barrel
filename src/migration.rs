@@ -37,7 +37,10 @@ impl Migration {
 
     /// Specify a database schema name for this migration
     pub fn schema<S: Into<String>>(self, schema: S) -> Migration {
-        Self { schema: Some(schema.into()), ..self }
+        Self {
+            schema: Some(schema.into()),
+            ..self
+        }
     }
 
     /// Creates the SQL for this migration for a specific backend
@@ -62,7 +65,9 @@ impl Migration {
                     let name = t.meta.name().clone();
                     sql.push_str(&match change {
                         CreateTable(_, _) => T::create_table(&name, schema),
-                        CreateTableIfNotExists(_, _) => T::create_table_if_not_exists(&name, schema),
+                        CreateTableIfNotExists(_, _) => {
+                            T::create_table_if_not_exists(&name, schema)
+                        }
                         _ => unreachable!(),
                     });
                     sql.push_str(" (");
@@ -77,8 +82,12 @@ impl Migration {
                     sql.push_str(")");
                 }
                 &mut DropTable(ref name) => sql.push_str(&T::drop_table(name, schema)),
-                &mut DropTableIfExists(ref name) => sql.push_str(&T::drop_table_if_exists(name, schema)),
-                &mut RenameTable(ref old, ref new) => sql.push_str(&T::rename_table(old, new, schema)),
+                &mut DropTableIfExists(ref name) => {
+                    sql.push_str(&T::drop_table_if_exists(name, schema))
+                }
+                &mut RenameTable(ref old, ref new) => {
+                    sql.push_str(&T::rename_table(old, new, schema))
+                }
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
                     let vec = t.make::<T>(true, schema);
@@ -113,8 +122,7 @@ impl Migration {
 
             #[cfg(feature = "mysql")]
             SqlVariant::Mysql => self.make::<MySql>(),
-
-        _ => "".into(),
+            _ => unreachable!(),
         }
     }
 
