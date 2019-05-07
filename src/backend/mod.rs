@@ -4,19 +4,19 @@
 //! It also re-exports the generators for existing databases
 //! so they can be used more conveniently.
 
-// #[cfg(feature = "mysql")]
+#[cfg(feature = "mysql")]
 mod mysql;
-// #[cfg(feature = "mysql")]
+#[cfg(feature = "mysql")]
 pub use self::mysql::MySql;
 
-// #[cfg(feature = "pg")]
+#[cfg(feature = "pg")]
 mod pg;
-// #[cfg(feature = "pg")]
+#[cfg(feature = "pg")]
 pub use self::pg::Pg;
 
-// #[cfg(feature = "sqlite3")]
+#[cfg(feature = "sqlite3")]
 mod sqlite3;
-// #[cfg(feature = "sqlite3")]
+#[cfg(feature = "sqlite3")]
 pub use self::sqlite3::Sqlite;
 
 #[allow(unused_imports)]
