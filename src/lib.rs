@@ -49,10 +49,12 @@
 //! generic `SqlGenerator` type according to your database backend
 //!
 //! ```rust
+//! # #[cfg(feature = "pg")]
 //! # use barrel::backend::Pg;
 //! # use barrel::Migration;
 //! # let mut m = Migration::new();
 //! // Example for pgsql
+//! # #[cfg(feature = "pg")]
 //! m.make::<Pg>();
 //! ```
 //!
@@ -64,6 +66,7 @@
 //! ```rust
 //! use barrel::connectors::SqlRunner;
 //! # use barrel::Migration;
+//! # #[cfg(feature = "pg")]
 //! # use barrel::backend::Pg;
 //!
 //! struct MyRunner;
@@ -76,6 +79,7 @@
 //!
 //! # let mut m = Migration::new();
 //! # let mut executor = MyRunner;
+//! # #[cfg(feature = "pg")]
 //! m.execute::<Pg, _>(&mut executor);
 //! ```
 //!
@@ -99,6 +103,7 @@ pub mod types;
 
 pub use migration::Migration;
 pub use table::{Table, TableMeta};
+pub use backend::SqlVariant;
 
 #[cfg(test)]
 mod tests;

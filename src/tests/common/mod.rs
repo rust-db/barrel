@@ -2,6 +2,9 @@
 mod cloning;
 mod utils;
 
+#[cfg(all(feature = "sqlite3", feature = "pg", feature = "mysql"))]
+mod runtime;
+
 use crate::types::{BaseType, Type, WrappedDefault};
 use crate::Migration;
 
