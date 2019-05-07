@@ -14,7 +14,7 @@
 use crate::table::{Table, TableMeta};
 use crate::DatabaseChange;
 
-use crate::backend::SqlGenerator;
+use crate::backend::{SqlGenerator, SqlVariant};
 use crate::connectors::SqlRunner;
 
 use std::rc::Rc;
@@ -98,6 +98,24 @@ impl Migration {
             sql.push_str(";");
             sql
         })
+    }
+
+    pub fn make_from(&self, flavour: SqlVariant) -> String {
+        #[allow(unused_imports)]
+        use crate::backend::*;
+
+        match flavour {
+            #[cfg(feature = "sqlite3")]
+            SqlVariant::Sqlite => self.make::<Sqlite>(),
+
+            #[cfg(feature = "pg")]
+            SqlVariant::Pg => self.make::<Pg>(),
+
+            #[cfg(feature = "mysql")]
+            SqlVariant::Mysql => self.make::<MySql>(),
+
+        _ => "".into(),
+        }
     }
 
     /// Automatically infer the `down` step of this migration
