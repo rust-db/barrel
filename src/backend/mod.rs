@@ -34,6 +34,23 @@ pub enum SqlVariant {
     __Empty,
 }
 
+impl SqlVariant {
+    pub(crate) fn run_for(self, _migr: &Migration) -> String {
+        match self {
+            #[cfg(feature = "sqlite3")]
+            SqlVariant::Sqlite => _migr.make::<Sqlite>(),
+
+            #[cfg(feature = "pg")]
+            SqlVariant::Pg => _migr.make::<Pg>(),
+
+            #[cfg(feature = "mysql")]
+            SqlVariant::Mysql => _migr.make::<MySql>(),
+
+            _ => panic!("You need to select an Sql variant!"),
+        }
+    }
+}
+
 /// A generic SQL generator trait
 pub trait SqlGenerator {
     /// Create a new table with a name

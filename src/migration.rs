@@ -109,21 +109,14 @@ impl Migration {
         })
     }
 
-    pub fn make_from(&self, flavour: SqlVariant) -> String {
-        #[allow(unused_imports)]
-        use crate::backend::*;
-
-        match flavour {
-            #[cfg(feature = "sqlite3")]
-            SqlVariant::Sqlite => self.make::<Sqlite>(),
-
-            #[cfg(feature = "pg")]
-            SqlVariant::Pg => self.make::<Pg>(),
-
-            #[cfg(feature = "mysql")]
-            SqlVariant::Mysql => self.make::<MySql>(),
-            _ => unreachable!(),
-        }
+    /// The same as `make` but making a run-time check for sql variant
+    ///
+    /// The `SqlVariant` type is populated based on the backends
+    /// that are being selected at compile-time.
+    ///
+    /// This function panics if the provided variant is empty!
+    pub fn make_from(&self, variant: SqlVariant) -> String {
+        variant.run_for(self)
     }
 
     /// Automatically infer the `down` step of this migration
