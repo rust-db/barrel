@@ -39,4 +39,4 @@ fn up(migr: &mut Migration) {}
 fn down(migr: &mut Migration) {}
 ```
 
-The object provided as a function parameter is a mutable `Migration` object which you can operate on. Please refer to  [the docs](https://docs.rs/barrel/0.2.0/barrel/migration/struct.Migration.html) for API specifics.
+The object provided as a function parameter is a mutable `Migration` object which you can operate on. Please refer to [the docs](https://docs.rs/barrel/latest/barrel/migration/struct.Migration.html) for API specifics.
