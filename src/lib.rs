@@ -124,6 +124,9 @@ pub enum TableChange {
 
     /// Remove a column
     DropColumn(String),
+
+    /// Add some custom SQL
+    CustomLine(String),
 }
 
 /// An enum set that represents a single change on a database
