@@ -61,6 +61,10 @@ impl Table {
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
 
+    pub fn inject_custom<S: Into<String>>(&mut self, sql: S) {
+        self.changes.push(TableChange::CustomLine(sql.into()));
+    }
+
     pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> Vec<String> {
         use TableChange::*;
 
@@ -71,6 +75,7 @@ impl Table {
                 &mut DropColumn(ref name) => T::drop_column(name),
                 &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
                 &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),
+                &mut CustomLine(ref sql) => sql.clone()
             })
             .collect()
     }
