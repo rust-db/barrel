@@ -2,23 +2,28 @@
 
 
 ### Disclaimer
-> The barrel crate is still in an early state of development and should not be considered "stable". 
+> The barrel crate is still in an early state of development and should not be considered "stable".
 >
-> Old migrations might break because the API was changed. Features might be removed or replaced! **Before 1.0 this crate is not stable and should __not__ be used in production** – just wanted to make that loud and clear :)
+> Old migrations might break because the API was changed.
+> Features might be removed or replaced! **Before 1.0 this crate is not stable
+> and should __not__ be used in production**
+> – just wanted to make that loud and clear :)
 
 ---
 
-Using rust migrations (via `barrel`) with `diesel` is really simple. First make sure that you installed the `diesel_cli` with the `barrel-migrations` feature flag:
+Using rust migrations (via `barrel`) with `diesel` is really simple.
+First make sure that you installed the `diesel_cli` with the `barrel-migrations` feature flag:
 
 ```bash
 ~ cargo install diesel_cli --features="barrel-migrations"
 ```
 
-Note that currently `barrel` only supports postgres databases.
+**Important:** you can only select one (1) backend with diesel.
+Whichever you select will determine the migration files that are generated later.
 
 ```toml
 [dependencies]
-diesel = { version = "1.3", features = ["postgres"] }
+diesel = { version = "1.3", features = ["sqlite3"] }
 # ...
 ```
 
@@ -39,4 +44,5 @@ fn up(migr: &mut Migration) {}
 fn down(migr: &mut Migration) {}
 ```
 
-The object provided as a function parameter is a mutable `Migration` object which you can operate on. Please refer to [the docs](https://docs.rs/barrel/latest/barrel/migration/struct.Migration.html) for API specifics.
+The object provided as a function parameter is a mutable `Migration` object which you can operate on.
+Please refer to  [the docs](https://docs.rs/barrel/0.2.0/barrel/migration/struct.Migration.html) for API specifics.
