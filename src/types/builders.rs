@@ -13,8 +13,8 @@ pub fn primary() -> Type {
     Type::new(BaseType::Primary)
         .nullable(true) // Primary keys are non-null implicitly
         .increments(true)
-        .unique(true)
-        .indexed(true)
+        .unique(false) // Primary keys are unique implicitly
+        .indexed(false)
 }
 
 /// A (standardised) UUID primary key type
@@ -87,4 +87,10 @@ pub fn date() -> Type {
 /// Create an array of inner types
 pub fn array(inner: &Type) -> Type {
     Type::new(BaseType::Array(Box::new(inner.get_inner())))
+}
+
+/// Create an index over multiple, existing columns of the same type
+pub fn index<S: Into<String>>(columns: Vec<S>) -> Type {
+    let vec: Vec<String> = columns.into_iter().map(|s| s.into()).collect();
+    Type::new(BaseType::Index(vec))
 }

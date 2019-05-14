@@ -14,9 +14,9 @@ mod pg;
 #[cfg(feature = "pg")]
 pub use self::pg::Pg;
 
-// #[cfg(feature = "sqlite3")]
+#[cfg(feature = "sqlite3")]
 mod sqlite3;
-// #[cfg(feature = "sqlite3")]
+#[cfg(feature = "sqlite3")]
 pub use self::sqlite3::Sqlite;
 
 #[allow(unused_imports)]
@@ -24,7 +24,7 @@ use crate::{types::Type, Migration};
 
 /// An enum describing all supported Sql flavours
 pub enum SqlVariant {
-    // #[cfg(feature = "sqlite3")]
+    #[cfg(feature = "sqlite3")]
     Sqlite,
     #[cfg(feature = "pg")]
     Pg,
@@ -79,4 +79,10 @@ pub trait SqlGenerator {
 
     /// Rename an existing column
     fn rename_column(old: &str, new: &str) -> String;
+
+    /// Create a multi-column index
+    fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String;
+
+    /// Drop a multi-column index
+    fn drop_index(name: &str) -> String;
 }

@@ -34,7 +34,10 @@ impl SqlGenerator for Sqlite {
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
-        format!("ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"", schema, old, schema, new)
+        format!(
+            "ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"",
+            schema, old, schema, new
+        )
     }
 
     fn alter_table(name: &str, schema: Option<&str>) -> String {
@@ -47,7 +50,8 @@ impl SqlGenerator for Sqlite {
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{}{}{}",
+            // SQL base - default - nullable - unique
+            "{}{}{}{}",
             match bt {
                 Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
@@ -62,7 +66,8 @@ impl SqlGenerator for Sqlite {
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it))))
+                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
+                Index(_) => unreachable!(), // Indices are handled via custom builders
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -71,18 +76,47 @@ impl SqlGenerator for Sqlite {
             match tt.nullable {
                 true => "",
                 false => " NOT NULL",
+            },
+            match tt.unique {
+                true => " UNIQUE",
+                false => "",
             }
         )
     }
 
-    #[allow(unused_variables)]
-    fn drop_column(name: &str) -> String {
-        unimplemented!()
+    /// Create a multi-column index
+    fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
+        format!(
+            "CREATE {} INDEX \"{}\" ON {}\"{}\" ({});",
+            match _type.unique {
+                true => "UNIQUE",
+                false => "",
+            },
+            name,
+            prefix!(schema),
+            table,
+            match _type.inner {
+                BaseType::Index(ref cols) => cols
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                _ => unreachable!(),
+            }
+        )
     }
 
-    #[allow(unused_variables)]
-    fn rename_column(old: &str, new: &str) -> String {
-        unimplemented!()
+    /// Drop a multi-column index
+    fn drop_index(name: &str) -> String {
+        format!("DROP INDEX \"{}\"", name)
+    }
+
+    fn drop_column(_: &str) -> String {
+        panic!("Sqlite does not support dropping columns!")
+    }
+
+    fn rename_column(_: &str, _: &str) -> String {
+        panic!("Sqlite does not support renaming columns!")
     }
 }
 
@@ -114,6 +148,7 @@ impl Sqlite {
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
+            Index(_) => unimplemented!(),
         }
     }
 }

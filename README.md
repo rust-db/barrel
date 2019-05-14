@@ -7,12 +7,14 @@
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
 
-A powerful schema migration builder, that let's you write your SQL migrations in Rust.
+A powerful database schema builder, that let's you write your SQL migrations in Rust!
 
-`barrel` makes writing migrations for different databases as easy as possible.
-It provides you with a common API over SQL,
-with certain features only provided for database specific implementations.
-This way you can focus on your Rust code, and stop worrying about SQL.
+`barrel` offers callback-style builder functions for SQL migrations
+and is designed to be flexible, portable and fun to use.
+It provides you with a common interface over SQL,
+with additional database-specific builders.
+
+This way you can focus on your Rust code, without having to worry about SQL.
 
 ## Example
 
@@ -20,17 +22,16 @@ The following example will help you get started
 
 ```rust
 use barrel::{types, Migration, Pg};
-use barrel::backend::Pg;
 
 fn main() {
     let mut m = Migration::new();
-    
+
     m.create_table("users", |t| {
         t.add_column("name", types::varchar(255));
         t.add_column("age", types::integer());
         t.add_column("owns_plushy_sharks", types::boolean());
     });
-    
+
     println!("{}", m.make::<Pg>());
 }
 ```
@@ -51,10 +52,6 @@ which then returns a `Type` enum.
 
 You can also directly created your own `Type` builders this way.
 Check the docs for details!
-
-## Unstable features
-
-Starting with `v0.2.4` `barrel` now has an `unstable` feature flag which will hide features and breaking changes that are in-development at the time of a minor or patch release. You can use these features if you so desire, but be aware that their usage will change more rapidely between versions (even patches) and their usage will be badly documented.
 
 ## License
 

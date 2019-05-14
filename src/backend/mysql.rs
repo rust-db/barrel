@@ -64,7 +64,8 @@ impl SqlGenerator for MySql {
                 Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Foreign(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it))))
+                Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)))),
+                Index(_) => unreachable!(),
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -83,6 +84,32 @@ impl SqlGenerator for MySql {
 
     fn rename_column(old: &str, new: &str) -> String {
         format!("CHANGE COLUMN \"{}\"  \"{}\"", old, new)
+    }
+
+    fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
+        // FIXME: Implement Mysql specific index builder here
+        format!(
+            "CREATE {} INDEX \"{}\" ON {}\"{}\" ({})",
+            match _type.unique {
+                true => "UNIQUE",
+                false => "",
+            },
+            name,
+            prefix!(schema),
+            table,
+            match _type.inner {
+                BaseType::Index(ref cols) => cols
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                _ => unreachable!(),
+            }
+        )
+    }
+
+    fn drop_index(name: &str) -> String {
+        format!("DROP INDEX \"{}\"", name)
     }
 }
 
@@ -115,6 +142,7 @@ impl MySql {
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh)),
+            Index(_) => unreachable!(),
         }
     }
 }

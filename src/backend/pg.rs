@@ -64,7 +64,8 @@ impl SqlGenerator for Pg {
                 Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it))))
+                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
+                Index(_) => unreachable!(), // Indices are handled via custom builder
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -83,6 +84,32 @@ impl SqlGenerator for Pg {
 
     fn rename_column(old: &str, new: &str) -> String {
         format!("ALTER COLUMN \"{}\" RENAME TO \"{}\"", old, new)
+    }
+
+    fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
+        // FIXME: Implement PG specific index builder here
+        format!(
+            "CREATE {} INDEX \"{}\" ON {}\"{}\" ({})",
+            match _type.unique {
+                true => "UNIQUE",
+                false => "",
+            },
+            name,
+            prefix!(schema),
+            table,
+            match _type.inner {
+                BaseType::Index(ref cols) => cols
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                _ => unreachable!(),
+            }
+        )
+    }
+
+    fn drop_index(name: &str) -> String {
+        format!("DROP INDEX \"{}\"", name)
     }
 }
 
@@ -115,6 +142,7 @@ impl Pg {
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
+            Index(_) => unreachable!(), // Indices are handled via custom builder
         }
     }
 }
