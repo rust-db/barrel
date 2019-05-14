@@ -60,7 +60,7 @@ impl Migration {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     cb(t); // Run the user code
-                    let (cols, _idxs) = t.make::<T>(false, schema);
+                    let (cols, indices) = t.make::<T>(false, schema);
 
                     let name = t.meta.name().clone();
                     sql.push_str(&match change {
@@ -82,7 +82,10 @@ impl Migration {
                     sql.push_str(")");
 
                     // Add additional index columns
-
+                    if indices.len() > 0 {
+                        sql.push_str(";");
+                        sql.push_str(&indices.join(";"));
+                    }
                 }
                 &mut DropTable(ref name) => sql.push_str(&T::drop_table(name, schema)),
                 &mut DropTableIfExists(ref name) => {
@@ -93,7 +96,7 @@ impl Migration {
                 }
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
-                    let (cols, _) = t.make::<T>(true, schema);
+                    let (cols, indices) = t.make::<T>(true, schema);
                     sql.push_str(&T::alter_table(&t.meta.name(), schema));
                     sql.push_str(" ");
                     let l = cols.len();
@@ -106,7 +109,10 @@ impl Migration {
                     }
 
                     // Add additional index columns
-
+                    if indices.len() > 0 {
+                        sql.push_str(";");
+                        sql.push_str(&indices.join(";"));
+                    }
                 },
             }
 
