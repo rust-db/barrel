@@ -131,7 +131,7 @@ impl Table {
                     table,
                     columns,
                 } => T::create_index(table, schema, index, columns),
-                IC::RemoveIndex(table, index) => T::drop_index(table, schema, index),
+                IC::RemoveIndex(_, index) => T::drop_index(index),
             })
             .collect();
 

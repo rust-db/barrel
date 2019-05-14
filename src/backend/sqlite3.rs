@@ -34,7 +34,10 @@ impl SqlGenerator for Sqlite {
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
-        format!("ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"", schema, old, schema, new)
+        format!(
+            "ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"",
+            schema, old, schema, new
+        )
     }
 
     fn alter_table(name: &str, schema: Option<&str>) -> String {
@@ -63,7 +66,7 @@ impl SqlGenerator for Sqlite {
                 Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
-                Index(_) => unimplemented!(),
+                Index(_) => unreachable!(), // Indices are handled via custom builders
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -74,6 +77,33 @@ impl SqlGenerator for Sqlite {
                 false => " NOT NULL",
             }
         )
+    }
+
+    /// Create a multi-column index
+    fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
+        format!(
+            "CREATE {} INDEX \"{}\" ON {}\"{}\" ({});",
+            match _type.unique {
+                true => "UNIQUE",
+                false => "",
+            },
+            name,
+            prefix!(schema),
+            table,
+            match _type.inner {
+                BaseType::Index(ref cols) => cols
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                _ => unreachable!(),
+            }
+        )
+    }
+
+    /// Drop a multi-column index
+    fn drop_index(name: &str) -> String {
+        format!("DROP INDEX {}", name)
     }
 
     #[allow(unused_variables)]
