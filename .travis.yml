@@ -32,14 +32,14 @@ before_script:
 
 # Build, test, benchmark, document. Gogogogo!
 script:
-  - cargo build --verbose --all --features "pg mysql sqlite unstable"
-  - cargo test --verbose --all --features "pg mysql sqlite unstable"
+  - cargo build --verbose --all --features "pg mysql sqlite3 unstable"
+  - cargo test --verbose --all --features "pg mysql sqlite3 unstable"
   - cargo test --verbose --all --features "diesel pg unstable" # Diesel module _demands_ only one backend
-  - cargo doc --features "pg mysql sqlite unstable"
+  - cargo doc --features "pg mysql sqlite3 unstable"
 
 # Upload the whole mess
 after_success:
-  - cargo coveralls --verbose --features "pg mysql sqlite unstable"
+  - cargo coveralls --verbose --features "pg mysql sqlite3 unstable"
 
 # AND GOD DAMN IT LET ME SLEEP!
 notifications:
