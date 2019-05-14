@@ -50,7 +50,8 @@ impl SqlGenerator for Sqlite {
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{}{}{}",
+            // SQL base - default - nullable - unique
+            "{}{}{}{}",
             match bt {
                 Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
@@ -75,6 +76,10 @@ impl SqlGenerator for Sqlite {
             match tt.nullable {
                 true => "",
                 false => " NOT NULL",
+            },
+            match tt.unique {
+                true => " UNIQUE",
+                false => "",
             }
         )
     }
@@ -103,17 +108,15 @@ impl SqlGenerator for Sqlite {
 
     /// Drop a multi-column index
     fn drop_index(name: &str) -> String {
-        format!("DROP INDEX {}", name)
+        format!("DROP INDEX \"{}\"", name)
     }
 
-    #[allow(unused_variables)]
-    fn drop_column(name: &str) -> String {
-        unimplemented!()
+    fn drop_column(_: &str) -> String {
+        panic!("Sqlite does not support dropping columns!")
     }
 
-    #[allow(unused_variables)]
-    fn rename_column(old: &str, new: &str) -> String {
-        unimplemented!()
+    fn rename_column(_: &str, _: &str) -> String {
+        panic!("Sqlite does not support renaming columns!")
     }
 }
 
