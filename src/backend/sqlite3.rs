@@ -62,7 +62,8 @@ impl SqlGenerator for Sqlite {
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it))))
+                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
+                Index(_) => unimplemented!(),
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -114,6 +115,7 @@ impl Sqlite {
             Foreign(t) => format!("INTEGER REFERENCES {}", t),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
+            Index(_) => unimplemented!(),
         }
     }
 }
