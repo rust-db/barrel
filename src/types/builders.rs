@@ -13,8 +13,8 @@ pub fn primary() -> Type {
     Type::new(BaseType::Primary)
         .nullable(true) // Primary keys are non-null implicitly
         .increments(true)
-        .unique(true)
-        .indexed(true)
+        .unique(false) // Primary keys are unique implicitly
+        .indexed(false)
 }
 
 /// A (standardised) UUID primary key type
