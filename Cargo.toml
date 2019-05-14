@@ -30,7 +30,7 @@ sqlite3 = []
 mysql = []
 pg = []
 
-# Enables unstable (in-development) features, 
+# Enables unstable (in-development) features,
 #   even for stable version upgrades
 unstable = []
 
@@ -41,6 +41,6 @@ diesel_rs = { version = ">= 1.2, < 2.0", package = "diesel", default_features = 
 
 [package.metadata.docs.rs]
 
-# We need to explicitly toggle features here because
-#   `all-features` causes weird transient bugs
-features = ["diesel", "mysql", "sqlite3", "pg", "unstable"]
+# We can't build documentation with the `diesel` flag enabled
+# because then the project no longer builds.
+features = ["mysql", "sqlite3", "pg", "unstable"]
