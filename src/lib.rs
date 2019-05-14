@@ -101,9 +101,9 @@ pub mod migration;
 pub mod table;
 pub mod types;
 
+pub use backend::SqlVariant;
 pub use migration::Migration;
 pub use table::{Table, TableMeta};
-pub use backend::SqlVariant;
 
 #[cfg(test)]
 mod tests;
@@ -125,7 +125,7 @@ pub enum TableChange {
     /// Remove a column
     DropColumn(String),
 
-    /// Add some custom SQL
+    /// Add some custom SQL if all else fails
     CustomLine(String),
 }
 
@@ -149,4 +149,18 @@ pub enum DatabaseChange {
 
     /// Only drop a table if it exists
     DropTableIfExists(String),
+}
+
+/// An enum set that represents operations done with and on indices
+#[derive(Clone)]
+pub enum IndexChange {
+    /// Add a multi-column index
+    AddIndex {
+        index: String,
+        table: String,
+        columns: types::Type, // Should always be a `Index` type
+    },
+
+    /// Remove a multi-column index
+    RemoveIndex(String, String),
 }

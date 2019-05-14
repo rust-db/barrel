@@ -8,7 +8,7 @@
 //! then access individual columns in that table.
 
 use super::backend::SqlGenerator;
-use super::TableChange;
+use super::{IndexChange, TableChange};
 use crate::types::Type;
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -18,17 +18,25 @@ impl Debug for TableChange {
     }
 }
 
+impl Debug for IndexChange {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        f.write_str("IndexChange")
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Table {
     pub meta: TableMeta,
-    changes: Vec<TableChange>,
+    columns: Vec<TableChange>,
+    indices: Vec<IndexChange>,
 }
 
 impl Table {
     pub fn new<S: Into<String>>(name: S) -> Self {
         Self {
             meta: TableMeta::new(name.into()),
-            changes: Vec::new(),
+            columns: vec![],
+            indices: vec![],
         }
     }
 
@@ -43,41 +51,91 @@ impl Table {
     /// # });
     /// ```
     pub fn add_column<S: Into<String>>(&mut self, name: S, _type: Type) -> &mut Type {
-        self.changes
+        self.columns
             .push(TableChange::AddColumn(name.into(), _type));
 
-        match self.changes.last_mut().unwrap() {
+        match self.columns.last_mut().unwrap() {
             &mut TableChange::AddColumn(_, ref mut c) => c,
             _ => unreachable!(),
         }
     }
 
     pub fn drop_column<S: Into<String>>(&mut self, name: S) {
-        self.changes.push(TableChange::DropColumn(name.into()));
+        self.columns.push(TableChange::DropColumn(name.into()));
     }
 
     pub fn rename_column<S: Into<String>>(&mut self, old: S, new: S) {
-        self.changes
+        self.columns
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
 
     pub fn inject_custom<S: Into<String>>(&mut self, sql: S) {
-        self.changes.push(TableChange::CustomLine(sql.into()));
+        self.columns.push(TableChange::CustomLine(sql.into()));
     }
 
-    pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> Vec<String> {
-        use TableChange::*;
+    /// Add a new index to a table, spanning over multiple columns
+    pub fn add_index<S: Into<String>>(&mut self, name: S, columns: Type) {
+        match columns.inner {
+            crate::types::BaseType::Index(_) => {}
+            _ => panic!("Calling `add_index` with a non-`Index` type is not allowed!"),
+        }
 
-        self.changes
+        self.indices.push(IndexChange::AddIndex {
+            table: self.meta.name.clone(),
+            index: name.into(),
+            columns,
+        });
+    }
+
+    /// Drop an index on this table
+    pub fn drop_index<S: Into<String>>(&mut self, name: S) {
+        self.indices.push(IndexChange::RemoveIndex(
+            self.meta.name.clone(),
+            name.into(),
+        ));
+    }
+
+    /// Generate Sql for this table, returned as two vectors
+    ///
+    /// The first vector (`.0`) represents all column changes done to the table,
+    /// the second vector (`.1`) contains all index and suffix changes.
+    ///
+    /// It is very well possible for either of them to be empty,
+    /// although both being empty *might* signify an error.
+    pub fn make<T: SqlGenerator>(
+        &mut self,
+        ex: bool,
+        schema: Option<&str>,
+    ) -> (Vec<String>, Vec<String>) {
+        use IndexChange as IC;
+        use TableChange as TC;
+
+        let columns = self
+            .columns
             .iter_mut()
             .map(|change| match change {
-                &mut AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
-                &mut DropColumn(ref name) => T::drop_column(name),
-                &mut RenameColumn(ref old, ref new) => T::rename_column(old, new),
-                &mut ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),
-                &mut CustomLine(ref sql) => sql.clone()
+                &mut TC::AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
+                &mut TC::DropColumn(ref name) => T::drop_column(name),
+                &mut TC::RenameColumn(ref old, ref new) => T::rename_column(old, new),
+                &mut TC::ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),
+                &mut TC::CustomLine(ref sql) => sql.clone(),
             })
-            .collect()
+            .collect();
+
+        let indeces = self
+            .indices
+            .iter()
+            .map(|change| match change {
+                IC::AddIndex {
+                    index,
+                    table,
+                    columns,
+                } => T::create_index(table, schema, index, columns),
+                IC::RemoveIndex(table, index) => T::drop_index(table, schema, index),
+            })
+            .collect();
+
+        (columns, indeces)
     }
 }
 
