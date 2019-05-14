@@ -88,3 +88,9 @@ pub fn date() -> Type {
 pub fn array(inner: &Type) -> Type {
     Type::new(BaseType::Array(Box::new(inner.get_inner())))
 }
+
+/// Create an index over multiple, existing columns of the same type
+pub fn index<S: Into<String>>(columns: Vec<S>) -> Type {
+    let vec: Vec<String> = columns.into_iter().map(|s| s.into()).collect();
+    Type::new(BaseType::Index(vec))
+}

@@ -34,6 +34,8 @@ pub enum BaseType {
     Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Box<BaseType>),
+    /// Indexing over multiple columns
+    Index(Vec<String>)
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -56,10 +58,10 @@ pub enum WrappedDefault<'outer> {
     Date(SystemTime),
     /// <inconceivable jibberish>
     Binary(&'outer [u8]),
-    // /// Foreign key to other table
-    // Foreign(Box<Type>),
+    /// Foreign key to other table
+    Foreign(Box<Type>),
     // I have no idea what you are – but I *like* it
-    // Custom(&'static str),
+    Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Vec<Type>),
 }
@@ -80,6 +82,8 @@ impl<'outer> Display for WrappedDefault<'outer> {
                 Boolean(ref val) => format!("{}", val),
                 Date(ref val) => format!("{:?}", val),
                 Binary(ref val) => format!("{:?}", val),
+                Foreign(ref val) => format!("{:?}", val),
+                Custom(ref val) => format!("{}", val),
                 Array(ref val) => format!("{:?}", val),
             }
         )
@@ -149,32 +153,32 @@ impl Type {
     pub(crate) fn get_inner(&self) -> BaseType {
         self.inner.clone()
     }
-    
+
     /// Set the nullability of this type
     pub fn nullable(self, arg: bool) -> Self {
         Self { nullable: arg, ..self }
     }
-    
+
     /// Set the uniqueness of this type
     pub fn unique(self, arg: bool) -> Self {
         Self { unique: arg, ..self }
     }
-    
+
     /// Specify if this type should auto-increment
     pub fn increments(self, arg: bool) -> Self {
         Self { increments: arg, ..self }
     }
-    
+
     /// Specify if this type should be indexed by your SQL implementation
     pub fn indexed(self, arg: bool) -> Self {
         Self { indexed: arg, ..self }
     }
-    
+
     /// Provide a default value for a type column
     pub fn default(self, arg: impl Into<WrappedDefault<'static>>) -> Self {
         Self { default: Some(arg.into()), ..self }
     }
-    
+
     /// Specify a size limit (important or varchar & similar)
     pub fn size(self, arg: usize) -> Self {
         Self { size: Some(arg), ..self }
