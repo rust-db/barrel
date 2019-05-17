@@ -35,8 +35,8 @@ impl SqlGenerator for Sqlite {
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
         format!(
-            "ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"",
-            schema, old, schema, new
+            "ALTER TABLE {}\"{}\" RENAME TO \"{}\"",
+            schema, old, new
         )
     }
 
