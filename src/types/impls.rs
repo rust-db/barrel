@@ -132,6 +132,11 @@ impl Type {
         Self { primary: arg, ..self }
     }
 
+    /// Specify if this type should be a primary key
+    pub fn primary(self, arg: bool) -> Self {
+        Self { primary: arg, ..self }
+    }
+
     /// Provide a default value for a type column
     pub fn default(self, arg: impl Into<WrappedDefault<'static>>) -> Self {
         Self { default: Some(arg.into()), ..self }
