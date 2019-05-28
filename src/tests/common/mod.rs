@@ -45,6 +45,7 @@ fn pin_struct_layout() {
     let tt = Type {
         nullable: false,
         indexed: false,
+        primary: false,
         unique: false,
         increments: false,
         default: None,
@@ -54,6 +55,7 @@ fn pin_struct_layout() {
 
     assert_eq!(tt.nullable, false);
     assert_eq!(tt.indexed, false);
+    assert_eq!(tt.primary, false);
     assert_eq!(tt.unique, false);
     assert_eq!(tt.increments, false);
     assert_eq!(tt.default, None);
@@ -62,15 +64,9 @@ fn pin_struct_layout() {
 }
 
 #[test]
-fn default_render_text() {
+fn default_render_anytext() {
     use self::WrappedDefault::*;
-    assert_eq!(format!("{}", Text("hello".into())), "hello".to_owned());
-}
-
-#[test]
-fn default_render_varchar() {
-    use self::WrappedDefault::*;
-    assert_eq!(format!("{}", Varchar("hello")), "hello".to_owned());
+    assert_eq!(format!("{}", AnyText("hello".into())), "hello".to_owned());
 }
 
 #[test]

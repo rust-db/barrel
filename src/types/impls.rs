@@ -1,7 +1,6 @@
 //! Implementation specifics for the type system
 
-use std::fmt::{self, Display, Formatter};
-use std::time::SystemTime;
+use super::WrappedDefault;
 
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
@@ -36,58 +35,6 @@ pub enum BaseType {
     Array(Box<BaseType>),
     /// Indexing over multiple columns
     Index(Vec<String>)
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum WrappedDefault<'outer> {
-    /// Strings
-    Text(String),
-    /// Like a String but worse
-    Varchar(&'outer str),
-    /// Simple integer
-    Integer(i64),
-    /// Floating point number
-    Float(f32),
-    /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`
-    Double(f64),
-    /// A unique identifier type
-    UUID(String), // TODO: Change to UUID type
-    /// True or False
-    Boolean(bool),
-    /// Date And Time
-    Date(SystemTime),
-    /// <inconceivable jibberish>
-    Binary(&'outer [u8]),
-    /// Foreign key to other table
-    Foreign(Box<Type>),
-    // I have no idea what you are – but I *like* it
-    Custom(&'static str),
-    /// Any of the above, but **many** of them
-    Array(Vec<Type>),
-}
-
-impl<'outer> Display for WrappedDefault<'outer> {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        use self::WrappedDefault::*;
-        write!(
-            f,
-            "{}",
-            &match *self {
-                Text(ref val) => format!("{}", val),
-                Varchar(ref val) => format!("{}", val),
-                Integer(ref val) => format!("{}", val),
-                Float(ref val) => format!("{}", val),
-                Double(ref val) => format!("{}", val),
-                UUID(ref val) => format!("{}", val),
-                Boolean(ref val) => format!("{}", val),
-                Date(ref val) => format!("{:?}", val),
-                Binary(ref val) => format!("{:?}", val),
-                Foreign(ref val) => format!("{:?}", val),
-                Custom(ref val) => format!("{}", val),
-                Array(ref val) => format!("{:?}", val),
-            }
-        )
-    }
 }
 
 /// A database column type and all the metadata attached to it
@@ -129,6 +76,7 @@ pub struct Type {
     pub unique: bool,
     pub increments: bool,
     pub indexed: bool,
+    pub primary: bool,
     pub default: Option<WrappedDefault<'static>>,
     pub size: Option<usize>,
     pub inner: BaseType,
@@ -143,6 +91,7 @@ impl Type {
             unique: false,
             increments: false,
             indexed: false,
+            primary: false,
             default: None,
             size: None,
             inner,
@@ -172,6 +121,11 @@ impl Type {
     /// Specify if this type should be indexed by your SQL implementation
     pub fn indexed(self, arg: bool) -> Self {
         Self { indexed: arg, ..self }
+    }
+
+    /// Specify if this type should be a primary key
+    pub fn primary(self, arg: bool) -> Self {
+        Self { primary: arg, ..self }
     }
 
     /// Provide a default value for a type column

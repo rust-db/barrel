@@ -49,7 +49,7 @@ impl SqlGenerator for Pg {
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{}{}{}",
+            "{}{}{}{}",
             match bt {
                 Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
@@ -66,6 +66,10 @@ impl SqlGenerator for Pg {
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!(), // Indices are handled via custom builder
+            },
+            match tt.primary {
+                true => " PRIMARY KEY",
+                false => "",
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),

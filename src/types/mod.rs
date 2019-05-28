@@ -2,9 +2,8 @@
 
 mod builders;
 mod impls;
+mod defaults;
 
-/// Export all builder functions
 pub use self::builders::*;
-
-/// Export only the Type struct
-pub use self::impls::{BaseType, Type, WrappedDefault};
+pub use self::impls::{BaseType, Type};
+pub use self::defaults::WrappedDefault;
