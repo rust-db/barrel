@@ -3,6 +3,7 @@
 mod builders;
 mod defaults;
 mod impls;
+mod defaults;
 
 pub use self::builders::*;
 pub use self::defaults::WrappedDefault;
