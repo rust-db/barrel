@@ -12,7 +12,8 @@ use crate::types::Type;
 pub fn primary() -> Type {
     Type::new(BaseType::Primary)
         .nullable(true) // Primary keys are non-null implicitly
-        .increments(true)
+        .increments(true) // This is ignored for now
+        .primary(false) // Primary keys are primary implictly
         .unique(false) // Primary keys are unique implicitly
         .indexed(false)
 }

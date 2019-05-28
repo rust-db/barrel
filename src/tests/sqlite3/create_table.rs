@@ -20,7 +20,7 @@ fn create_multiple_tables() {
         t.add_column("pic", types::text().nullable(true));
         t.add_column("mbid", types::text().nullable(true));
     });
-    assert_eq!(m.make::<Sqlite>(), String::from("CREATE TABLE \"artist\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);CREATE TABLE \"album\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
+    assert_eq!(m.make::<Sqlite>(), String::from("CREATE TABLE \"artist\" (\"id\" INTEGER NOT NULL PRIMARY KEY, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);CREATE TABLE \"album\" (\"id\" INTEGER NOT NULL PRIMARY KEY, \"name\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
 }
 
 #[test]
@@ -33,5 +33,5 @@ fn create_table_if_not_exists_doesnt_hit_unreachable() {
         t.add_column("pic", types::text().nullable(true));
         t.add_column("mbid", types::text().nullable(true));
     });
-    assert_eq!(m.make::<Sqlite>(), String::from("CREATE TABLE IF NOT EXISTS \"artist\" (\"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
+    assert_eq!(m.make::<Sqlite>(), String::from("CREATE TABLE IF NOT EXISTS \"artist\" (\"id\" INTEGER NOT NULL PRIMARY KEY, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
 }
