@@ -51,7 +51,7 @@ impl SqlGenerator for Sqlite {
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
             // SQL base - default - nullable - unique
-            "{}{}{}{}",
+            "{}{}{}{}{}",
             match bt {
                 Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
@@ -59,8 +59,8 @@ impl SqlGenerator for Sqlite {
                 Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                UUID => unimplemented!(),
-                Json => unimplemented!(),
+                UUID => panic!("`UUID` not supported by Sqlite3. Use `Text` instead!"),
+                Json => panic!("`Json` not supported by Sqlite3. Use `Text` instead!"),
                 Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
@@ -68,6 +68,10 @@ impl SqlGenerator for Sqlite {
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!(), // Indices are handled via custom builders
+            },
+            match tt.primary {
+                true => " PRIMARY KEY",
+                false => "",
             },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
@@ -136,7 +140,7 @@ impl Sqlite {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
-            Primary => format!("INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT"),
+            Primary => format!("INTEGER NOT NULL PRIMARY KEY"),
             Integer => format!("INTEGER"),
             Float => format!("REAL"),
             Double => format!("DOUBLE"),
