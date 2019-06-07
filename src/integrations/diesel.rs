@@ -119,7 +119,7 @@ version = \"0.0.0\"
 authors = [\"Katharina Fey <kookie@spacekookie.de>\"]
 # TODO: Use same `barrel` dependency as crate
 [dependencies]
-barrel = {{ version = \"*\", features = [ {} ] }}",
+barrel = {{ version = \"*\", features = [ {:?} ] }}",
         feat
     );
 
