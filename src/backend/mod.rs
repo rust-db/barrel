@@ -73,7 +73,7 @@ pub trait SqlGenerator {
     fn alter_table(name: &str, schema: Option<&str>) -> String;
 
     /// Create a new column with a type
-    fn add_column(ex: bool, name: &str, _type: &Type) -> String;
+    fn add_column(ex: bool, schema: Option<&str>, name: &str, _type: &Type) -> String;
 
     /// Drop an existing column from the table
     fn drop_column(name: &str) -> String;

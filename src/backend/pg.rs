@@ -46,7 +46,7 @@ impl SqlGenerator for Pg {
         format!("ALTER TABLE {}\"{}\"", prefix!(schema), name)
     }
 
-    fn add_column(ex: bool, name: &str, tt: &Type) -> String {
+    fn add_column(ex: bool, schema: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
         use self::BaseType::*;
 
@@ -54,20 +54,20 @@ impl SqlGenerator for Pg {
         format!(
             "{}{}{}{}",
             match bt {
-                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                UUID => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Json => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
+                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                UUID => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Json => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!(), // Indices are handled via custom builder
             },
             match tt.primary {
@@ -128,7 +128,7 @@ impl Pg {
         }
     }
 
-    fn print_type(t: BaseType) -> String {
+    fn print_type(t: BaseType, schema: Option<&str>) -> String {
         use self::BaseType::*;
         match t {
             Text => format!("TEXT"),
@@ -148,12 +148,12 @@ impl Pg {
             Binary => format!("BYTEA"),
             Foreign(s, t, refs) => format!(
                 "INTEGER REFERENCES {}\"{}\"({})",
-                prefix!(s),
+                prefix!(s.or(schema.map(|s| s.into()))),
                 t,
                 refs.0.join(",")
             ),
             Custom(t) => format!("{}", t),
-            Array(meh) => format!("{}[]", Pg::print_type(*meh)),
+            Array(meh) => format!("{}[]", Pg::print_type(*meh, schema)),
             Index(_) => unreachable!(), // Indices are handled via custom builder
         }
     }
