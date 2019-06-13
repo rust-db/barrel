@@ -23,6 +23,7 @@ pub use self::sqlite3::Sqlite;
 use crate::{types::Type, Migration};
 
 /// An enum describing all supported Sql flavours
+#[derive(Copy, Clone, Debug)]
 pub enum SqlVariant {
     #[cfg(feature = "sqlite3")]
     Sqlite,
