@@ -62,7 +62,7 @@ impl SqlGenerator for MySql {
                 Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Foreign(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
+                Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
                 Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!(),
@@ -143,7 +143,12 @@ impl MySql {
             Date => format!("DATE"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(t) => format!("INTEGER REFERENCES {}", t),
+            Foreign(s, t, refs) => format!(
+                "INTEGER REFERENCES {}{}({})",
+                prefix!(s),
+                t,
+                refs.0.join(",")
+            ),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh)),
             Index(_) => unreachable!(),

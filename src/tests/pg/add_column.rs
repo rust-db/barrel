@@ -60,9 +60,9 @@ fn date() {
 
 #[test]
 fn foreign() {
-    let sql = Pg::add_column(true, "Foreign", &types::foreign("posts"));
+    let sql = Pg::add_column(true, "Foreign", &types::foreign("posts", "id"));
     assert_eq!(
-        String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES posts NOT NULL"),
+        String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES \"posts\"(id) NOT NULL"),
         sql
     );
 }

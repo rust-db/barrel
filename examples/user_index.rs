@@ -1,5 +1,4 @@
-
-use barrel::{Migration, types};
+use barrel::{types, Migration};
 
 fn main() {
     let mut m = Migration::new();

@@ -12,7 +12,10 @@ fn create_table() {
 #[test]
 fn create_table_with_schema() {
     let sql = Pg::create_table("table_to_create", Some("my_schema"));
-    assert_eq!(String::from("CREATE TABLE \"my_schema\".\"table_to_create\""), sql);
+    assert_eq!(
+        String::from("CREATE TABLE \"my_schema\".\"table_to_create\""),
+        sql
+    );
 }
 
 #[test]

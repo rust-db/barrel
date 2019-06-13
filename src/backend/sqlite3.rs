@@ -34,10 +34,7 @@ impl SqlGenerator for Sqlite {
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
-        format!(
-            "ALTER TABLE {}\"{}\" RENAME TO \"{}\"",
-            schema, old, new
-        )
+        format!("ALTER TABLE {}\"{}\" RENAME TO \"{}\"", schema, old, new)
     }
 
     fn alter_table(name: &str, schema: Option<&str>) -> String {
@@ -64,7 +61,7 @@ impl SqlGenerator for Sqlite {
                 Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Foreign(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Foreign(_, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!(), // Indices are handled via custom builders
@@ -149,7 +146,7 @@ impl Sqlite {
             Date => format!("DATE"),
             Json => panic!("Json is not supported by Sqlite3"),
             Binary => format!("BINARY"),
-            Foreign(t) => format!("INTEGER REFERENCES {}", t),
+            Foreign(_, t, refs) => format!("INTEGER REFERENCES {}({})", t, refs.0.join(",")),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
             Index(_) => unimplemented!(),

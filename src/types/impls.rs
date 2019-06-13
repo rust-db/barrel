@@ -2,6 +2,10 @@
 
 use super::WrappedDefault;
 
+/// A smol wrapper around `Vec<T>` to get around the orphan rules
+#[derive(PartialEq, Debug, Clone)]
+pub struct WrapVec<T>(pub Vec<T>);
+
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
 pub enum BaseType {
@@ -28,13 +32,13 @@ pub enum BaseType {
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
-    Foreign(&'static str),
+    Foreign(Option<String>, String, WrapVec<String>),
     /// I have no idea what you are – but I *like* it
     Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Box<BaseType>),
     /// Indexing over multiple columns
-    Index(Vec<String>)
+    Index(Vec<String>),
 }
 
 /// A database column type and all the metadata attached to it
@@ -136,5 +140,26 @@ impl Type {
     /// Specify a size limit (important or varchar & similar)
     pub fn size(self, arg: usize) -> Self {
         Self { size: Some(arg), ..self }
+    }
+}
+
+impl<'a> From<&'a str> for WrapVec<String> {
+    fn from(s: &'a str) -> Self {
+        WrapVec(vec![s.into()])
+    }
+}
+
+impl From<String> for WrapVec<String> {
+    fn from(s: String) -> Self {
+        WrapVec(vec![s])
+    }
+}
+
+impl<I> From<Vec<I>> for WrapVec<String>
+where
+    I: Into<String>,
+{
+    fn from(v: Vec<I>) -> Self {
+        WrapVec(v.into_iter().map(|s| s.into()).collect())
     }
 }
