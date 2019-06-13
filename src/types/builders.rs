@@ -1,6 +1,6 @@
 //! Builder API's module
 
-use super::impls::BaseType;
+use super::impls::{BaseType, WrapVec};
 use crate::types::Type;
 
 /// A standard primary numeric key type
@@ -71,8 +71,27 @@ pub fn binary<'inner>() -> Type {
 }
 
 /// Create a column that points to some foreign table
-pub fn foreign(inner: &'static str) -> Type {
-    Type::new(BaseType::Foreign(inner))
+pub fn foreign<S, I>(table: S, keys: I) -> Type
+where
+    S: Into<String>,
+    I: Into<WrapVec<String>>,
+{
+    Type::new(BaseType::Foreign(None, table.into(), keys.into()))
+}
+
+/// Like `foreign(...)` but letting you provide an external schema
+///
+/// This function is important when making cross-schema references
+pub fn foreign_schema<S, I>(schema: S, table: S, keys: I) -> Type
+where
+    S: Into<String>,
+    I: Into<WrapVec<String>>,
+{
+    Type::new(BaseType::Foreign(
+        Some(schema.into()),
+        table.into(),
+        keys.into(),
+    ))
 }
 
 /// Any custom SQL type that is embedded into a migration

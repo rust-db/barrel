@@ -36,7 +36,10 @@ impl SqlGenerator for Pg {
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
-        format!("ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"", schema, old, schema, new)
+        format!(
+            "ALTER TABLE {}\"{}\" RENAME TO {}\"{}\"",
+            schema, old, schema, new
+        )
     }
 
     fn alter_table(name: &str, schema: Option<&str>) -> String {
@@ -62,7 +65,7 @@ impl SqlGenerator for Pg {
                 Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
-                Foreign(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
+                Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!(), // Indices are handled via custom builder
@@ -147,7 +150,12 @@ impl Pg {
             Date => format!("DATE"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(t) => format!("INTEGER REFERENCES {}", t),
+            Foreign(s, t, refs) => format!(
+                "INTEGER REFERENCES {}\"{}\"({})",
+                prefix!(s),
+                t,
+                refs.0.join(",")
+            ),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh)),
             Index(_) => unreachable!(), // Indices are handled via custom builder

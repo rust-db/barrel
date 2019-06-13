@@ -113,7 +113,7 @@ impl Migration {
                         sql.push_str(";");
                         sql.push_str(&indices.join(";"));
                     }
-                },
+                }
             }
 
             sql.push_str(";");

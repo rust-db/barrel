@@ -2,7 +2,7 @@
 //!
 //! They depend on all backends mostly for simplicity.
 
-use crate::{Migration, types, SqlVariant};
+use crate::{types, Migration, SqlVariant};
 
 /// This test mostly exists to see if we panic
 #[test]
