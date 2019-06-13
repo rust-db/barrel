@@ -114,7 +114,7 @@ impl Table {
             .columns
             .iter_mut()
             .map(|change| match change {
-                &mut TC::AddColumn(ref name, ref col) => T::add_column(ex, name, &col),
+                &mut TC::AddColumn(ref name, ref col) => T::add_column(ex, schema, name, &col),
                 &mut TC::DropColumn(ref name) => T::drop_column(name),
                 &mut TC::RenameColumn(ref old, ref new) => T::rename_column(old, new),
                 &mut TC::ChangeColumn(ref mut name, _, _) => T::alter_table(name, schema),

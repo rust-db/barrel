@@ -43,7 +43,7 @@ impl SqlGenerator for MySql {
         format!("ALTER TABLE `{}{}`", prefix!(schema), name)
     }
 
-    fn add_column(ex: bool, name: &str, tt: &Type) -> String {
+    fn add_column(ex: bool, schema: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
         use self::BaseType::*;
 

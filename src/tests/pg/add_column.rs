@@ -6,13 +6,13 @@ use crate::types;
 
 #[test]
 fn text() {
-    let sql = Pg::add_column(true, "Text", &types::text());
+    let sql = Pg::add_column(true, None, "Text", &types::text());
     assert_eq!(String::from("ADD COLUMN \"Text\" TEXT NOT NULL"), sql);
 }
 
 #[test]
 fn varchar() {
-    let sql = Pg::add_column(true, "Varchar", &types::varchar(255));
+    let sql = Pg::add_column(true, None, "Varchar", &types::varchar(255));
     assert_eq!(
         String::from("ADD COLUMN \"Varchar\" VARCHAR(255) NOT NULL"),
         sql
@@ -21,19 +21,19 @@ fn varchar() {
 
 #[test]
 fn integer() {
-    let sql = Pg::add_column(true, "Integer", &types::integer());
+    let sql = Pg::add_column(true, None, "Integer", &types::integer());
     assert_eq!(String::from("ADD COLUMN \"Integer\" INTEGER NOT NULL"), sql);
 }
 
 #[test]
 fn float() {
-    let sql = Pg::add_column(true, "Float", &types::float());
+    let sql = Pg::add_column(true, None, "Float", &types::float());
     assert_eq!(String::from("ADD COLUMN \"Float\" FLOAT NOT NULL"), sql);
 }
 
 #[test]
 fn double() {
-    let sql = Pg::add_column(true, "Double", &types::double());
+    let sql = Pg::add_column(true, None, "Double", &types::double());
     assert_eq!(
         String::from("ADD COLUMN \"Double\" DOUBLE PRECISION NOT NULL"),
         sql
@@ -42,25 +42,25 @@ fn double() {
 
 #[test]
 fn boolean() {
-    let sql = Pg::add_column(true, "Boolean", &types::boolean());
+    let sql = Pg::add_column(true, None, "Boolean", &types::boolean());
     assert_eq!(String::from("ADD COLUMN \"Boolean\" BOOLEAN NOT NULL"), sql);
 }
 
 #[test]
 fn binary() {
-    let sql = Pg::add_column(true, "Binary", &types::binary());
+    let sql = Pg::add_column(true, None, "Binary", &types::binary());
     assert_eq!(String::from("ADD COLUMN \"Binary\" BYTEA NOT NULL"), sql);
 }
 
 #[test]
 fn date() {
-    let sql = Pg::add_column(true, "Date", &types::date());
+    let sql = Pg::add_column(true, None, "Date", &types::date());
     assert_eq!(String::from("ADD COLUMN \"Date\" DATE NOT NULL"), sql);
 }
 
 #[test]
 fn foreign() {
-    let sql = Pg::add_column(true, "Foreign", &types::foreign("posts", "id"));
+    let sql = Pg::add_column(true, None, "Foreign", &types::foreign("posts", "id"));
     assert_eq!(
         String::from("ADD COLUMN \"Foreign\" INTEGER REFERENCES \"posts\"(id) NOT NULL"),
         sql
@@ -69,13 +69,13 @@ fn foreign() {
 
 #[test]
 fn custom() {
-    let sql = Pg::add_column(true, "Point", &types::custom("POINT"));
+    let sql = Pg::add_column(true, None, "Point", &types::custom("POINT"));
     assert_eq!(String::from("ADD COLUMN \"Point\" POINT NOT NULL"), sql);
 }
 
 #[test]
 fn array_text() {
-    let sql = Pg::add_column(true, "Array of Text", &types::array(&types::text()));
+    let sql = Pg::add_column(true, None, "Array of Text", &types::array(&types::text()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Text\" TEXT[] NOT NULL"),
         sql
@@ -86,6 +86,7 @@ fn array_text() {
 fn array_varchar() {
     let sql = Pg::add_column(
         true,
+        None,
         "Array of Varchar",
         &types::array(&types::varchar(255)),
     );
@@ -97,7 +98,7 @@ fn array_varchar() {
 
 #[test]
 fn array_integer() {
-    let sql = Pg::add_column(true, "Array of Integer", &types::array(&types::integer()));
+    let sql = Pg::add_column(true, None, "Array of Integer", &types::array(&types::integer()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Integer\" INTEGER[] NOT NULL"),
         sql
@@ -106,7 +107,7 @@ fn array_integer() {
 
 #[test]
 fn array_float() {
-    let sql = Pg::add_column(true, "Array of Float", &types::array(&types::float()));
+    let sql = Pg::add_column(true, None, "Array of Float", &types::array(&types::float()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Float\" FLOAT[] NOT NULL"),
         sql
@@ -115,7 +116,7 @@ fn array_float() {
 
 #[test]
 fn array_double() {
-    let sql = Pg::add_column(true, "Array of Double", &types::array(&types::double()));
+    let sql = Pg::add_column(true, None, "Array of Double", &types::array(&types::double()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Double\" DOUBLE PRECISION[] NOT NULL"),
         sql
@@ -124,7 +125,7 @@ fn array_double() {
 
 #[test]
 fn array_boolean() {
-    let sql = Pg::add_column(true, "Array of Boolean", &types::array(&types::boolean()));
+    let sql = Pg::add_column(true, None, "Array of Boolean", &types::array(&types::boolean()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Boolean\" BOOLEAN[] NOT NULL"),
         sql
@@ -133,7 +134,7 @@ fn array_boolean() {
 
 #[test]
 fn array_binary() {
-    let sql = Pg::add_column(true, "Array of Binary", &types::array(&types::binary()));
+    let sql = Pg::add_column(true, None, "Array of Binary", &types::array(&types::binary()));
     assert_eq!(
         String::from("ADD COLUMN \"Array of Binary\" BYTEA[] NOT NULL"),
         sql
@@ -153,6 +154,7 @@ fn array_binary() {
 fn array_array_integer() {
     let sql = Pg::add_column(
         true,
+        None,
         "Array of Array of Integer",
         &types::array(&types::array(&types::integer())),
     );
