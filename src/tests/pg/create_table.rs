@@ -21,7 +21,7 @@ fn create_table_if_not_exists_doesnt_hit_unreachable() {
         t.add_column("pic", types::text().nullable(true));
         t.add_column("mbid", types::text().nullable(true));
     });
-    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE \"artist\" IF NOT EXISTS (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
+    assert_eq!(m.make::<Pg>(), String::from("CREATE TABLE IF NOT EXISTS \"artist\" (\"id\" SERIAL PRIMARY KEY NOT NULL, \"name\" TEXT, \"description\" TEXT, \"pic\" TEXT, \"mbid\" TEXT);"));
 }
 
 #[test]

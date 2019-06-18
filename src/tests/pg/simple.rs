@@ -19,7 +19,7 @@ fn create_table_with_schema() {
 fn create_table_if_not_exists() {
     let sql = Pg::create_table_if_not_exists("table_to_create", None);
     assert_eq!(
-        String::from("CREATE TABLE \"table_to_create\" IF NOT EXISTS"),
+        String::from("CREATE TABLE IF NOT EXISTS \"table_to_create\""),
         sql
     );
 }
