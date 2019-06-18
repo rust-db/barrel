@@ -23,7 +23,7 @@ impl SqlGenerator for Pg {
     }
 
     fn create_table_if_not_exists(name: &str, schema: Option<&str>) -> String {
-        format!("CREATE TABLE {}\"{}\" IF NOT EXISTS", prefix!(schema), name)
+        format!("CREATE TABLE IF NOT EXISTS {}\"{}\"", prefix!(schema), name)
     }
 
     fn drop_table(name: &str, schema: Option<&str>) -> String {
