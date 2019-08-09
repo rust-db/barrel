@@ -97,9 +97,9 @@ impl SqlGenerator for MySql {
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
         // FIXME: Implement Mysql specific index builder here
         format!(
-            "CREATE {}INDEX {} ON {}{} ({})",
+            "CREATE {} INDEX {} ON {}{} ({})",
             match _type.unique {
-                true => "UNIQUE ",
+                true => "UNIQUE",
                 false => "",
             },
             name,
