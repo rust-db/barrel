@@ -1,4 +1,5 @@
-//! A few simple tests for the sqlite3 string backend
+//! Test mysql generation
 
+mod add_column;
 mod create_table;
 mod simple;
