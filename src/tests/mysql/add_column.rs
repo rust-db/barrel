@@ -1,8 +1,8 @@
-//! All add_column combinations for pgsql
+//! All add_column combinations for mysql
 #![allow(unused_imports)]
 
-use backend::{MySql, SqlGenerator};
-use types;
+use crate::backend::{MySql, SqlGenerator};
+use crate::types;
 
 #[test]
 fn text() {
@@ -66,7 +66,7 @@ fn foreign() {
 
 #[test]
 fn uuid() {
-    let sql = MySql::add_column(true, "MyUUID", &types::UUID);
+    let sql = MySql::add_column(true, "MyUUID", &types::uuid());
     assert_eq!(
         String::from("ADD COLUMN Foreign CHAR(36)"),
         sql
