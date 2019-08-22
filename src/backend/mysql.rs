@@ -10,7 +10,7 @@ use crate::types::{BaseType, Type};
 macro_rules! prefix {
     ($schema:expr) => {
         $schema
-            .map(|s| format!("{}.", s))
+            .map(|s| format!("`{}`.", s))
             .unwrap_or_else(|| String::new())
     };
 }
@@ -19,33 +19,34 @@ macro_rules! prefix {
 pub struct MySql;
 impl SqlGenerator for MySql {
     fn create_table(name: &str, schema: Option<&str>) -> String {
-        format!("CREATE TABLE {}{}", prefix!(schema), name)
+        format!("CREATE TABLE {}`{}`", prefix!(schema), name)
     }
 
     fn create_table_if_not_exists(name: &str, schema: Option<&str>) -> String {
-        format!("CREATE TABLE {}{} IF NOT EXISTS", prefix!(schema), name)
+        format!("CREATE TABLE {}`{}` IF NOT EXISTS", prefix!(schema), name)
     }
 
     fn drop_table(name: &str, schema: Option<&str>) -> String {
-        format!("DROP TABLE {}{}", prefix!(schema), name)
+        format!("DROP TABLE {}`{}`", prefix!(schema), name)
     }
 
     fn drop_table_if_exists(name: &str, schema: Option<&str>) -> String {
-        format!("DROP TABLE {}{} IF EXISTS", prefix!(schema), name)
+        format!("DROP TABLE {}`{}` IF EXISTS", prefix!(schema), name)
     }
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
         let schema = prefix!(schema);
-        format!("RENAME TABLE `{}{}` TO `{}{}`", schema, old, schema, new)
+        format!("RENAME TABLE {}`{}` TO {}`{}`", schema, old, schema, new)
     }
 
     fn alter_table(name: &str, schema: Option<&str>) -> String {
-        format!("ALTER TABLE `{}{}`", prefix!(schema), name)
+        format!("ALTER TABLE {}`{}`", prefix!(schema), name)
     }
 
     fn add_column(ex: bool, schema: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
         use self::BaseType::*;
+        let name = format!("`{}`", name);
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
@@ -87,17 +88,17 @@ impl SqlGenerator for MySql {
     }
 
     fn drop_column(name: &str) -> String {
-        format!("DROP COLUMN \"{}\"", name)
+        format!("DROP COLUMN `{}`", name)
     }
 
     fn rename_column(old: &str, new: &str) -> String {
-        format!("CHANGE COLUMN \"{}\"  \"{}\"", old, new)
+        format!("CHANGE COLUMN `{}` `{}`", old, new)
     }
 
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
         // FIXME: Implement Mysql specific index builder here
         format!(
-            "CREATE {} INDEX {} ON {}{} ({})",
+            "CREATE {} INDEX `{}` ON {}`{}` ({})",
             match _type.unique {
                 true => "UNIQUE",
                 false => "",
@@ -108,7 +109,7 @@ impl SqlGenerator for MySql {
             match _type.inner {
                 BaseType::Index(ref cols) => cols
                     .iter()
-                    .map(|col| format!("{}", col))
+                    .map(|col| format!("`{}`", col))
                     .collect::<Vec<_>>()
                     .join(", "),
                 _ => unreachable!(),
@@ -117,7 +118,7 @@ impl SqlGenerator for MySql {
     }
 
     fn drop_index(name: &str) -> String {
-        format!("DROP INDEX \"{}\"", name)
+        format!("DROP INDEX `{}`", name)
     }
 }
 
