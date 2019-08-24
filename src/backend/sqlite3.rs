@@ -88,13 +88,13 @@ impl SqlGenerator for Sqlite {
     /// Create a multi-column index
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
         format!(
-            "CREATE {} INDEX \"{}\" ON {}\"{}\" ({});",
+            "CREATE {} INDEX {}\"{}\" ON \"{}\" ({});",
             match _type.unique {
                 true => "UNIQUE",
                 false => "",
             },
-            name,
             prefix!(schema),
+            name,
             table,
             match _type.inner {
                 BaseType::Index(ref cols) => cols
