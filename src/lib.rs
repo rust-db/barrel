@@ -117,7 +117,7 @@ pub enum TableChange {
     AddColumn(String, types::Type),
 
     /// Change an existing column
-    ChangeColumn(String, types::Type, Rc<Fn(&mut types::Type)>),
+    ChangeColumn(String, types::Type, Rc<dyn Fn(&mut types::Type)>),
 
     /// Simply rename a column
     RenameColumn(String, String),
@@ -133,13 +133,13 @@ pub enum TableChange {
 #[derive(Clone)]
 pub enum DatabaseChange {
     /// Create a new table
-    CreateTable(Table, Rc<Fn(&mut Table)>),
+    CreateTable(Table, Rc<dyn Fn(&mut Table)>),
 
     /// Create a new table *only* if it doesn't exist yet
-    CreateTableIfNotExists(Table, Rc<Fn(&mut Table)>),
+    CreateTableIfNotExists(Table, Rc<dyn Fn(&mut Table)>),
 
     /// Change fields on an existing table
-    ChangeTable(Table, Rc<Fn(&mut Table)>),
+    ChangeTable(Table, Rc<dyn Fn(&mut Table)>),
 
     /// Rename a table
     RenameTable(String, String),
