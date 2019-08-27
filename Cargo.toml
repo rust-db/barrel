@@ -9,7 +9,7 @@ edition = "2018"
 
 readme = "README.md"
 repository = "https://github.com/rust-db/barrel"
-website = "https://rust-db.github.io/barrel"
+homepage = "https://rust-db.github.io/barrel"
 documentation = "https://docs.rs/barrel"
 
 categories = [ "database", "development-tools"]
