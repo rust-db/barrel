@@ -49,7 +49,7 @@ impl SqlGenerator for Pg {
 
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
         format!(
-            "{}{}{}",
+            "{}{}{}{}",
             match bt {
                 Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt)),
@@ -74,7 +74,11 @@ impl SqlGenerator for Pg {
             match tt.nullable {
                 true => "",
                 false => " NOT NULL",
-            }
+            },
+            match tt.unique {
+                true => " UNIQUE",
+                false => "",
+            },
         )
     }
 
