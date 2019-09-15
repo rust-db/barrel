@@ -21,7 +21,8 @@ This way you can focus on your Rust code, without having to worry about SQL.
 The following example will help you get started
 
 ```rust
-use barrel::{types, Migration, Pg};
+use barrel::{types, Migration};
+use barrel::backend::Pg;
 
 fn main() {
     let mut m = Migration::new();
