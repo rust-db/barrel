@@ -25,7 +25,7 @@ required-features = ["sqlite3"]
 
 [features]
 default = []
-diesel = ["tempdir", "diesel_rs"]
+diesel = ["tempfile", "diesel_rs"]
 sqlite3 = []
 mysql = []
 pg = []
@@ -36,7 +36,7 @@ unstable = []
 
 
 [dependencies]
-tempdir = { version = "0.3.4", optional = true }
+tempfile = { version = "3", optional = true }
 diesel_rs = { version = ">= 1.2, < 2.0", package = "diesel", default_features = false, optional = true }
 
 [package.metadata.docs.rs]
