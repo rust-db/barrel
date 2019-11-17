@@ -103,9 +103,9 @@ fn run_barrel_migration_wrapper(path: &Path) -> Box<Migration> {
 
 fn run_barrel_migration(migration: &Path) -> (String, String) {
     /* Create a tmp dir with src/ child */
-    use tempdir::TempDir;
+    use tempfile::Builder;
 
-    let dir = TempDir::new("barrel").unwrap();
+    let dir = Builder::new().prefix("barrel").tempdir().unwrap();
     fs::create_dir_all(&dir.path().join("src")).unwrap();
 
     let (feat, ident) = get_backend_pair();
