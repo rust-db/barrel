@@ -1,6 +1,6 @@
 [package]
 name = "barrel"
-version = "0.6.3-alpha.0"
+version = "0.6.3"
 
 description = "A powerful schema migration building API for Rust"
 authors = ["Katharina Fey <kookie@spacekookie.de>", "Rob Rowe <rippinrobr@gmail.com>"]
@@ -14,6 +14,12 @@ documentation = "https://docs.rs/barrel"
 
 categories = [ "database", "development-tools"]
 keywords = ["sql", "database", "schema", "migration"]
+
+[package.metadata.docs.rs]
+
+# We can't build documentation with the `diesel` flag enabled
+# because then the project no longer builds.
+features = ["mysql", "sqlite3", "pg", "unstable"]
 
 [[example]]
 name = "pg_strings"
@@ -38,9 +44,3 @@ unstable = []
 [dependencies]
 tempfile = { version = "3", optional = true }
 diesel_rs = { version = ">= 1.2, < 2.0", package = "diesel", default_features = false, optional = true }
-
-[package.metadata.docs.rs]
-
-# We can't build documentation with the `diesel` flag enabled
-# because then the project no longer builds.
-features = ["mysql", "sqlite3", "pg", "unstable"]
