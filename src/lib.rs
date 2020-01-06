@@ -1,30 +1,34 @@
-//! Powerful schema migration builder, that let's you write your SQL migrations in Rust.
+//! Powerful schema migration builder, that let's you write your SQL
+//! migrations in Rust.
 //!
-//! `barrel` makes writing migrations for different databases as easy as possible.
-//! It provides you with a common API over SQL,
-//! with certain features only provided for database specific implementations.
-//! This way you can focus on your Rust code, and stop worrying about SQL.
+//! `barrel` makes writing migrations for different databases as easy
+//! as possible.  It provides you with a common API over SQL, with
+//! certain features only provided for database specific
+//! implementations.  This way you can focus on your Rust code, and
+//! stop worrying about SQL.
 //!
-//! `barrel` has three primary models:
-//! the [Migration](migration/struct.Migration.html) which represents
-//! all changes and changes made on a database level,
-//! the [Table](table/struct.Table.html) and the
+//! `barrel` has three primary models: the
+//! [Migration](migration/struct.Migration.html) which represents all
+//! changes and changes made on a database level, the
+//! [Table](table/struct.Table.html) and the
 //! [Type](types/struct.Type.html).
 //!
-//! When creating or altering tables a lambda which exposes `&mut Table` is
-//! provided for initialisation. Adding columns is then as easy as calling
-//! `add_column(...)` on the table.
+//! When creating or altering tables a lambda which exposes `&mut
+//! Table` is provided for initialisation. Adding columns is then as
+//! easy as calling `add_column(...)` on the table.
 //!
-//! Each column is statically typed and some types require some metadata in order
-//! to compile the migration (for example `Varchar(255)`). You can also provide
-//! default types and override encodings, nullability or uniqueness of columns.
-//! Some checks are performed at compile-time however most things (including)
-//! correct default values) are only checked at runtime.
+//! Each column is statically typed and some types require some
+//! metadata in order to compile the migration (for example
+//! `Varchar(255)`). You can also provide default types and override
+//! encodings, nullability or uniqueness of columns.  Some checks are
+//! performed at compile-time however most things (including) correct
+//! default values) are only checked at runtime.
 //!
-//! **Note** Since version `0.3.0` it is required to provide a database backend
-//! in order to compile `barrel`.
+//! **Note** Since version `0.3.0` it is required to provide a
+//! database backend in order to compile `barrel`.
 //!
-//! The following code is a simple example of how to get going with `barrel`
+//! The following code is a simple example of how to get going with
+//! `barrel`
 //!
 //! ```rust
 //! use barrel::{types, Migration};
@@ -38,15 +42,17 @@
 //!     });
 //! }
 //! ```
-//! `barrel` also supports more advanced types, such as `foreign(...)`
-//! and `array(...)` however currently doesn't support nested Array types on
-//! foreign keys (such as `array(array(foreign(...)))`). Each column addition
-//! returns a Column object which can then be used to provide further
-//! configuration.
 //!
-//! To generate SQL strings you have two options. If you just want to run the
-//! migration yourself simply run `Migration::exec()` where you provide a
-//! generic `SqlGenerator` type according to your database backend
+//! `barrel` also supports more advanced types, such as `foreign(...)`
+//! and `array(...)` however currently doesn't support nested Array
+//! types on foreign keys (such as `array(array(foreign(...)))`). Each
+//! column addition returns a Column object which can then be used to
+//! provide further configuration.
+//!
+//! To generate SQL strings you have two options. If you just want to
+//! run the migration yourself simply run `Migration::exec()` where
+//! you provide a generic `SqlGenerator` type according to your
+//! database backend
 //!
 //! ```rust
 //! # #[cfg(feature = "pg")]
@@ -58,10 +64,11 @@
 //! m.make::<Pg>();
 //! ```
 //!
-//! Alternatively, if you're a library developer and you want to more easily
-//! embed `barrel` into your library you can simply implement the
-//! `DatabaseExecutor` trait for a type of yours that knows how to execute SQL.
-//! Running a migration with `barrel` is then super easy.
+//! Alternatively, if you're a library developer and you want to more
+//! easily embed `barrel` into your library you can simply implement
+//! the `DatabaseExecutor` trait for a type of yours that knows how to
+//! execute SQL.  Running a migration with `barrel` is then super
+//! easy.
 //!
 //! ```rust
 //! use barrel::connectors::SqlRunner;
@@ -83,9 +90,9 @@
 //! m.execute::<Pg, _>(&mut executor);
 //! ```
 //!
-//! In this case `executor` is your provided type which implements the required
-//! trait. You can read more about this in the [connectors](connectors/index.html)
-//! module docs.
+//! In this case `executor` is your provided type which implements the
+//! required trait. You can read more about this in the
+//! [connectors](connectors/index.html) module docs.
 //!
 //! If you find database-specific features or documentation lacking,
 //! don't hesitate to open an issue/PR about it.
