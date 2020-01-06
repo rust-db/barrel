@@ -74,10 +74,6 @@ impl SqlGenerator for Pg {
                 true => " PRIMARY KEY",
                 false => "",
             },
-            match tt.primary {
-                true => " PRIMARY KEY",
-                false => "",
-            },
             match (&tt.default).as_ref() {
                 Some(ref m) => format!(" DEFAULT '{}'", m),
                 _ => format!(""),

@@ -2,7 +2,6 @@
 
 mod builders;
 mod defaults;
-mod defaults;
 mod impls;
 
 pub use self::builders::*;
