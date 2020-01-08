@@ -7,7 +7,7 @@
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
 
-A powerful database schema builder, that let's you write your SQL migrations in Rust!
+A powerful database schema builder, that lets you write your SQL migrations in Rust!
 
 `barrel` offers callback-style builder functions for SQL migrations
 and is designed to be flexible, portable and fun to use.
