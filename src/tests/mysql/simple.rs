@@ -7,20 +7,23 @@ use crate::backend::{MySql, SqlGenerator};
 #[test]
 fn create_table() {
     let sql = MySql::create_table("table_to_create", None);
-    assert_eq!(String::from("CREATE TABLE table_to_create"), sql);
+    assert_eq!(String::from("CREATE TABLE `table_to_create`"), sql);
 }
 
 #[test]
 fn create_table_with_schema() {
     let sql = MySql::create_table("table_to_create", Some("my_schema"));
-    assert_eq!(String::from("CREATE TABLE my_schema.table_to_create"), sql);
+    assert_eq!(
+        String::from("CREATE TABLE `my_schema`.`table_to_create`"),
+        sql
+    );
 }
 
 #[test]
 fn create_table_if_not_exists() {
     let sql = MySql::create_table_if_not_exists("table_to_create", None);
     assert_eq!(
-        String::from("CREATE TABLE table_to_create IF NOT EXISTS"),
+        String::from("CREATE TABLE `table_to_create` IF NOT EXISTS"),
         sql
     );
 }
@@ -28,13 +31,13 @@ fn create_table_if_not_exists() {
 #[test]
 fn drop_table() {
     let sql = MySql::drop_table("table_to_drop", None);
-    assert_eq!(String::from("DROP TABLE table_to_drop"), sql);
+    assert_eq!(String::from("DROP TABLE `table_to_drop`"), sql);
 }
 
 #[test]
 fn drop_table_if_exists() {
     let sql = MySql::drop_table_if_exists("table_to_drop", None);
-    assert_eq!(String::from("DROP TABLE table_to_drop IF EXISTS"), sql);
+    assert_eq!(String::from("DROP TABLE `table_to_drop` IF EXISTS"), sql);
 }
 
 #[test]
