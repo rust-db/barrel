@@ -52,20 +52,20 @@ impl SqlGenerator for MySql {
         format!(
             "{}{}{}{}{}",
             match bt {
-                Text => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Varchar(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Primary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Integer => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Float => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Double => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
+                Text => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Varchar(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Primary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Integer => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Float => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Double => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 UUID => unimplemented!(),
-                Json => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt)),
-                Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)))),
+                Json => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!(),
             },
             match tt.primary {
@@ -130,7 +130,7 @@ impl MySql {
         }
     }
 
-    fn print_type(t: BaseType) -> String {
+    fn print_type(t: BaseType, schema: Option<&str>) -> String {
         use self::BaseType::*;
         match t {
             Text => format!("TEXT"),
@@ -155,7 +155,7 @@ impl MySql {
                 refs.0.join(",")
             ),
             Custom(t) => format!("{}", t),
-            Array(meh) => format!("{}[]", MySql::print_type(*meh)),
+            Array(meh) => format!("{}[]", MySql::print_type(*meh, schema)),
             Index(_) => unreachable!(),
         }
     }
