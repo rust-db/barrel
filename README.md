@@ -7,14 +7,16 @@
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
 
-A powerful database schema builder, that lets you write your SQL migrations in Rust!
+A powerful database schema builder, that lets you write your SQL
+migrations in Rust!
 
 `barrel` offers callback-style builder functions for SQL migrations
-and is designed to be flexible, portable and fun to use.
-It provides you with a common interface over SQL,
-with additional database-specific builders.
+and is designed to be flexible, portable and fun to use.  It provides
+you with a common interface over SQL, with additional
+database-specific builders.
 
-This way you can focus on your Rust code, without having to worry about SQL.
+This way you can focus on your Rust code, without having to worry
+about SQL.
 
 ## Example
 
@@ -39,17 +41,20 @@ fn main() {
 
 ## Using Diesel
 
-Since `diesel 1.2.0` it's possible to now use `barrel` for migrations with `diesel`. A guide with some more information on how to get started can be found [here](https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md)
+Since `diesel 1.2.0` it's possible to now use `barrel` for migrations
+with `diesel`. A guide with some more information on how to get
+started can be found
+[here](https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md)
 
 ### Migration guide
 
-If you've been using `barrel` to write migrations for `diesel` before the `0.5.0` release,
-some migration of your migrations will be required.
-Since `0.5.0` the way types are constructed changed.
-Instead of constructing a type with `Types::VarChar(255)` (an enum variant),
-the types are now provided by a module called `types` and builder functions.
-The same type would now be `types::varchar(255)` (a function call),
-which then returns a `Type` enum.
+If you've been using `barrel` to write migrations for `diesel` before
+the `0.5.0` release, some migration of your migrations will be
+required.  Since `0.5.0` the way types are constructed changed.
+Instead of constructing a type with `Types::VarChar(255)` (an enum
+variant), the types are now provided by a module called `types` and
+builder functions.  The same type would now be `types::varchar(255)`
+(a function call), which then returns a `Type` enum.
 
 You can also directly created your own `Type` builders this way.
 Check the docs for details!
@@ -59,14 +64,15 @@ Check the docs for details!
 `barrel` is free software: you can redistribute it and/or modify it
 under the terms of the MIT Public License.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the MIT Public License for more details.
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the MIT
+Public License for more details.
 
 ## Conduct
 
-In the interest of fostering an open and welcoming environment,
-the `barrel` project pledges to making participation a harassment-free experience for everyone.
-See [Code of Conduct](code_of_conduct.md) for details.
-In case of violations, e-mail [kookie@spacekookie.de](mailto:kookie@spacekookie.de).
+In the interest of fostering an open and welcoming environment, the
+`barrel` project pledges to making participation a harassment-free
+experience for everyone.  See [Code of Conduct](code_of_conduct.md)
+for details.  In case of violations, e-mail
+[kookie@spacekookie.de](mailto:kookie@spacekookie.de).
