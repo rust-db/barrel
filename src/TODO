@@ -1,0 +1,42 @@
+The following file outlines some of the changes that should be made to
+barrel, before we can promote a version to 1.0.  This is in no way an
+exhausive list, but certainly a good starting point for contributors
+to work with.  There are several sections of issues, some of which
+were already reported on the repo, others have not.
+
+
+== Bugs
+
+- https://github.com/rust-db/barrel/issues/79
+- https://github.com/rust-db/barrel/issues/80
+- https://github.com/rust-db/barrel/issues/81
+- https://github.com/rust-db/barrel/issues/82
+- https://github.com/rust-db/barrel/issues/83
+
+
+== Features
+
+- Tests should run against a database backend, not just a static
+  string.  This way we can also enforce compatibility with a specific
+  database version.
+
+- 
+
+
+- *Testing*: The tests should run against an actual database to make
+
+
+
+
+sure that the syntax is valid. We still run into syntax issues from time to
+   time. As also mentioned here:
+   https://github.com/rust-db/barrel/issues/8#issue-297373013
+   - *Integrate Fork*: One of our freelancers was working with barrel for
+   some time and eventually had to create a fork in order to do fixes.
+   Currently we are using his fork but I would really like to switch back to
+   mainline barrel asap.
+   - Merge his PRs if possible:
+      https://github.com/rust-db/barrel/pulls/aknuds1
+      - There are probably other fixes he has not opened a PR for. Those
+      should be ported as well. Maybe you can scan his history to see what is
+      needed. https://github.com/aknuds1/barrel/commits/master

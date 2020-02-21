@@ -131,6 +131,19 @@ impl Migration {
         variant.run_for(self)
     }
 
+    
+    /// Inject a line of custom SQL into the top-level migration scope
+    ///
+    /// This is a bypass to the barrel typesystem, in case there is
+    /// something your database supports that barrel doesn't, or if
+    /// there is an issue with the way that barrel represents types.
+    /// It does however mean that the SQL provided needs to be
+    /// specific for one database, meaning that future migrations
+    /// might become cumbersome.
+    pub fn inject_custom<S: Into<String>>(&mut self, sql: S) {
+        self.changes.push(DatabaseChange::CustomLine(sql.into()));
+    }
+    
     /// Automatically infer the `down` step of this migration
     ///
     /// Will thrown an error if behaviour is ambiguous or not

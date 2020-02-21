@@ -69,6 +69,14 @@ impl Table {
             .push(TableChange::RenameColumn(old.into(), new.into()));
     }
 
+    /// Inject a line of custom SQL into the table block
+    ///
+    /// This is a bypass to the barrel typesystem, in case there is
+    /// something your database supports that barrel doesn't, or if
+    /// there is an issue with the way that barrel represents types.
+    /// It does however mean that the SQL provided needs to be
+    /// specific for one database, meaning that future migrations
+    /// might become cumbersome.
     pub fn inject_custom<S: Into<String>>(&mut self, sql: S) {
         self.columns.push(TableChange::CustomLine(sql.into()));
     }
