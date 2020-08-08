@@ -15,7 +15,7 @@ Using rust migrations (via `barrel`) with `diesel` is really simple.
 First make sure that you installed the `diesel_cli` with the `barrel-migrations` feature flag:
 
 ```bash
-~ cargo install diesel_cli --features="barrel-migrations"
+~ cargo install diesel_cli --features="barrel-migrations,barrel/sqlite3,sqlite"
 ```
 
 **Important:** you can only select one (1) backend with diesel.
@@ -23,7 +23,7 @@ Whichever you select will determine the migration files that are generated later
 
 ```toml
 [dependencies]
-diesel = { version = "1.3", features = ["sqlite3"] }
+diesel = { version = "1.4", features = ["sqlite"] }
 # ...
 ```
 
