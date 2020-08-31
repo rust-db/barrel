@@ -132,7 +132,6 @@ impl Migration {
         variant.run_for(self)
     }
 
-    
     /// Inject a line of custom SQL into the top-level migration scope
     ///
     /// This is a bypass to the barrel typesystem, in case there is
@@ -144,7 +143,7 @@ impl Migration {
     pub fn inject_custom<S: Into<String>>(&mut self, sql: S) {
         self.changes.push(DatabaseChange::CustomLine(sql.into()));
     }
-    
+
     /// Automatically infer the `down` step of this migration
     ///
     /// Will thrown an error if behaviour is ambiguous or not

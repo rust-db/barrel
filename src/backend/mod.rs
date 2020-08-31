@@ -19,6 +19,11 @@ mod sqlite3;
 #[cfg(feature = "sqlite3")]
 pub use self::sqlite3::Sqlite;
 
+#[cfg(feature = "mssql")]
+mod mssql;
+#[cfg(feature = "mssql")]
+pub use self::mssql::MsSql;
+
 #[allow(unused_imports)]
 use crate::{types::Type, Migration};
 
@@ -31,6 +36,8 @@ pub enum SqlVariant {
     Pg,
     #[cfg(feature = "mysql")]
     Mysql,
+    #[cfg(feature = "mssql")]
+    Mssql,
     #[doc(hidden)]
     __Empty,
 }
@@ -46,6 +53,9 @@ impl SqlVariant {
 
             #[cfg(feature = "mysql")]
             SqlVariant::Mysql => _migr.make::<MySql>(),
+
+            #[cfg(feature = "mssql")]
+            SqlVariant::Mssql => _migr.make::<MsSql>(),
 
             _ => panic!("You need to select an Sql variant!"),
         }
