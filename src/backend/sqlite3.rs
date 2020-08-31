@@ -64,7 +64,7 @@ impl SqlGenerator for Sqlite {
                 Foreign(_, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
-                Index(_) => unreachable!(), // Indices are handled via custom builders
+                Index(_) => unreachable!("Indices are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",

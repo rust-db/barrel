@@ -156,7 +156,7 @@ pub enum DatabaseChange {
 
     /// Only drop a table if it exists
     DropTableIfExists(String),
-    
+
     /// Add some custom SQL if all else fails
     CustomLine(String),
 }

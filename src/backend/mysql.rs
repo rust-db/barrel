@@ -66,7 +66,7 @@ impl SqlGenerator for MySql {
                 Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
-                Index(_) => unreachable!(),
+                Index(_) => unreachable!("Indices are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
