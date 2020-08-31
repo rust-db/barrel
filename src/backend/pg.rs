@@ -68,7 +68,7 @@ impl SqlGenerator for Pg {
                 Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)), schema)),
-                Index(_) => unreachable!(), // Indices are handled via custom builder
+                Index(_) => unreachable!("Indices are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
@@ -158,7 +158,7 @@ impl Pg {
             ),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh, schema)),
-            Index(_) => unreachable!(), // Indices are handled via custom builder
+            Index(_) => unimplemented!("Indices are handled via custom builder"),
         }
     }
 }
