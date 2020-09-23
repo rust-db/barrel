@@ -171,7 +171,7 @@ impl MsSql {
                 _ => format!("VARCHAR({})", l),
             },
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
-            Primary => format!("IDENTITY(1,1) PRIMARY KEY NOT NULL"),
+            Primary => format!("BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL"),
             Integer => format!("INT"),
             Float => format!("FLOAT(24)"),
             Double => format!("FLOAT(53)"),
