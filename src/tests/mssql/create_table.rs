@@ -14,7 +14,7 @@ fn create_table_if_not_exists_doesnt_hit_unreachable() {
         t.add_column("pic", types::text().nullable(true));
         t.add_column("mbid", types::text().nullable(true));
     });
-    assert_eq!(m.make::<MsSql>(), String::from("IF NOT EXISTS (SELECT * FROM sys.tables WHERE name='artist') CREATE TABLE [artist] ([id] IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT, [description] TEXT, [pic] TEXT, [mbid] TEXT);"));
+    assert_eq!(m.make::<MsSql>(), String::from("IF NOT EXISTS (SELECT * FROM sys.tables WHERE name='artist') CREATE TABLE [artist] ([id] BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT, [description] TEXT, [pic] TEXT, [mbid] TEXT);"));
 }
 
 #[test]
@@ -29,7 +29,7 @@ fn basic_fields() {
 
     assert_eq!(
         m.make::<MsSql>(),
-        String::from("CREATE TABLE [users] ([id] IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] VARCHAR(255) NOT NULL, [age] INT NOT NULL, [plushy_sharks_owned] BIT NOT NULL);")
+        String::from("CREATE TABLE [users] ([id] BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] VARCHAR(255) NOT NULL, [age] INT NOT NULL, [plushy_sharks_owned] BIT NOT NULL);")
     );
 }
 
@@ -45,7 +45,7 @@ fn basic_fields_nullable() {
 
     assert_eq!(
         m.make::<MsSql>(),
-        String::from("CREATE TABLE [users] ([id] IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] VARCHAR(255), [age] INT, [plushy_sharks_owned] BIT);")
+        String::from("CREATE TABLE [users] ([id] BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] VARCHAR(255), [age] INT, [plushy_sharks_owned] BIT);")
     );
 }
 #[test]
@@ -64,7 +64,7 @@ fn create_multiple_tables() {
         t.add_column("pic", types::text());
         t.add_column("mbid", types::text());
     });
-    assert_eq!(m.make::<MsSql>(), String::from("CREATE TABLE [artist] ([id] IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT NOT NULL, [description] TEXT NOT NULL, [pic] TEXT NOT NULL, [mbid] TEXT NOT NULL);CREATE TABLE [album] ([id] IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT NOT NULL, [pic] TEXT NOT NULL, [mbid] TEXT NOT NULL);"));
+    assert_eq!(m.make::<MsSql>(), String::from("CREATE TABLE [artist] ([id] BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT NOT NULL, [description] TEXT NOT NULL, [pic] TEXT NOT NULL, [mbid] TEXT NOT NULL);CREATE TABLE [album] ([id] BIGINT IDENTITY(1,1) PRIMARY KEY NOT NULL, [name] TEXT NOT NULL, [pic] TEXT NOT NULL, [mbid] TEXT NOT NULL);"));
 }
 
 #[test]
