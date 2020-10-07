@@ -60,7 +60,7 @@ impl Migration {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     cb(t); // Run the user code
-                    let (cols, indices) = t.make::<T>(false, schema);
+                    let (cols, indices, foreign_keys) = t.make::<T>(false, schema);
 
                     let name = t.meta.name().clone();
                     sql.push_str(&match change {
@@ -79,6 +79,20 @@ impl Migration {
                             sql.push_str(", ");
                         }
                     }
+
+                    let l = foreign_keys.len();
+                    for (i, slice) in foreign_keys.iter().enumerate() {
+                        if cols.len() > 0 && i == 0 {
+                            sql.push_str(", ")
+                        }
+
+                        sql.push_str(slice);
+
+                        if i < l - 1 {
+                            sql.push_str(", ")
+                        }
+                    }
+
                     sql.push_str(")");
 
                     // Add additional index columns
@@ -96,15 +110,31 @@ impl Migration {
                 }
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
-                    let (cols, indices) = t.make::<T>(true, schema);
+                    let (cols, indices, fks) = t.make::<T>(true, schema);
+
                     sql.push_str(&T::alter_table(&t.meta.name(), schema));
                     sql.push_str(" ");
+
                     let l = cols.len();
                     for (i, slice) in cols.iter().enumerate() {
                         sql.push_str(slice);
 
                         if i < l - 1 {
                             sql.push_str(", ");
+                        }
+                    }
+
+                    let l = fks.len();
+                    for (i, slice) in fks.iter().enumerate() {
+                        if cols.len() > 0 && i == 0 {
+                            sql.push_str(", ")
+                        }
+
+                        sql.push_str("ADD ");
+                        sql.push_str(slice);
+
+                        if i < l - 1 {
+                            sql.push_str(", ")
                         }
                     }
 

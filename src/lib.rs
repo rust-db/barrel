@@ -174,3 +174,14 @@ pub enum IndexChange {
     /// Remove a multi-column index
     RemoveIndex(String, String),
 }
+
+/// An enum set that represents operations done with and on foreign keys
+#[derive(Clone)]
+pub enum ForeignKeyChange {
+    /// Add a foreign key
+    AddForeignKey {
+        columns: Vec<String>,
+        table: String,
+        relation_columns: Vec<String>,
+    },
+}
