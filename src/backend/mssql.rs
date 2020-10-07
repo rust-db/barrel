@@ -152,6 +152,27 @@ impl SqlGenerator for MsSql {
     fn drop_index(name: &str) -> String {
         format!("DROP INDEX [{}]", name)
     }
+
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        schema: Option<&str>,
+    ) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("[{}]", c)).collect();
+        let relation_columns: Vec<_> = relation_columns
+            .into_iter()
+            .map(|c| format!("[{}]", c))
+            .collect();
+
+        format!(
+            "FOREIGN KEY({}) REFERENCES {}[{}]({})",
+            columns.join(","),
+            prefix!(schema),
+            table,
+            relation_columns.join(","),
+        )
+    }
 }
 
 impl MsSql {

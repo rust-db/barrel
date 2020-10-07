@@ -119,6 +119,27 @@ impl SqlGenerator for Sqlite {
     fn rename_column(_: &str, _: &str) -> String {
         panic!("Sqlite does not support renaming columns!")
     }
+
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        _: Option<&str>,
+    ) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("\"{}\"", c)).collect();
+
+        let relation_columns: Vec<_> = relation_columns
+            .into_iter()
+            .map(|c| format!("\"{}\"", c))
+            .collect();
+
+        format!(
+            "FOREIGN KEY({}) REFERENCES \"{}\"({})",
+            columns.join(","),
+            table,
+            relation_columns.join(","),
+        )
+    }
 }
 
 impl Sqlite {

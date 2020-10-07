@@ -7,8 +7,7 @@
 //! You can also change existing tables with a closure that can
 //! then access individual columns in that table.
 
-use super::backend::SqlGenerator;
-use super::{IndexChange, TableChange};
+use super::{backend::SqlGenerator, ForeignKeyChange, IndexChange, TableChange};
 use crate::types::Type;
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -24,11 +23,18 @@ impl Debug for IndexChange {
     }
 }
 
+impl Debug for ForeignKeyChange {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        f.write_str("ForeignKeyChange")
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Table {
     pub meta: TableMeta,
     columns: Vec<TableChange>,
     indices: Vec<IndexChange>,
+    foreign_keys: Vec<ForeignKeyChange>,
 }
 
 impl Table {
@@ -37,6 +43,7 @@ impl Table {
             meta: TableMeta::new(name.into()),
             columns: vec![],
             indices: vec![],
+            foreign_keys: vec![],
         }
     }
 
@@ -103,18 +110,45 @@ impl Table {
         ));
     }
 
-    /// Generate Sql for this table, returned as two vectors
+    pub fn add_foreign_key(
+        &mut self,
+        columns_on_this_side: &[&str],
+        related_table: &str,
+        columns_on_that_side: &[&str],
+    ) {
+        let table = related_table.into();
+
+        let columns = columns_on_this_side
+            .into_iter()
+            .map(|c| String::from(*c))
+            .collect();
+
+        let relation_columns = columns_on_that_side
+            .into_iter()
+            .map(|c| String::from(*c))
+            .collect();
+
+        self.foreign_keys.push(ForeignKeyChange::AddForeignKey {
+            table,
+            columns,
+            relation_columns,
+        })
+    }
+
+    /// Generate Sql for this table, returned as three vectors
     ///
     /// The first vector (`.0`) represents all column changes done to the table,
     /// the second vector (`.1`) contains all index and suffix changes.
+    /// the third vector (`.2`) contains all foreign key changes.
     ///
-    /// It is very well possible for either of them to be empty,
+    /// It is very well possible for all of them to be empty,
     /// although both being empty *might* signify an error.
     pub fn make<T: SqlGenerator>(
         &mut self,
         ex: bool,
         schema: Option<&str>,
-    ) -> (Vec<String>, Vec<String>) {
+    ) -> (Vec<String>, Vec<String>, Vec<String>) {
+        use ForeignKeyChange as KFC;
         use IndexChange as IC;
         use TableChange as TC;
 
@@ -143,7 +177,24 @@ impl Table {
             })
             .collect();
 
-        (columns, indeces)
+        let foreign_keys = self
+            .foreign_keys
+            .iter()
+            .map(|change| match change {
+                KFC::AddForeignKey {
+                    columns,
+                    table,
+                    relation_columns,
+                } => T::add_foreign_key(
+                    columns.as_slice(),
+                    table,
+                    relation_columns.as_slice(),
+                    schema,
+                ),
+            })
+            .collect();
+
+        (columns, indeces, foreign_keys)
     }
 }
 

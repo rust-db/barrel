@@ -96,4 +96,12 @@ pub trait SqlGenerator {
 
     /// Drop a multi-column index
     fn drop_index(name: &str) -> String;
+
+    /// Add a foreign key
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        schema: Option<&str>,
+    ) -> String;
 }
