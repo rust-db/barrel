@@ -199,6 +199,8 @@ impl MsSql {
             UUID => format!("UNIQUEIDENTIFIER"),
             Boolean => format!("BIT"),
             Date => format!("DATE"),
+            Time => format!("TIME"),
+            DateTime => format!("DATETIME2"),
             Json => format!("JSON"),
             Binary => format!("VARBINARY(MAX)"),
             Foreign(s, t, refs) => format!(

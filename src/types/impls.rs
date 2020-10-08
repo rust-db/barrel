@@ -27,8 +27,12 @@ pub enum BaseType {
     Boolean,
     /// Json encoded data
     Json,
-    /// Date And Time
+    /// Date
     Date,
+    /// Date
+    Time,
+    /// Date and time
+    DateTime,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
