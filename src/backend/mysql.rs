@@ -62,6 +62,8 @@ impl SqlGenerator for MySql {
                 Json => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Time => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                DateTime => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
@@ -167,6 +169,8 @@ impl MySql {
             UUID => format!("CHAR(36)"),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
+            Time => format!("TIME"),
+            DateTime => format!("DATETIME"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
             Foreign(s, t, refs) => format!(
