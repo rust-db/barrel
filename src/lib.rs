@@ -104,6 +104,7 @@ pub use integrations::*;
 
 pub mod backend;
 pub mod connectors;
+pub mod functions;
 pub mod migration;
 pub mod table;
 pub mod types;
@@ -171,6 +172,13 @@ pub enum IndexChange {
         columns: types::Type, // Should always be a `Index` type
     },
 
+    AddPartialIndex {
+        index: String,
+        table: String,
+        columns: types::Type, // Should always be a `Index` type
+        conditions: String,
+    },
+
     /// Remove a multi-column index
     RemoveIndex(String, String),
 }
@@ -184,4 +192,11 @@ pub enum ForeignKeyChange {
         table: String,
         relation_columns: Vec<String>,
     },
+}
+
+/// An enum set that represents operations done to the primary key
+#[derive(Clone)]
+pub enum PrimaryKeyChange {
+    /// Adds a primary key to the table
+    AddPrimaryKey(Vec<String>),
 }

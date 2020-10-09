@@ -94,6 +94,21 @@ pub trait SqlGenerator {
     /// Create a multi-column index
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String;
 
+    /// Create a multi-column index
+    fn create_partial_index(
+        table: &str,
+        schema: Option<&str>,
+        name: &str,
+        _type: &Type,
+        conditions: &str,
+    ) -> String {
+        format!(
+            "{} WHERE {}",
+            Self::create_index(table, schema, name, _type),
+            conditions
+        )
+    }
+
     /// Drop a multi-column index
     fn drop_index(name: &str) -> String;
 
@@ -104,4 +119,6 @@ pub trait SqlGenerator {
         relation_columns: &[String],
         schema: Option<&str>,
     ) -> String;
+
+    fn add_primary_key(columns: &[String]) -> String;
 }

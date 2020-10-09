@@ -7,7 +7,7 @@
 //! You can also change existing tables with a closure that can
 //! then access individual columns in that table.
 
-use super::{backend::SqlGenerator, ForeignKeyChange, IndexChange, TableChange};
+use super::{backend::SqlGenerator, ForeignKeyChange, IndexChange, PrimaryKeyChange, TableChange};
 use crate::types::Type;
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -29,12 +29,27 @@ impl Debug for ForeignKeyChange {
     }
 }
 
+impl Debug for PrimaryKeyChange {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        f.write_str("PrimaryKeyChange")
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Table {
     pub meta: TableMeta,
     columns: Vec<TableChange>,
     indices: Vec<IndexChange>,
     foreign_keys: Vec<ForeignKeyChange>,
+    primary_key: Option<PrimaryKeyChange>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SqlChanges {
+    pub(crate) columns: Vec<String>,
+    pub(crate) indices: Vec<String>,
+    pub(crate) foreign_keys: Vec<String>,
+    pub(crate) primary_key: Option<String>,
 }
 
 impl Table {
@@ -44,6 +59,7 @@ impl Table {
             columns: vec![],
             indices: vec![],
             foreign_keys: vec![],
+            primary_key: None,
         }
     }
 
@@ -102,6 +118,20 @@ impl Table {
         });
     }
 
+    pub fn add_partial_index<S: Into<String>>(&mut self, name: S, columns: Type, conditions: S) {
+        match columns.inner {
+            crate::types::BaseType::Index(_) => {}
+            _ => panic!("Calling `add_index` with a non-`Index` type is not allowed!"),
+        }
+
+        self.indices.push(IndexChange::AddPartialIndex {
+            table: self.meta.name.clone(),
+            index: name.into(),
+            columns,
+            conditions: conditions.into(),
+        });
+    }
+
     /// Drop an index on this table
     pub fn drop_index<S: Into<String>>(&mut self, name: S) {
         self.indices.push(IndexChange::RemoveIndex(
@@ -135,21 +165,18 @@ impl Table {
         })
     }
 
-    /// Generate Sql for this table, returned as three vectors
-    ///
-    /// The first vector (`.0`) represents all column changes done to the table,
-    /// the second vector (`.1`) contains all index and suffix changes.
-    /// the third vector (`.2`) contains all foreign key changes.
-    ///
-    /// It is very well possible for all of them to be empty,
-    /// although both being empty *might* signify an error.
-    pub fn make<T: SqlGenerator>(
-        &mut self,
-        ex: bool,
-        schema: Option<&str>,
-    ) -> (Vec<String>, Vec<String>, Vec<String>) {
+    pub fn set_primary_key(&mut self, columns: &[&str]) {
+        let primary_key =
+            PrimaryKeyChange::AddPrimaryKey(columns.into_iter().map(|s| s.to_string()).collect());
+
+        self.primary_key = Some(primary_key);
+    }
+
+    /// Generate Sql for this table.
+    pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> SqlChanges {
         use ForeignKeyChange as KFC;
         use IndexChange as IC;
+        use PrimaryKeyChange as PKC;
         use TableChange as TC;
 
         let columns = self
@@ -164,7 +191,7 @@ impl Table {
             })
             .collect();
 
-        let indeces = self
+        let indices = self
             .indices
             .iter()
             .map(|change| match change {
@@ -173,9 +200,19 @@ impl Table {
                     table,
                     columns,
                 } => T::create_index(table, schema, index, columns),
+                IC::AddPartialIndex {
+                    index,
+                    table,
+                    columns,
+                    conditions,
+                } => T::create_partial_index(table, schema, index, columns, conditions),
                 IC::RemoveIndex(_, index) => T::drop_index(index),
             })
             .collect();
+
+        let primary_key = self.primary_key.as_ref().map(|pk| match pk {
+            PKC::AddPrimaryKey(ref cols) => T::add_primary_key(cols),
+        });
 
         let foreign_keys = self
             .foreign_keys
@@ -194,7 +231,12 @@ impl Table {
             })
             .collect();
 
-        (columns, indeces, foreign_keys)
+        SqlChanges {
+            columns,
+            indices,
+            foreign_keys,
+            primary_key,
+        }
     }
 }
 

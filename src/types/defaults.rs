@@ -2,6 +2,7 @@ use std::fmt::{self, Display, Formatter};
 use std::time::SystemTime;
 
 use super::Type;
+use crate::functions::AutogenFunction;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum WrappedDefault<'outer> {
@@ -27,6 +28,10 @@ pub enum WrappedDefault<'outer> {
     Custom(&'static str),
     /// Any of the above, but **many** of them
     Array(Vec<Type>),
+    /// A function to call
+    Function(AutogenFunction),
+    /// Nothing
+    Null,
 }
 
 impl<'outer> Display for WrappedDefault<'outer> {
@@ -47,8 +52,16 @@ impl<'outer> Display for WrappedDefault<'outer> {
                 Foreign(ref val) => format!("{:?}", val),
                 Custom(ref val) => format!("{}", val),
                 Array(ref val) => format!("{:?}", val),
+                Function(ref fun) => format!("{:?}", fun),
+                Null => format!("NULL"),
             }
         )
+    }
+}
+
+impl From<AutogenFunction> for WrappedDefault<'static> {
+    fn from(fun: AutogenFunction) -> Self {
+        WrappedDefault::Function(fun)
     }
 }
 
@@ -86,4 +99,8 @@ impl From<SystemTime> for WrappedDefault<'static> {
     fn from(s: SystemTime) -> Self {
         WrappedDefault::Date(s)
     }
+}
+
+pub fn null() -> WrappedDefault<'static> {
+    WrappedDefault::Null
 }

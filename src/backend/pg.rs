@@ -4,7 +4,10 @@
 //! databases. They should be thoroughly tested via unit testing
 
 use super::SqlGenerator;
-use crate::types::{BaseType, Type};
+use crate::{
+    functions::AutogenFunction,
+    types::{BaseType, Type, WrappedDefault},
+};
 
 /// A simple macro that will generate a schema prefix if it exists
 macro_rules! prefix {
@@ -56,8 +59,10 @@ impl SqlGenerator for Pg {
             match bt {
                 Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Char(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Serial => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 UUID => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
@@ -77,7 +82,17 @@ impl SqlGenerator for Pg {
                 false => "",
             },
             match (&tt.default).as_ref() {
-                Some(ref m) => format!(" DEFAULT '{}'", m),
+                Some(ref m) => match m {
+                    WrappedDefault::Function(ref fun) => match fun {
+                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
+                    }
+                    WrappedDefault::Null => format!(" DEFAULT NULL"),
+                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                    _ => format!(" DEFAULT {}", m)
+                },
                 _ => format!(""),
             },
             match tt.nullable {
@@ -146,6 +161,11 @@ impl SqlGenerator for Pg {
             relation_columns.join(","),
         )
     }
+
+    fn add_primary_key(columns: &[String]) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("\"{}\"", c)).collect();
+        format!("PRIMARY KEY ({})", columns.join(","))
+    }
 }
 
 impl Pg {
@@ -164,16 +184,18 @@ impl Pg {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Char(l) => format!("CHAR({})", l),
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
             Primary => format!("SERIAL PRIMARY KEY NOT NULL"),
             Integer => format!("INTEGER"),
+            Serial => format!("SERIAL"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE PRECISION"),
             UUID => format!("UUID"),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
             Time => format!("TIME"),
-            DateTime => format!("DATETIME"),
+            DateTime => format!("TIMESTAMPTZ"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
             Foreign(s, t, refs) => format!(
