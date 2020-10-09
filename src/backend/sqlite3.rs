@@ -72,6 +72,7 @@ impl SqlGenerator for Sqlite {
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
@@ -122,6 +123,26 @@ impl SqlGenerator for Sqlite {
                     .join(", "),
                 _ => unreachable!(),
             }
+        )
+    }
+
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!(
+            "CONSTRAINT \"{}\" {} ({})",
+            name,
+            r#type,
+            columns.join(", "),
         )
     }
 
@@ -198,6 +219,7 @@ impl Sqlite {
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
             Index(_) => unimplemented!(),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
         }
     }
 }

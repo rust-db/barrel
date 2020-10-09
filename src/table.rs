@@ -7,7 +7,10 @@
 //! You can also change existing tables with a closure that can
 //! then access individual columns in that table.
 
-use super::{backend::SqlGenerator, ForeignKeyChange, IndexChange, PrimaryKeyChange, TableChange};
+use super::{
+    backend::SqlGenerator, ConstraintChange, ForeignKeyChange, IndexChange, PrimaryKeyChange,
+    TableChange,
+};
 use crate::types::Type;
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -20,6 +23,12 @@ impl Debug for TableChange {
 impl Debug for IndexChange {
     fn fmt(&self, f: &mut Formatter) -> FmtResult {
         f.write_str("IndexChange")
+    }
+}
+
+impl Debug for ConstraintChange {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        f.write_str("ConstraintChange")
     }
 }
 
@@ -40,6 +49,7 @@ pub struct Table {
     pub meta: TableMeta,
     columns: Vec<TableChange>,
     indices: Vec<IndexChange>,
+    constraints: Vec<ConstraintChange>,
     foreign_keys: Vec<ForeignKeyChange>,
     primary_key: Option<PrimaryKeyChange>,
 }
@@ -48,6 +58,7 @@ pub struct Table {
 pub struct SqlChanges {
     pub(crate) columns: Vec<String>,
     pub(crate) indices: Vec<String>,
+    pub(crate) constraints: Vec<String>,
     pub(crate) foreign_keys: Vec<String>,
     pub(crate) primary_key: Option<String>,
 }
@@ -58,6 +69,7 @@ impl Table {
             meta: TableMeta::new(name.into()),
             columns: vec![],
             indices: vec![],
+            constraints: vec![],
             foreign_keys: vec![],
             primary_key: None,
         }
@@ -113,6 +125,18 @@ impl Table {
 
         self.indices.push(IndexChange::AddIndex {
             table: self.meta.name.clone(),
+            index: name.into(),
+            columns,
+        });
+    }
+
+    pub fn add_constraint<S: Into<String>>(&mut self, name: S, columns: Type) {
+        match columns.inner {
+            crate::types::BaseType::Constraint(_, _) => {}
+            _ => panic!("Calling `add_index` with a non-`Constraint` type is not allowed!"),
+        }
+
+        self.constraints.push(ConstraintChange::AddConstraint {
             index: name.into(),
             columns,
         });
@@ -174,6 +198,7 @@ impl Table {
 
     /// Generate Sql for this table.
     pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> SqlChanges {
+        use ConstraintChange as CC;
         use ForeignKeyChange as KFC;
         use IndexChange as IC;
         use PrimaryKeyChange as PKC;
@@ -214,6 +239,14 @@ impl Table {
             PKC::AddPrimaryKey(ref cols) => T::add_primary_key(cols),
         });
 
+        let constraints = self
+            .constraints
+            .iter()
+            .map(|c| match c {
+                CC::AddConstraint { index, columns } => T::create_constraint(index, columns),
+            })
+            .collect();
+
         let foreign_keys = self
             .foreign_keys
             .iter()
@@ -234,6 +267,7 @@ impl Table {
         SqlChanges {
             columns,
             indices,
+            constraints,
             foreign_keys,
             primary_key,
         }

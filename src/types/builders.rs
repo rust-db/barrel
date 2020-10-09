@@ -1,5 +1,6 @@
 //! Builder API's module
 
+use super::impls::Constraint;
 use super::impls::{BaseType, WrapVec};
 use crate::types::Type;
 
@@ -130,7 +131,21 @@ pub fn array(inner: &Type) -> Type {
 }
 
 /// Create an index over multiple, existing columns of the same type
-pub fn index<S: Into<String>>(columns: Vec<S>) -> Type {
-    let vec: Vec<String> = columns.into_iter().map(|s| s.into()).collect();
+pub fn index<I, S>(columns: I) -> Type
+where
+    S: ToString,
+    I: IntoIterator<Item = S>,
+{
+    let vec: Vec<String> = columns.into_iter().map(|s| s.to_string()).collect();
     Type::new(BaseType::Index(vec))
+}
+
+/// Create a constraint over multiple, existing columns of the same type
+pub fn unique_constraint<I, S>(columns: I) -> Type
+where
+    S: ToString,
+    I: IntoIterator<Item = S>,
+{
+    let vec: Vec<String> = columns.into_iter().map(|s| s.to_string()).collect();
+    Type::new(BaseType::Constraint(Constraint::Unique, vec))
 }

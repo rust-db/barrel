@@ -76,6 +76,7 @@ impl SqlGenerator for Pg {
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
+                Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
@@ -133,6 +134,26 @@ impl SqlGenerator for Pg {
                     .join(", "),
                 _ => unreachable!(),
             }
+        )
+    }
+
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!(
+            "CONSTRAINT \"{}\" {} ({})",
+            name,
+            r#type,
+            columns.join(", "),
         )
     }
 
@@ -207,6 +228,7 @@ impl Pg {
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh, schema)),
             Index(_) => unimplemented!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
         }
     }
 }

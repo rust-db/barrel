@@ -74,6 +74,7 @@ impl SqlGenerator for MySql {
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
+                Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
@@ -133,6 +134,21 @@ impl SqlGenerator for MySql {
                 _ => unreachable!(),
             }
         )
+    }
+
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("`{}`", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!("CONSTRAINT `{}` {} ({})", name, r#type, columns.join(", "),)
     }
 
     fn create_partial_index(
@@ -215,6 +231,7 @@ impl MySql {
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh, schema)),
             Index(_) => unreachable!(),
+            Constraint(_, _) => unreachable!(),
         }
     }
 }

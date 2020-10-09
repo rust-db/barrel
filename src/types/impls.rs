@@ -1,10 +1,25 @@
 //! Implementation specifics for the type system
 
+use std::fmt;
+
 use super::WrappedDefault;
 
 /// A smol wrapper around `Vec<T>` to get around the orphan rules
 #[derive(PartialEq, Debug, Clone)]
 pub struct WrapVec<T>(pub Vec<T>);
+
+#[derive(PartialEq, Debug, Clone)]
+pub enum Constraint {
+    Unique,
+}
+
+impl fmt::Display for Constraint {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Unique => write!(f, "UNIQUE"),
+        }
+    }
+}
 
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
@@ -47,6 +62,8 @@ pub enum BaseType {
     Array(Box<BaseType>),
     /// Indexing over multiple columns
     Index(Vec<String>),
+    /// Indexing over multiple columns
+    Constraint(Constraint, Vec<String>),
 }
 
 /// A database column type and all the metadata attached to it

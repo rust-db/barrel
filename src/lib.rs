@@ -183,6 +183,16 @@ pub enum IndexChange {
     RemoveIndex(String, String),
 }
 
+/// An enum set that represents operations done with and on constraints
+#[derive(Clone)]
+pub enum ConstraintChange {
+    /// Add a new constraint
+    AddConstraint {
+        index: String,
+        columns: types::Type, // Should always be a `Constraint` type
+    },
+}
+
 /// An enum set that represents operations done with and on foreign keys
 #[derive(Clone)]
 pub enum ForeignKeyChange {
