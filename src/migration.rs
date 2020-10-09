@@ -122,6 +122,7 @@ impl Migration {
 
                     let l = sql_changes.columns.len();
                     for (i, slice) in sql_changes.columns.iter().enumerate() {
+                        sql.push_str("ADD ");
                         sql.push_str(slice);
 
                         if i < l - 1 {
