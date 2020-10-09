@@ -9,14 +9,18 @@ pub struct WrapVec<T>(pub Vec<T>);
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
 pub enum BaseType {
-    /// Strings
+    /// A string blob, stored in the heap with a pointer in the row
     Text,
-    /// Like a String but worse
+    /// Variable-length string that (hopefully) is stored to the row
     Varchar(usize),
+    /// Fixed-length string that is stored to the row
+    Char(usize),
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,
     /// Simple integer
     Integer,
+    /// An integer that as a default value of the next biggest number
+    Serial,
     /// Floating point number
     Float,
     /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`

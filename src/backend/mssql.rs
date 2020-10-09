@@ -4,7 +4,10 @@
 //! databases. They should be thoroughly tested via unit testing
 
 use super::SqlGenerator;
-use crate::types::{BaseType, Type};
+use crate::{
+    functions::AutogenFunction,
+    types::{BaseType, Type, WrappedDefault},
+};
 
 /// A simple macro that will generate a quoted schema prefix if it exists
 macro_rules! quoted_prefix {
@@ -26,6 +29,24 @@ macro_rules! prefix {
 
 /// SQL Server generator backend
 pub struct MsSql;
+
+impl MsSql {
+    fn default(default: &WrappedDefault<'static>) -> String {
+        match default {
+            WrappedDefault::Function(ref fun) => match fun {
+                AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP"),
+            },
+            WrappedDefault::Null => format!(" DEFAULT NULL"),
+            WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+            WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+            WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+            WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+            WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+            _ => format!(" DEFAULT {}", default),
+        }
+    }
+}
+
 impl SqlGenerator for MsSql {
     fn create_table(name: &str, schema: Option<&str>) -> String {
         format!("CREATE TABLE {}[{}]", quoted_prefix!(schema), name)
@@ -90,7 +111,7 @@ impl SqlGenerator for MsSql {
         };
 
         let default_indicator = match (&tt.default).as_ref() {
-            Some(ref m) => format!(" DEFAULT '{}'", m),
+            Some(ref m) => Self::default(m),
             _ => format!(""),
         };
 
@@ -173,6 +194,11 @@ impl SqlGenerator for MsSql {
             relation_columns.join(","),
         )
     }
+
+    fn add_primary_key(columns: &[String]) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("[{}]", c)).collect();
+        format!("PRIMARY KEY ({})", columns.join(","))
+    }
 }
 
 impl MsSql {
@@ -191,9 +217,11 @@ impl MsSql {
                 0 => format!("VARCHAR(MAX)"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Char(l) => format!("CHAR({})", l),
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
             Primary => format!("INT IDENTITY(1,1) PRIMARY KEY NOT NULL"),
             Integer => format!("INT"),
+            Serial => format!("INT IDENTITY(1,1)"),
             Float => format!("FLOAT(24)"),
             Double => format!("FLOAT(53)"),
             UUID => format!("UNIQUEIDENTIFIER"),
