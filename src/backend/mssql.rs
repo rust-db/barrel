@@ -170,6 +170,21 @@ impl SqlGenerator for MsSql {
         )
     }
 
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("[{}]", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!("CONSTRAINT [{}] {} ({})", name, r#type, columns.join(", "),)
+    }
+
     fn drop_index(name: &str) -> String {
         format!("DROP INDEX [{}]", name)
     }
@@ -244,6 +259,7 @@ impl MsSql {
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MsSql::print_type(*meh, schema)),
             Index(_) => unreachable!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
         }
     }
 }
