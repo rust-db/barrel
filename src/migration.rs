@@ -115,14 +115,13 @@ impl Migration {
                 }
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
-                    let sql_changes = t.make::<T>(false, schema);
+                    let sql_changes = t.make::<T>(true, schema);
 
                     sql.push_str(&T::alter_table(&t.meta.name(), schema));
                     sql.push_str(" ");
 
                     let l = sql_changes.columns.len();
                     for (i, slice) in sql_changes.columns.iter().enumerate() {
-                        sql.push_str("ADD ");
                         sql.push_str(slice);
 
                         if i < l - 1 {
