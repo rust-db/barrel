@@ -1,7 +1,10 @@
 //! Sqlite3 implementation of a generator
 
 use super::SqlGenerator;
-use crate::types::{BaseType, Type};
+use crate::{
+    functions::AutogenFunction,
+    types::{BaseType, Type, WrappedDefault},
+};
 
 /// A simple macro that will generate a schema prefix if it exists
 macro_rules! prefix {
@@ -52,8 +55,10 @@ impl SqlGenerator for Sqlite {
             match bt {
                 Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Char(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Serial => panic!("SQLite has no serials for non-primary key columns"),
                 Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 UUID => panic!("`UUID` not supported by Sqlite3. Use `Text` instead!"),
@@ -73,7 +78,18 @@ impl SqlGenerator for Sqlite {
                 false => "",
             },
             match (&tt.default).as_ref() {
-                Some(ref m) => format!(" DEFAULT '{}'", m),
+                Some(ref m) => match m {
+                    WrappedDefault::Function(ref fun) => match fun {
+                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
+                    }
+                    WrappedDefault::Null => format!(" DEFAULT NULL"),
+                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                    WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                    _ => format!(" DEFAULT {}", m)
+                },
                 _ => format!(""),
             },
             match tt.nullable {
@@ -90,7 +106,7 @@ impl SqlGenerator for Sqlite {
     /// Create a multi-column index
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
         format!(
-            "CREATE {} INDEX {}\"{}\" ON \"{}\" ({});",
+            "CREATE {} INDEX {}\"{}\" ON \"{}\" ({})",
             match _type.unique {
                 true => "UNIQUE",
                 false => "",
@@ -142,6 +158,11 @@ impl SqlGenerator for Sqlite {
             relation_columns.join(","),
         )
     }
+
+    fn add_primary_key(columns: &[String]) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("\"{}\"", c)).collect();
+        format!("PRIMARY KEY ({})", columns.join(","))
+    }
 }
 
 impl Sqlite {
@@ -160,7 +181,9 @@ impl Sqlite {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Char(l) => format!("CHAR({})", l),
             Primary => format!("INTEGER NOT NULL PRIMARY KEY"),
+            Serial => panic!("SQLite has no serials for non-primary key columns"),
             Integer => format!("INTEGER"),
             Float => format!("REAL"),
             Double => format!("DOUBLE"),

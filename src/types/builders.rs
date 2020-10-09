@@ -35,6 +35,11 @@ pub fn integer() -> Type {
     Type::new(BaseType::Integer)
 }
 
+/// Create an auto-incrementing integer type
+pub fn serial() -> Type {
+    Type::new(BaseType::Serial)
+}
+
 /// A 32-bit floating point type
 pub fn float() -> Type {
     Type::new(BaseType::Float)
@@ -50,9 +55,14 @@ pub fn boolean() -> Type {
     Type::new(BaseType::Boolean)
 }
 
-/// A fixed-length string type
+/// A variable-length string type
 pub fn varchar(len: usize) -> Type {
     Type::new(BaseType::Varchar(len))
+}
+
+/// A fixed-length string type
+pub fn r#char(len: usize) -> Type {
+    Type::new(BaseType::Char(len))
 }
 
 /// A variable-length string type
@@ -102,6 +112,16 @@ pub fn custom(sql: &'static str) -> Type {
 /// An SQL date type
 pub fn date() -> Type {
     Type::new(BaseType::Date)
+}
+
+/// An SQL time type
+pub fn time() -> Type {
+    Type::new(BaseType::Time)
+}
+
+/// An SQL datetime type
+pub fn datetime() -> Type {
+    Type::new(BaseType::DateTime)
 }
 
 /// Create an array of inner types
