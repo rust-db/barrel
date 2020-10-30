@@ -216,7 +216,7 @@ impl Pg {
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
             Time => format!("TIME"),
-            DateTime => format!("TIMESTAMPTZ"),
+            DateTime => format!("TIMESTAMP"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
             Foreign(s, t, refs) => format!(
