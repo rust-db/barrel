@@ -73,7 +73,7 @@ impl SqlGenerator for MySql {
                 false => "",
             },
             match (&tt.default).as_ref() {
-                Some(ref m) => format!(" DEFAULT '{}'", m),
+                Some(ref m) => format!(" DEFAULT {}", m),
                 _ => format!(""),
             },
             match tt.nullable {
