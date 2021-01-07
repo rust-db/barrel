@@ -23,7 +23,7 @@ impl SqlGenerator for MySql {
     }
 
     fn create_table_if_not_exists(name: &str, schema: Option<&str>) -> String {
-        format!("CREATE TABLE {}`{}` IF NOT EXISTS", prefix!(schema), name)
+        format!("CREATE TABLE IF NOT EXISTS {}`{}`", prefix!(schema), name)
     }
 
     fn drop_table(name: &str, schema: Option<&str>) -> String {
@@ -31,7 +31,7 @@ impl SqlGenerator for MySql {
     }
 
     fn drop_table_if_exists(name: &str, schema: Option<&str>) -> String {
-        format!("DROP TABLE {}`{}` IF EXISTS", prefix!(schema), name)
+        format!("DROP TABLE IF EXISTS {}`{}`", prefix!(schema), name)
     }
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
