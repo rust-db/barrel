@@ -94,7 +94,7 @@ impl SqlGenerator for Pg {
     }
 
     fn rename_column(old: &str, new: &str) -> String {
-        format!("ALTER COLUMN \"{}\" RENAME TO \"{}\"", old, new)
+        format!("RENAME COLUMN \"{}\" TO \"{}\"", old, new)
     }
 
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
