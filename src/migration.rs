@@ -114,6 +114,7 @@ impl Migration {
                         sql.push_str(&indices.join(";"));
                     }
                 }
+                &mut CustomLine(ref line) => sql.push_str(line.as_str()),
             }
 
             sql.push_str(";");
