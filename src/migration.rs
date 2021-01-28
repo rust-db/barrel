@@ -168,6 +168,7 @@ impl Migration {
                         sql.push_str(&sql_changes.indices.join(";"));
                     }
                 }
+
                 &mut CustomLine(ref line) => sql.push_str(line.as_str()),
             }
 
