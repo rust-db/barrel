@@ -1,8 +1,6 @@
 ![](assets/logo.svg)
 
 [![](https://travis-ci.org/rust-db/barrel.svg?branch=master)](https://travis-ci.org/rust-db/barrel)
-[![](https://ci.appveyor.com/api/projects/status/7e00r2e1xatxk3bj?svg=true)](https://ci.appveyor.com/project/spacekookie/barrel)
-[![](https://coveralls.io/repos/github/rust-db/barrel/badge.svg?branch=master&service=github)](https://coveralls.io/github/rust-db/barrel?branch=master)
 [![](https://docs.rs/barrel/badge.svg)](https://docs.rs/barrel/)
 [![](https://img.shields.io/crates/v/barrel.svg)](https://crates.io/crates/barrel)
 [![](https://img.shields.io/crates/d/barrel.svg)](https://crates.io/crates/barrel)
@@ -17,6 +15,7 @@ database-specific builders.
 
 This way you can focus on your Rust code, without having to worry
 about SQL.
+
 
 ## Example
 
@@ -46,6 +45,7 @@ with `diesel`. A guide with some more information on how to get
 started can be found
 [here](https://github.com/spacekookie/barrel/blob/master/guides/diesel-setup.md)
 
+
 ### Migration guide
 
 If you've been using `barrel` to write migrations for `diesel` before
@@ -59,6 +59,7 @@ builder functions.  The same type would now be `types::varchar(255)`
 You can also directly created your own `Type` builders this way.
 Check the docs for details!
 
+
 ## License
 
 `barrel` is free software: you can redistribute it and/or modify it
@@ -68,6 +69,7 @@ This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the MIT
 Public License for more details.
+
 
 ## Conduct
 

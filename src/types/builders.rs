@@ -1,5 +1,6 @@
 //! Builder API's module
 
+use super::impls::Constraint;
 use super::impls::{BaseType, WrapVec};
 use crate::types::Type;
 
@@ -35,6 +36,11 @@ pub fn integer() -> Type {
     Type::new(BaseType::Integer)
 }
 
+/// Create an auto-incrementing integer type
+pub fn serial() -> Type {
+    Type::new(BaseType::Serial)
+}
+
 /// A 32-bit floating point type
 pub fn float() -> Type {
     Type::new(BaseType::Float)
@@ -50,9 +56,14 @@ pub fn boolean() -> Type {
     Type::new(BaseType::Boolean)
 }
 
-/// A fixed-length string type
+/// A variable-length string type
 pub fn varchar(len: usize) -> Type {
     Type::new(BaseType::Varchar(len))
+}
+
+/// A fixed-length string type
+pub fn r#char(len: usize) -> Type {
+    Type::new(BaseType::Char(len))
 }
 
 /// A variable-length string type
@@ -104,13 +115,37 @@ pub fn date() -> Type {
     Type::new(BaseType::Date)
 }
 
+/// An SQL time type
+pub fn time() -> Type {
+    Type::new(BaseType::Time)
+}
+
+/// An SQL datetime type
+pub fn datetime() -> Type {
+    Type::new(BaseType::DateTime)
+}
+
 /// Create an array of inner types
 pub fn array(inner: &Type) -> Type {
     Type::new(BaseType::Array(Box::new(inner.get_inner())))
 }
 
 /// Create an index over multiple, existing columns of the same type
-pub fn index<S: Into<String>>(columns: Vec<S>) -> Type {
-    let vec: Vec<String> = columns.into_iter().map(|s| s.into()).collect();
+pub fn index<I, S>(columns: I) -> Type
+where
+    S: ToString,
+    I: IntoIterator<Item = S>,
+{
+    let vec: Vec<String> = columns.into_iter().map(|s| s.to_string()).collect();
     Type::new(BaseType::Index(vec))
+}
+
+/// Create a constraint over multiple, existing columns of the same type
+pub fn unique_constraint<I, S>(columns: I) -> Type
+where
+    S: ToString,
+    I: IntoIterator<Item = S>,
+{
+    let vec: Vec<String> = columns.into_iter().map(|s| s.to_string()).collect();
+    Type::new(BaseType::Constraint(Constraint::Unique, vec))
 }

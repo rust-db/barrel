@@ -98,7 +98,12 @@ fn array_varchar() {
 
 #[test]
 fn array_integer() {
-    let sql = Pg::add_column(true, None, "Array of Integer", &types::array(&types::integer()));
+    let sql = Pg::add_column(
+        true,
+        None,
+        "Array of Integer",
+        &types::array(&types::integer()),
+    );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Integer\" INTEGER[] NOT NULL"),
         sql
@@ -116,7 +121,12 @@ fn array_float() {
 
 #[test]
 fn array_double() {
-    let sql = Pg::add_column(true, None, "Array of Double", &types::array(&types::double()));
+    let sql = Pg::add_column(
+        true,
+        None,
+        "Array of Double",
+        &types::array(&types::double()),
+    );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Double\" DOUBLE PRECISION[] NOT NULL"),
         sql
@@ -125,7 +135,12 @@ fn array_double() {
 
 #[test]
 fn array_boolean() {
-    let sql = Pg::add_column(true, None, "Array of Boolean", &types::array(&types::boolean()));
+    let sql = Pg::add_column(
+        true,
+        None,
+        "Array of Boolean",
+        &types::array(&types::boolean()),
+    );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Boolean\" BOOLEAN[] NOT NULL"),
         sql
@@ -134,7 +149,12 @@ fn array_boolean() {
 
 #[test]
 fn array_binary() {
-    let sql = Pg::add_column(true, None, "Array of Binary", &types::array(&types::binary()));
+    let sql = Pg::add_column(
+        true,
+        None,
+        "Array of Binary",
+        &types::array(&types::binary()),
+    );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Binary\" BYTEA[] NOT NULL"),
         sql

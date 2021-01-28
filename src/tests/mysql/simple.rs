@@ -13,14 +13,17 @@ fn create_table() {
 #[test]
 fn create_table_with_schema() {
     let sql = MySql::create_table("table_to_create", Some("my_schema"));
-    assert_eq!(String::from("CREATE TABLE `my_schema`.`table_to_create`"), sql);
+    assert_eq!(
+        String::from("CREATE TABLE `my_schema`.`table_to_create`"),
+        sql
+    );
 }
 
 #[test]
 fn create_table_if_not_exists() {
     let sql = MySql::create_table_if_not_exists("table_to_create", None);
     assert_eq!(
-        String::from("CREATE TABLE `table_to_create` IF NOT EXISTS"),
+        String::from("CREATE TABLE IF NOT EXISTS `table_to_create`"),
         sql
     );
 }
@@ -34,7 +37,7 @@ fn drop_table() {
 #[test]
 fn drop_table_if_exists() {
     let sql = MySql::drop_table_if_exists("table_to_drop", None);
-    assert_eq!(String::from("DROP TABLE `table_to_drop` IF EXISTS"), sql);
+    assert_eq!(String::from("DROP TABLE IF EXISTS `table_to_drop`"), sql);
 }
 
 #[test]

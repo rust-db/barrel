@@ -60,7 +60,7 @@ impl Migration {
                 &mut CreateTable(ref mut t, ref mut cb)
                 | &mut CreateTableIfNotExists(ref mut t, ref mut cb) => {
                     cb(t); // Run the user code
-                    let (cols, indices) = t.make::<T>(false, schema);
+                    let sql_changes = t.make::<T>(false, schema);
 
                     let name = t.meta.name().clone();
                     sql.push_str(&match change {
@@ -71,20 +71,52 @@ impl Migration {
                         _ => unreachable!(),
                     });
                     sql.push_str(" (");
-                    let l = cols.len();
-                    for (i, slice) in cols.iter().enumerate() {
+                    let l = sql_changes.columns.len();
+                    for (i, slice) in sql_changes.columns.iter().enumerate() {
                         sql.push_str(slice);
 
                         if i < l - 1 {
                             sql.push_str(", ");
                         }
                     }
+
+                    let l = sql_changes.constraints.len();
+                    for (i, slice) in sql_changes.constraints.iter().enumerate() {
+                        if sql_changes.columns.len() > 0 && i == 0 {
+                            sql.push_str(", ")
+                        }
+
+                        sql.push_str(slice);
+
+                        if i < l - 1 {
+                            sql.push_str(", ")
+                        }
+                    }
+
+                    if let Some(ref primary_key) = sql_changes.primary_key {
+                        sql.push_str(", ");
+                        sql.push_str(primary_key);
+                    };
+
+                    let l = sql_changes.foreign_keys.len();
+                    for (i, slice) in sql_changes.foreign_keys.iter().enumerate() {
+                        if sql_changes.columns.len() > 0 && i == 0 {
+                            sql.push_str(", ")
+                        }
+
+                        sql.push_str(slice);
+
+                        if i < l - 1 {
+                            sql.push_str(", ")
+                        }
+                    }
+
                     sql.push_str(")");
 
                     // Add additional index columns
-                    if indices.len() > 0 {
+                    if sql_changes.indices.len() > 0 {
                         sql.push_str(";");
-                        sql.push_str(&indices.join(";"));
+                        sql.push_str(&sql_changes.indices.join(";"));
                     }
                 }
                 &mut DropTable(ref name) => sql.push_str(&T::drop_table(name, schema)),
@@ -96,11 +128,13 @@ impl Migration {
                 }
                 &mut ChangeTable(ref mut t, ref mut cb) => {
                     cb(t);
-                    let (cols, indices) = t.make::<T>(true, schema);
+                    let sql_changes = t.make::<T>(true, schema);
+
                     sql.push_str(&T::alter_table(&t.meta.name(), schema));
                     sql.push_str(" ");
-                    let l = cols.len();
-                    for (i, slice) in cols.iter().enumerate() {
+
+                    let l = sql_changes.columns.len();
+                    for (i, slice) in sql_changes.columns.iter().enumerate() {
                         sql.push_str(slice);
 
                         if i < l - 1 {
@@ -108,15 +142,34 @@ impl Migration {
                         }
                     }
 
+                    let l = sql_changes.foreign_keys.len();
+                    for (i, slice) in sql_changes.foreign_keys.iter().enumerate() {
+                        if sql_changes.columns.len() > 0 && i == 0 {
+                            sql.push_str(", ")
+                        }
+
+                        sql.push_str("ADD ");
+                        sql.push_str(slice);
+
+                        if i < l - 1 {
+                            sql.push_str(", ")
+                        }
+                    }
+
+                    if let Some(ref primary_key) = sql_changes.primary_key {
+                        sql.push_str(", ");
+                        sql.push_str("ADD ");
+                        sql.push_str(primary_key);
+                    };
+
                     // Add additional index columns
-                    if indices.len() > 0 {
+                    if sql_changes.indices.len() > 0 {
                         sql.push_str(";");
-                        sql.push_str(&indices.join(";"));
+                        sql.push_str(&sql_changes.indices.join(";"));
                     }
                 }
-                &mut CustomLine(ref line) => {
-                    sql.push_str(line);
-                }
+
+                &mut CustomLine(ref line) => sql.push_str(line.as_str()),
             }
 
             sql.push_str(";");
@@ -133,7 +186,6 @@ impl Migration {
     pub fn make_from(&self, variant: SqlVariant) -> String {
         variant.run_for(self)
     }
-
 
     /// Inject a line of custom SQL into the top-level migration scope
     ///

@@ -1,22 +1,41 @@
 //! Implementation specifics for the type system
 
+use std::fmt;
+
 use super::WrappedDefault;
 
 /// A smol wrapper around `Vec<T>` to get around the orphan rules
 #[derive(PartialEq, Debug, Clone)]
 pub struct WrapVec<T>(pub Vec<T>);
 
+#[derive(PartialEq, Debug, Clone)]
+pub enum Constraint {
+    Unique,
+}
+
+impl fmt::Display for Constraint {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Unique => write!(f, "UNIQUE"),
+        }
+    }
+}
+
 /// Core type enum, describing the basic type
 #[derive(PartialEq, Debug, Clone)]
 pub enum BaseType {
-    /// Strings
+    /// A string blob, stored in the heap with a pointer in the row
     Text,
-    /// Like a String but worse
+    /// Variable-length string that (hopefully) is stored to the row
     Varchar(usize),
+    /// Fixed-length string that is stored to the row
+    Char(usize),
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,
     /// Simple integer
     Integer,
+    /// An integer that as a default value of the next biggest number
+    Serial,
     /// Floating point number
     Float,
     /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`
@@ -27,8 +46,12 @@ pub enum BaseType {
     Boolean,
     /// Json encoded data
     Json,
-    /// Date And Time
+    /// Date
     Date,
+    /// Date
+    Time,
+    /// Date and time
+    DateTime,
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
@@ -39,6 +62,8 @@ pub enum BaseType {
     Array(Box<BaseType>),
     /// Indexing over multiple columns
     Index(Vec<String>),
+    /// Indexing over multiple columns
+    Constraint(Constraint, Vec<String>),
 }
 
 /// A database column type and all the metadata attached to it

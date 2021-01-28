@@ -104,6 +104,7 @@ pub use integrations::*;
 
 pub mod backend;
 pub mod connectors;
+pub mod functions;
 pub mod migration;
 pub mod table;
 pub mod types;
@@ -156,7 +157,7 @@ pub enum DatabaseChange {
 
     /// Only drop a table if it exists
     DropTableIfExists(String),
-    
+
     /// Add some custom SQL if all else fails
     CustomLine(String),
 }
@@ -171,6 +172,41 @@ pub enum IndexChange {
         columns: types::Type, // Should always be a `Index` type
     },
 
+    AddPartialIndex {
+        index: String,
+        table: String,
+        columns: types::Type, // Should always be a `Index` type
+        conditions: String,
+    },
+
     /// Remove a multi-column index
     RemoveIndex(String, String),
+}
+
+/// An enum set that represents operations done with and on constraints
+#[derive(Clone)]
+pub enum ConstraintChange {
+    /// Add a new constraint
+    AddConstraint {
+        index: String,
+        columns: types::Type, // Should always be a `Constraint` type
+    },
+}
+
+/// An enum set that represents operations done with and on foreign keys
+#[derive(Clone)]
+pub enum ForeignKeyChange {
+    /// Add a foreign key
+    AddForeignKey {
+        columns: Vec<String>,
+        table: String,
+        relation_columns: Vec<String>,
+    },
+}
+
+/// An enum set that represents operations done to the primary key
+#[derive(Clone)]
+pub enum PrimaryKeyChange {
+    /// Adds a primary key to the table
+    AddPrimaryKey(Vec<String>),
 }

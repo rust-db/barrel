@@ -19,6 +19,11 @@ mod sqlite3;
 #[cfg(feature = "sqlite3")]
 pub use self::sqlite3::Sqlite;
 
+#[cfg(feature = "mssql")]
+mod mssql;
+#[cfg(feature = "mssql")]
+pub use self::mssql::MsSql;
+
 #[allow(unused_imports)]
 use crate::{types::Type, Migration};
 
@@ -31,6 +36,8 @@ pub enum SqlVariant {
     Pg,
     #[cfg(feature = "mysql")]
     Mysql,
+    #[cfg(feature = "mssql")]
+    Mssql,
     #[doc(hidden)]
     __Empty,
 }
@@ -46,6 +53,9 @@ impl SqlVariant {
 
             #[cfg(feature = "mysql")]
             SqlVariant::Mysql => _migr.make::<MySql>(),
+
+            #[cfg(feature = "mssql")]
+            SqlVariant::Mssql => _migr.make::<MsSql>(),
 
             _ => panic!("You need to select an Sql variant!"),
         }
@@ -84,6 +94,34 @@ pub trait SqlGenerator {
     /// Create a multi-column index
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String;
 
+    /// Create a constraint
+    fn create_constraint(name: &str, _type: &Type) -> String;
+
+    /// Create a multi-column index
+    fn create_partial_index(
+        table: &str,
+        schema: Option<&str>,
+        name: &str,
+        _type: &Type,
+        conditions: &str,
+    ) -> String {
+        format!(
+            "{} WHERE {}",
+            Self::create_index(table, schema, name, _type),
+            conditions
+        )
+    }
+
     /// Drop a multi-column index
     fn drop_index(name: &str) -> String;
+
+    /// Add a foreign key
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        schema: Option<&str>,
+    ) -> String;
+
+    fn add_primary_key(columns: &[String]) -> String;
 }

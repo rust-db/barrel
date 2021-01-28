@@ -7,8 +7,10 @@
 //! You can also change existing tables with a closure that can
 //! then access individual columns in that table.
 
-use super::backend::SqlGenerator;
-use super::{IndexChange, TableChange};
+use super::{
+    backend::SqlGenerator, ConstraintChange, ForeignKeyChange, IndexChange, PrimaryKeyChange,
+    TableChange,
+};
 use crate::types::Type;
 use std::fmt::{Debug, Formatter, Result as FmtResult};
 
@@ -24,11 +26,41 @@ impl Debug for IndexChange {
     }
 }
 
+impl Debug for ConstraintChange {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        f.write_str("ConstraintChange")
+    }
+}
+
+impl Debug for ForeignKeyChange {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        f.write_str("ForeignKeyChange")
+    }
+}
+
+impl Debug for PrimaryKeyChange {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        f.write_str("PrimaryKeyChange")
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Table {
     pub meta: TableMeta,
     columns: Vec<TableChange>,
     indices: Vec<IndexChange>,
+    constraints: Vec<ConstraintChange>,
+    foreign_keys: Vec<ForeignKeyChange>,
+    primary_key: Option<PrimaryKeyChange>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SqlChanges {
+    pub(crate) columns: Vec<String>,
+    pub(crate) indices: Vec<String>,
+    pub(crate) constraints: Vec<String>,
+    pub(crate) foreign_keys: Vec<String>,
+    pub(crate) primary_key: Option<String>,
 }
 
 impl Table {
@@ -37,6 +69,9 @@ impl Table {
             meta: TableMeta::new(name.into()),
             columns: vec![],
             indices: vec![],
+            constraints: vec![],
+            foreign_keys: vec![],
+            primary_key: None,
         }
     }
 
@@ -95,6 +130,32 @@ impl Table {
         });
     }
 
+    pub fn add_constraint<S: Into<String>>(&mut self, name: S, columns: Type) {
+        match columns.inner {
+            crate::types::BaseType::Constraint(_, _) => {}
+            _ => panic!("Calling `add_index` with a non-`Constraint` type is not allowed!"),
+        }
+
+        self.constraints.push(ConstraintChange::AddConstraint {
+            index: name.into(),
+            columns,
+        });
+    }
+
+    pub fn add_partial_index<S: Into<String>>(&mut self, name: S, columns: Type, conditions: S) {
+        match columns.inner {
+            crate::types::BaseType::Index(_) => {}
+            _ => panic!("Calling `add_index` with a non-`Index` type is not allowed!"),
+        }
+
+        self.indices.push(IndexChange::AddPartialIndex {
+            table: self.meta.name.clone(),
+            index: name.into(),
+            columns,
+            conditions: conditions.into(),
+        });
+    }
+
     /// Drop an index on this table
     pub fn drop_index<S: Into<String>>(&mut self, name: S) {
         self.indices.push(IndexChange::RemoveIndex(
@@ -103,19 +164,44 @@ impl Table {
         ));
     }
 
-    /// Generate Sql for this table, returned as two vectors
-    ///
-    /// The first vector (`.0`) represents all column changes done to the table,
-    /// the second vector (`.1`) contains all index and suffix changes.
-    ///
-    /// It is very well possible for either of them to be empty,
-    /// although both being empty *might* signify an error.
-    pub fn make<T: SqlGenerator>(
+    pub fn add_foreign_key(
         &mut self,
-        ex: bool,
-        schema: Option<&str>,
-    ) -> (Vec<String>, Vec<String>) {
+        columns_on_this_side: &[&str],
+        related_table: &str,
+        columns_on_that_side: &[&str],
+    ) {
+        let table = related_table.into();
+
+        let columns = columns_on_this_side
+            .into_iter()
+            .map(|c| String::from(*c))
+            .collect();
+
+        let relation_columns = columns_on_that_side
+            .into_iter()
+            .map(|c| String::from(*c))
+            .collect();
+
+        self.foreign_keys.push(ForeignKeyChange::AddForeignKey {
+            table,
+            columns,
+            relation_columns,
+        })
+    }
+
+    pub fn set_primary_key(&mut self, columns: &[&str]) {
+        let primary_key =
+            PrimaryKeyChange::AddPrimaryKey(columns.into_iter().map(|s| s.to_string()).collect());
+
+        self.primary_key = Some(primary_key);
+    }
+
+    /// Generate Sql for this table.
+    pub fn make<T: SqlGenerator>(&mut self, ex: bool, schema: Option<&str>) -> SqlChanges {
+        use ConstraintChange as CC;
+        use ForeignKeyChange as KFC;
         use IndexChange as IC;
+        use PrimaryKeyChange as PKC;
         use TableChange as TC;
 
         let columns = self
@@ -130,7 +216,7 @@ impl Table {
             })
             .collect();
 
-        let indeces = self
+        let indices = self
             .indices
             .iter()
             .map(|change| match change {
@@ -139,11 +225,52 @@ impl Table {
                     table,
                     columns,
                 } => T::create_index(table, schema, index, columns),
+                IC::AddPartialIndex {
+                    index,
+                    table,
+                    columns,
+                    conditions,
+                } => T::create_partial_index(table, schema, index, columns, conditions),
                 IC::RemoveIndex(_, index) => T::drop_index(index),
             })
             .collect();
 
-        (columns, indeces)
+        let primary_key = self.primary_key.as_ref().map(|pk| match pk {
+            PKC::AddPrimaryKey(ref cols) => T::add_primary_key(cols),
+        });
+
+        let constraints = self
+            .constraints
+            .iter()
+            .map(|c| match c {
+                CC::AddConstraint { index, columns } => T::create_constraint(index, columns),
+            })
+            .collect();
+
+        let foreign_keys = self
+            .foreign_keys
+            .iter()
+            .map(|change| match change {
+                KFC::AddForeignKey {
+                    columns,
+                    table,
+                    relation_columns,
+                } => T::add_foreign_key(
+                    columns.as_slice(),
+                    table,
+                    relation_columns.as_slice(),
+                    schema,
+                ),
+            })
+            .collect();
+
+        SqlChanges {
+            columns,
+            indices,
+            constraints,
+            foreign_keys,
+            primary_key,
+        }
     }
 }
 

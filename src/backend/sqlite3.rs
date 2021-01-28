@@ -1,7 +1,10 @@
 //! Sqlite3 implementation of a generator
 
 use super::SqlGenerator;
-use crate::types::{BaseType, Type};
+use crate::{
+    functions::AutogenFunction,
+    types::{BaseType, Type, WrappedDefault},
+};
 
 /// A simple macro that will generate a schema prefix if it exists
 macro_rules! prefix {
@@ -52,26 +55,42 @@ impl SqlGenerator for Sqlite {
             match bt {
                 Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Char(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Serial => panic!("SQLite has no serials for non-primary key columns"),
                 Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 UUID => panic!("`UUID` not supported by Sqlite3. Use `Text` instead!"),
                 Json => panic!("`Json` not supported by Sqlite3. Use `Text` instead!"),
                 Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Foreign(_, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
-                Index(_) => unreachable!(), // Indices are handled via custom builders
+                Index(_) => unreachable!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
                 false => "",
             },
             match (&tt.default).as_ref() {
-                Some(ref m) => format!(" DEFAULT '{}'", m),
+                Some(ref m) => match m {
+                    WrappedDefault::Function(ref fun) => match fun {
+                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
+                    }
+                    WrappedDefault::Null => format!(" DEFAULT NULL"),
+                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                    WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                    _ => format!(" DEFAULT {}", m)
+                },
                 _ => format!(""),
             },
             match tt.nullable {
@@ -88,7 +107,7 @@ impl SqlGenerator for Sqlite {
     /// Create a multi-column index
     fn create_index(table: &str, schema: Option<&str>, name: &str, _type: &Type) -> String {
         format!(
-            "CREATE {} INDEX {}\"{}\" ON \"{}\" ({});",
+            "CREATE {} INDEX {}\"{}\" ON \"{}\" ({})",
             match _type.unique {
                 true => "UNIQUE",
                 false => "",
@@ -107,6 +126,26 @@ impl SqlGenerator for Sqlite {
         )
     }
 
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("\"{}\"", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!(
+            "CONSTRAINT \"{}\" {} ({})",
+            name,
+            r#type,
+            columns.join(", "),
+        )
+    }
+
     /// Drop a multi-column index
     fn drop_index(name: &str) -> String {
         format!("DROP INDEX \"{}\"", name)
@@ -118,6 +157,32 @@ impl SqlGenerator for Sqlite {
 
     fn rename_column(_: &str, _: &str) -> String {
         panic!("Sqlite does not support renaming columns!")
+    }
+
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        _: Option<&str>,
+    ) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("\"{}\"", c)).collect();
+
+        let relation_columns: Vec<_> = relation_columns
+            .into_iter()
+            .map(|c| format!("\"{}\"", c))
+            .collect();
+
+        format!(
+            "FOREIGN KEY({}) REFERENCES \"{}\"({})",
+            columns.join(","),
+            table,
+            relation_columns.join(","),
+        )
+    }
+
+    fn add_primary_key(columns: &[String]) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("\"{}\"", c)).collect();
+        format!("PRIMARY KEY ({})", columns.join(","))
     }
 }
 
@@ -137,19 +202,24 @@ impl Sqlite {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Char(l) => format!("CHAR({})", l),
             Primary => format!("INTEGER NOT NULL PRIMARY KEY"),
+            Serial => panic!("SQLite has no serials for non-primary key columns"),
             Integer => format!("INTEGER"),
             Float => format!("REAL"),
             Double => format!("DOUBLE"),
             UUID => unimplemented!(),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
+            Time => format!("TIME"),
+            DateTime => format!("DATETIME"),
             Json => panic!("Json is not supported by Sqlite3"),
             Binary => format!("BINARY"),
             Foreign(_, t, refs) => format!("INTEGER REFERENCES {}({})", t, refs.0.join(",")),
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
             Index(_) => unimplemented!(),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
         }
     }
 }

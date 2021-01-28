@@ -5,7 +5,7 @@ services: docker
 sudo: required
 cache: cargo
 rust:
-  # - stable # Only build on nightly rust for now
+  - stable # Only build on nightly rust for now
   - nightly
 
 # This is required for coveralls

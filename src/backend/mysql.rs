@@ -4,7 +4,10 @@
 //! databases. They should be thoroughly tested via unit testing
 
 use super::SqlGenerator;
-use crate::types::{BaseType, Type};
+use crate::{
+    functions::AutogenFunction,
+    types::{BaseType, Type, WrappedDefault},
+};
 
 /// A simple macro that will generate a schema prefix if it exists
 macro_rules! prefix {
@@ -23,7 +26,7 @@ impl SqlGenerator for MySql {
     }
 
     fn create_table_if_not_exists(name: &str, schema: Option<&str>) -> String {
-        format!("CREATE TABLE {}`{}` IF NOT EXISTS", prefix!(schema), name)
+        format!("CREATE TABLE IF NOT EXISTS {}`{}`", prefix!(schema), name)
     }
 
     fn drop_table(name: &str, schema: Option<&str>) -> String {
@@ -31,7 +34,7 @@ impl SqlGenerator for MySql {
     }
 
     fn drop_table_if_exists(name: &str, schema: Option<&str>) -> String {
-        format!("DROP TABLE {}`{}` IF EXISTS", prefix!(schema), name)
+        format!("DROP TABLE IF EXISTS {}`{}`", prefix!(schema), name)
     }
 
     fn rename_table(old: &str, new: &str, schema: Option<&str>) -> String {
@@ -54,26 +57,42 @@ impl SqlGenerator for MySql {
             match bt {
                 Text => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Varchar(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Char(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Primary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Integer => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Serial => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Float => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Double => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 UUID => unimplemented!(),
                 Json => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Time => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                DateTime => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
-                Index(_) => unreachable!(),
+                Index(_) => unreachable!("Indices are handled via custom builder"),
+                Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
             },
             match tt.primary {
                 true => " PRIMARY KEY",
                 false => "",
             },
             match (&tt.default).as_ref() {
-                Some(ref m) => format!(" DEFAULT '{}'", m),
+                Some(ref m) => match m {
+                    WrappedDefault::Function(ref fun) => match fun {
+                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
+                    },
+                    WrappedDefault::Null => format!(" DEFAULT NULL"),
+                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                    WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                    _ => format!(" DEFAULT {}", m),
+                },
                 _ => format!(""),
             },
             match tt.nullable {
@@ -117,8 +136,59 @@ impl SqlGenerator for MySql {
         )
     }
 
+    fn create_constraint(name: &str, _type: &Type) -> String {
+        let (r#type, columns) = match _type.inner {
+            BaseType::Constraint(ref r#type, ref columns) => (
+                r#type.clone(),
+                columns
+                    .iter()
+                    .map(|col| format!("`{}`", col))
+                    .collect::<Vec<_>>(),
+            ),
+            _ => unreachable!(),
+        };
+
+        format!("CONSTRAINT `{}` {} ({})", name, r#type, columns.join(", "),)
+    }
+
+    fn create_partial_index(
+        _table: &str,
+        _schema: Option<&str>,
+        _name: &str,
+        _type: &Type,
+        _conditions: &str,
+    ) -> String {
+        panic!("Partial indices are not supported in MySQL")
+    }
+
     fn drop_index(name: &str) -> String {
         format!("DROP INDEX `{}`", name)
+    }
+
+    fn add_foreign_key(
+        columns: &[String],
+        table: &str,
+        relation_columns: &[String],
+        schema: Option<&str>,
+    ) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("`{}`", c)).collect();
+        let relation_columns: Vec<_> = relation_columns
+            .into_iter()
+            .map(|c| format!("`{}`", c))
+            .collect();
+
+        format!(
+            "FOREIGN KEY ({}) REFERENCES {}`{}`({})",
+            columns.join(","),
+            prefix!(schema),
+            table,
+            relation_columns.join(","),
+        )
+    }
+
+    fn add_primary_key(columns: &[String]) -> String {
+        let columns: Vec<_> = columns.into_iter().map(|c| format!("`{}`", c)).collect();
+        format!("PRIMARY KEY ({})", columns.join(","))
     }
 }
 
@@ -138,14 +208,18 @@ impl MySql {
                 0 => format!("VARCHAR"), // For "0" remove the limit
                 _ => format!("VARCHAR({})", l),
             },
+            Char(l) => format!("CHAR({})", l),
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
             Primary => format!("INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY"),
             Integer => format!("INTEGER"),
+            Serial => format!("INTEGER AUTO_INCREMENT"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
             UUID => format!("CHAR(36)"),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
+            Time => format!("TIME"),
+            DateTime => format!("DATETIME"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
             Foreign(s, t, refs) => format!(
@@ -157,6 +231,7 @@ impl MySql {
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh, schema)),
             Index(_) => unreachable!(),
+            Constraint(_, _) => unreachable!(),
         }
     }
 }
