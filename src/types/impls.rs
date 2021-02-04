@@ -92,7 +92,7 @@ pub enum BaseType {
 ///
 /// ## Examples
 ///
-/// ```rust,norun
+/// ```rust,no_run
 /// extern crate barrel;
 /// use barrel::types::*;
 ///
