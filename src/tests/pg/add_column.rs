@@ -26,6 +26,30 @@ fn integer() {
 }
 
 #[test]
+fn serial() {
+    let sql = Pg::add_column(true, None, "Serial", &types::serial());
+    assert_eq!(String::from("ADD COLUMN \"Serial\" SERIAL NOT NULL"), sql);
+}
+
+#[test]
+fn big_serial() {
+    let sql = Pg::add_column(true, None, "BigSerial", &types::big_serial());
+    assert_eq!(
+        String::from("ADD COLUMN \"BigSerial\" BIGSERIAL NOT NULL"),
+        sql
+    );
+}
+
+#[test]
+fn small_serial() {
+    let sql = Pg::add_column(true, None, "SmallSerial", &types::small_serial());
+    assert_eq!(
+        String::from("ADD COLUMN \"SmallSerial\" SMALLSERIAL NOT NULL"),
+        sql
+    );
+}
+
+#[test]
 fn float() {
     let sql = Pg::add_column(true, None, "Float", &types::float());
     assert_eq!(String::from("ADD COLUMN \"Float\" FLOAT NOT NULL"), sql);

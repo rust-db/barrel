@@ -36,11 +36,20 @@ pub fn integer() -> Type {
     Type::new(BaseType::Integer)
 }
 
-/// Create an auto-incrementing integer type
+/// Create an auto-incrementing 4 integer type
 pub fn serial() -> Type {
     Type::new(BaseType::Serial)
 }
 
+/// Create an auto-incrementing 2 byte integer type
+pub fn small_serial() -> Type {
+    Type::new(BaseType::SmallSerial)
+}
+
+/// Create an auto-incrementing 8 byte integer type
+pub fn big_serial() -> Type {
+    Type::new(BaseType::BigSerial)
+}
 /// A 32-bit floating point type
 pub fn float() -> Type {
     Type::new(BaseType::Float)
