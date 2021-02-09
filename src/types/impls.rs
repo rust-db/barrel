@@ -34,8 +34,12 @@ pub enum BaseType {
     Primary,
     /// Simple integer
     Integer,
-    /// An integer that as a default value of the next biggest number
+    /// An integer that as a default value of the next biggest number (4 bytes)
     Serial,
+    /// An integer that as a default value of the next biggest number (2 bytes)
+    SmallSerial,
+    /// An integer that as a default value of the next biggest number (8 bytes)
+    BigSerial,
     /// Floating point number
     Float,
     /// Like Float but `~ ~ d o u b l e    p r e c i s i o n ~ ~`
