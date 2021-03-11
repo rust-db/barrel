@@ -90,7 +90,7 @@ impl SqlGenerator for Pg {
                     WrappedDefault::Null => format!(" DEFAULT NULL"),
                     WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
                     WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                    WrappedDefault::Date(ref val) => format!(" DEFAULT {:?}", val),
                     WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
                     _ => format!(" DEFAULT {}", m)
                 },
