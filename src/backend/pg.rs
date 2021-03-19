@@ -6,7 +6,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -72,7 +72,7 @@ impl SqlGenerator for Pg {
                 Time => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 DateTime => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
+                Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER, FOREIGN KEY ({}) {}", Pg::prefix(ex), name, name, Pg::print_type(bt, schema)),
                 Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
                 Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
@@ -219,12 +219,24 @@ impl Pg {
             DateTime => format!("TIMESTAMP"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(s, t, refs) => format!(
-                "INTEGER REFERENCES {}\"{}\"({})",
-                prefix!(s.or(schema.map(|s| s.into()))),
-                t,
-                refs.0.join(",")
-            ),
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "REFERENCES {}\"{}\"({}){}{}",
+                    prefix!(s.or(schema.map(|s| s.into()))),
+                    t,
+                    refs.0.join(","),
+                    u,
+                    d
+                )
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh, schema)),
             Index(_) => unimplemented!("Indices are handled via custom builder"),

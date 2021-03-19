@@ -3,7 +3,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -68,7 +68,7 @@ impl SqlGenerator for Sqlite {
                 Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Foreign(_, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+                Foreign(_, _, _, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
                 Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
@@ -215,7 +215,17 @@ impl Sqlite {
             DateTime => format!("DATETIME"),
             Json => panic!("Json is not supported by Sqlite3"),
             Binary => format!("BINARY"),
-            Foreign(_, t, refs) => format!("INTEGER REFERENCES {}({})", t, refs.0.join(",")),
+            Foreign(_, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!("INTEGER REFERENCES {}({}){}{}", t, refs.0.join(","), u, d)
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
             Index(_) => unimplemented!(),

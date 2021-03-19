@@ -55,7 +55,13 @@ pub enum BaseType {
     /// <inconceivable jibberish>
     Binary,
     /// Foreign key to other table
-    Foreign(Option<String>, String, WrapVec<String>),
+    Foreign(
+        Option<String>,
+        String,
+        WrapVec<String>,
+        ReferentialAction,
+        ReferentialAction,
+    ),
     /// I have no idea what you are – but I *like* it
     Custom(&'static str),
     /// Any of the above, but **many** of them
@@ -165,6 +171,43 @@ impl Type {
     /// Specify a size limit (important or varchar & similar)
     pub fn size(self, arg: usize) -> Self {
         Self { size: Some(arg), ..self }
+    }
+}
+
+/// Describes the referential_action for ON DELETE and ON UPDATE statements.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum ReferentialAction {
+    Unset,
+    NoAction,
+    Restrict,
+    SetNull,
+    SetDefault,
+    Cascade,
+}
+
+impl ReferentialAction {
+    /// Returns the ON DELETE statement
+    pub fn on_delete(&self) -> String {
+        format!("ON DELETE {}", self)
+    }
+
+    /// Returns the ON UPDATE statement
+    pub fn on_update(&self) -> String {
+        format!("ON UPDATE {}", self)
+    }
+}
+
+impl std::fmt::Display for ReferentialAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Self::Unset => panic!("The Unset variant cannot be displayed!"),
+            Self::NoAction => "NO ACTION",
+            Self::Restrict => "RESTRICT",
+            Self::SetNull => "SET NULL",
+            Self::SetDefault => "SET DEFAULT",
+            Self::Cascade => "CASCADE",
+        };
+        write!(f, "{}", s)
     }
 }
 

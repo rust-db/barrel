@@ -6,7 +6,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -70,7 +70,7 @@ impl SqlGenerator for MySql {
                 Time => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 DateTime => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+                Foreign(_, _, _, _, _) => format!("{}{} INTEGER, FOREIGN KEY ({}) {}", MySql::prefix(ex), name, name, MySql::print_type(bt, schema)),
                 Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
@@ -222,12 +222,24 @@ impl MySql {
             DateTime => format!("DATETIME"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(s, t, refs) => format!(
-                "INTEGER REFERENCES {}{}({})",
-                prefix!(s),
-                t,
-                refs.0.join(",")
-            ),
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "REFERENCES {}{}({}){}{}",
+                    prefix!(s),
+                    t,
+                    refs.0.join(","),
+                    u,
+                    d
+                )
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh, schema)),
             Index(_) => unreachable!(),

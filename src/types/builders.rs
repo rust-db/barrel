@@ -1,7 +1,7 @@
 //! Builder API's module
 
 use super::impls::Constraint;
-use super::impls::{BaseType, WrapVec};
+use super::impls::{BaseType, ReferentialAction, WrapVec};
 use crate::types::Type;
 
 /// A standard primary numeric key type
@@ -82,18 +82,35 @@ pub fn binary<'inner>() -> Type {
 }
 
 /// Create a column that points to some foreign table
-pub fn foreign<S, I>(table: S, keys: I) -> Type
+pub fn foreign<S, I>(
+    table: S,
+    keys: I,
+    on_update: ReferentialAction,
+    on_delete: ReferentialAction,
+) -> Type
 where
     S: Into<String>,
     I: Into<WrapVec<String>>,
 {
-    Type::new(BaseType::Foreign(None, table.into(), keys.into()))
+    Type::new(BaseType::Foreign(
+        None,
+        table.into(),
+        keys.into(),
+        on_update,
+        on_delete,
+    ))
 }
 
 /// Like `foreign(...)` but letting you provide an external schema
 ///
 /// This function is important when making cross-schema references
-pub fn foreign_schema<S, I>(schema: S, table: S, keys: I) -> Type
+pub fn foreign_schema<S, I>(
+    schema: S,
+    table: S,
+    keys: I,
+    on_update: ReferentialAction,
+    on_delete: ReferentialAction,
+) -> Type
 where
     S: Into<String>,
     I: Into<WrapVec<String>>,
@@ -102,6 +119,8 @@ where
         Some(schema.into()),
         table.into(),
         keys.into(),
+        on_update,
+        on_delete,
     ))
 }
 
