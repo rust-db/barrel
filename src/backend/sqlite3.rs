@@ -92,7 +92,7 @@ impl SqlGenerator for Sqlite {
             Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-            Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER{}, REFERENCES {}", Sqlite::prefix(ex), name, nullable_definition, Sqlite::print_type(bt)),
+            Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER{} REFERENCES {}", Sqlite::prefix(ex), name, nullable_definition, Sqlite::print_type(bt)),
             Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
             Index(_) => unreachable!("Indices are handled via custom builder"),
