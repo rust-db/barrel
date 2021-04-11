@@ -3,7 +3,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -46,62 +46,87 @@ impl SqlGenerator for Sqlite {
 
     fn add_column(ex: bool, _: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
+        let btc = bt.clone();
         use self::BaseType::*;
-
-        #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
-        format!(
-            // SQL base - default - nullable - unique
-            "{}{}{}{}{}",
-            match bt {
-                Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Char(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Serial => panic!("SQLite has no serials for non-primary key columns"),
-                Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                UUID => panic!("`UUID` not supported by Sqlite3. Use `Text` instead!"),
-                Json => panic!("`Json` not supported by Sqlite3. Use `Text` instead!"),
-                Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Foreign(_, _, _) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-                Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
-                Index(_) => unreachable!("Indices are handled via custom builder"),
-            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
-            },
-            match tt.primary {
-                true => " PRIMARY KEY",
-                false => "",
-            },
-            match (&tt.default).as_ref() {
-                Some(ref m) => match m {
-                    WrappedDefault::Function(ref fun) => match fun {
-                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
-                    }
-                    WrappedDefault::Null => format!(" DEFAULT NULL"),
-                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
-                    WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
-                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
-                    _ => format!(" DEFAULT {}", m)
+        let primary_definition = match tt.primary {
+            true => " PRIMARY KEY",
+            false => "",
+        };
+        let default_definition = match (&tt.default).as_ref() {
+            Some(ref m) => match m {
+                WrappedDefault::Function(ref fun) => match fun {
+                    AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP"),
                 },
-                _ => format!(""),
+                WrappedDefault::Null => format!(" DEFAULT NULL"),
+                WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+                WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                _ => format!(" DEFAULT {}", m),
             },
-            match tt.nullable {
-                true => "",
-                false => " NOT NULL",
-            },
-            match tt.unique {
-                true => " UNIQUE",
-                false => "",
+            _ => format!(""),
+        };
+        let nullable_definition = match tt.nullable {
+            true => "",
+            false => " NOT NULL",
+        };
+        let unique_definition = match tt.unique {
+            true => " UNIQUE",
+            false => "",
+        };
+        #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
+        let base_type_definition = match bt {
+            Text => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Varchar(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Char(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Primary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Integer => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Serial => panic!("SQLite has no serials for non-primary key columns"),
+            Float => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Double => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            UUID => panic!("`UUID` not supported by Sqlite3. Use `Text` instead!"),
+            Json => panic!("`Json` not supported by Sqlite3. Use `Text` instead!"),
+            Boolean => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER{} REFERENCES {}", Sqlite::prefix(ex), name, nullable_definition, Sqlite::print_type(bt)),
+            Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
+            Index(_) => unreachable!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
+        };
+
+        match btc {
+            Foreign(_, _, _, _, _) => {
+                format!(
+                    "{}{}{}{}",
+                    base_type_definition, primary_definition, default_definition, unique_definition,
+                )
             }
-        )
+            _ => {
+                format!(
+                    "{}{}{}{}{}",
+                    base_type_definition,
+                    primary_definition,
+                    default_definition,
+                    nullable_definition,
+                    unique_definition,
+                )
+            }
+        }
+        //#[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
+        //format!(
+        //    // SQL base - default - nullable - unique
+        //    "{}{}{}{}{}",
+        //    base_type_definition,
+        //    primary_definition,
+        //    default_definition,
+        //    nullable_definition,
+        //    unique_definition
+        //)
     }
 
     /// Create a multi-column index
@@ -215,7 +240,17 @@ impl Sqlite {
             DateTime => format!("DATETIME"),
             Json => panic!("Json is not supported by Sqlite3"),
             Binary => format!("BINARY"),
-            Foreign(_, t, refs) => format!("INTEGER REFERENCES {}({})", t, refs.0.join(",")),
+            Foreign(_, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!("{}({}){}{}", t, refs.0.join(","), u, d)
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Sqlite::print_type(*meh)),
             Index(_) => unimplemented!(),

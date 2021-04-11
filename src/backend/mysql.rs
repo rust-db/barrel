@@ -6,7 +6,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -48,62 +48,78 @@ impl SqlGenerator for MySql {
 
     fn add_column(ex: bool, schema: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
+        let btc = bt.clone();
         use self::BaseType::*;
         let name = format!("`{}`", name);
-
+        let nullable_definition = match tt.nullable {
+            true => "",
+            false => " NOT NULL",
+        };
+        let unique_definition = match tt.unique {
+            true => " UNIQUE",
+            false => "",
+        };
+        let primary_definition = match tt.primary {
+            true => " PRIMARY KEY",
+            false => "",
+        };
         #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
-        format!(
-            "{}{}{}{}{}",
-            match bt {
-                Text => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Varchar(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Char(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Primary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Integer => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Serial => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Float => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Double => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
+        let base_type_definition = match bt {
+                Text => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Varchar(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Char(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Primary => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Integer => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Serial => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Float => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Double => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 UUID => unimplemented!(),
-                Json => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Boolean => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Date => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Time => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                DateTime => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Binary => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Foreign(_, _, _) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Custom(_) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(bt, schema)),
-                Array(it) => format!("{}{} {}", MySql::prefix(ex), name, MySql::print_type(Array(Box::new(*it)), schema)),
+                Json => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Boolean => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Date => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Time => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                DateTime => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Binary => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Foreign(_, _, _, _, _) => format!("{}{} INTEGER{}, FOREIGN KEY ({}) {}", Self::prefix(ex), name, nullable_definition, name, Self::print_type(bt, schema)),
+                Custom(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Array(it) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
                 Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
-            },
-            match tt.primary {
-                true => " PRIMARY KEY",
-                false => "",
-            },
-            match (&tt.default).as_ref() {
-                Some(ref m) => match m {
-                    WrappedDefault::Function(ref fun) => match fun {
-                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
-                    },
-                    WrappedDefault::Null => format!(" DEFAULT NULL"),
-                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
-                    WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
-                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
-                    _ => format!(" DEFAULT {}", m),
+            };
+        let default_definition = match (&tt.default).as_ref() {
+            Some(ref m) => match m {
+                WrappedDefault::Function(ref fun) => match fun {
+                    AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP"),
                 },
-                _ => format!(""),
+                WrappedDefault::Null => format!(" DEFAULT NULL"),
+                WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                WrappedDefault::Boolean(val) => format!(" DEFAULT {}", if *val { 1 } else { 0 }),
+                WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                _ => format!(" DEFAULT {}", m),
             },
-            match tt.nullable {
-                true => "",
-                false => " NOT NULL",
-            },
-            match tt.unique {
-                true => " UNIQUE",
-                false => "",
-            },
-        )
+            _ => format!(""),
+        };
+
+        match btc {
+            Foreign(_, _, _, _, _) => {
+                format!(
+                    "{}{}{}{}",
+                    base_type_definition, primary_definition, default_definition, unique_definition,
+                )
+            }
+            _ => {
+                format!(
+                    "{}{}{}{}{}",
+                    base_type_definition,
+                    primary_definition,
+                    default_definition,
+                    nullable_definition,
+                    unique_definition,
+                )
+            }
+        }
     }
 
     fn drop_column(name: &str) -> String {
@@ -222,12 +238,24 @@ impl MySql {
             DateTime => format!("DATETIME"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(s, t, refs) => format!(
-                "INTEGER REFERENCES {}{}({})",
-                prefix!(s),
-                t,
-                refs.0.join(",")
-            ),
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "REFERENCES {}{}({}){}{}",
+                    prefix!(s),
+                    t,
+                    refs.0.join(","),
+                    u,
+                    d
+                )
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MySql::print_type(*meh, schema)),
             Index(_) => unreachable!(),

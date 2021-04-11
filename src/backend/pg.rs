@@ -6,7 +6,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -51,60 +51,76 @@ impl SqlGenerator for Pg {
 
     fn add_column(ex: bool, schema: Option<&str>, name: &str, tt: &Type) -> String {
         let bt: BaseType = tt.get_inner();
+        let btc = bt.clone();
         use self::BaseType::*;
-
-        #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
-        format!(
-            "{}{}{}{}{}",
-            match bt {
-                Text => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Varchar(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Char(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Primary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Integer => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Serial => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Float => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Double => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                UUID => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Json => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Boolean => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Date => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Time => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                DateTime => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Binary => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Foreign(_, _, _) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Custom(_) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(bt, schema)),
-                Array(it) => format!("{}\"{}\" {}", Pg::prefix(ex), name, Pg::print_type(Array(Box::new(*it)), schema)),
-                Index(_) => unreachable!("Indices are handled via custom builder"),
-                Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
-            },
-            match tt.primary {
-                true => " PRIMARY KEY",
-                false => "",
-            },
-            match (&tt.default).as_ref() {
-                Some(ref m) => match m {
-                    WrappedDefault::Function(ref fun) => match fun {
-                        AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP")
-                    }
-                    WrappedDefault::Null => format!(" DEFAULT NULL"),
-                    WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
-                    WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
-                    WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
-                    _ => format!(" DEFAULT {}", m)
+        let primary_definition = match tt.primary {
+            true => " PRIMARY KEY",
+            false => "",
+        };
+        let default_definition = match (&tt.default).as_ref() {
+            Some(ref m) => match m {
+                WrappedDefault::Function(ref fun) => match fun {
+                    AutogenFunction::CurrentTimestamp => format!(" DEFAULT CURRENT_TIMESTAMP"),
                 },
-                _ => format!(""),
+                WrappedDefault::Null => format!(" DEFAULT NULL"),
+                WrappedDefault::AnyText(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::UUID(ref val) => format!(" DEFAULT '{}'", val),
+                WrappedDefault::Date(ref val) => format!(" DEFAULT '{:?}'", val),
+                WrappedDefault::Custom(ref val) => format!(" DEFAULT '{}'", val),
+                _ => format!(" DEFAULT {}", m),
             },
-            match tt.nullable {
-                true => "",
-                false => " NOT NULL",
-            },
-            match tt.unique {
-                true => " UNIQUE",
-                false => "",
-            },
-        )
+            _ => format!(""),
+        };
+        let nullable_definition = match tt.nullable {
+            true => "",
+            false => " NOT NULL",
+        };
+        let unique_definition = match tt.unique {
+            true => " UNIQUE",
+            false => "",
+        };
+        #[cfg_attr(rustfmt, rustfmt_skip)] /* This shouldn't be formatted. It's too long */
+        let base_type_definition = match bt {
+            Text => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Varchar(_) => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Char(_) => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Primary => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Integer => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Serial => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Float => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Double => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            UUID => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Json => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Boolean => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Date => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Time => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            DateTime => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Binary => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER{}, FOREIGN KEY ({}) {}", Self::prefix(ex), name, nullable_definition, name, Self::print_type(bt, schema)),
+            Custom(_) => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+            Array(it) => format!("{}\"{}\" {}", Self::prefix(ex), name, Self::print_type(Array(Box::new(*it)), schema)),
+            Index(_) => unreachable!("Indices are handled via custom builder"),
+            Constraint(_, _) => unreachable!("Constraints are handled via custom builder"),
+        };
+
+        match btc {
+            Foreign(_, _, _, _, _) => {
+                format!(
+                    "{}{}{}{}",
+                    base_type_definition, primary_definition, default_definition, unique_definition,
+                )
+            }
+            _ => {
+                format!(
+                    "{}{}{}{}{}",
+                    base_type_definition,
+                    primary_definition,
+                    default_definition,
+                    nullable_definition,
+                    unique_definition,
+                )
+            }
+        }
     }
 
     fn drop_column(name: &str) -> String {
@@ -219,12 +235,24 @@ impl Pg {
             DateTime => format!("TIMESTAMP"),
             Json => format!("JSON"),
             Binary => format!("BYTEA"),
-            Foreign(s, t, refs) => format!(
-                "INTEGER REFERENCES {}\"{}\"({})",
-                prefix!(s.or(schema.map(|s| s.into()))),
-                t,
-                refs.0.join(",")
-            ),
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "REFERENCES {}\"{}\"({}){}{}",
+                    prefix!(s.or(schema.map(|s| s.into()))),
+                    t,
+                    refs.0.join(","),
+                    u,
+                    d
+                )
+            }
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", Pg::print_type(*meh, schema)),
             Index(_) => unimplemented!("Indices are handled via custom builder"),
